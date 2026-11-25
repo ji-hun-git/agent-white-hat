@@ -1187,6 +1187,619 @@ class RealAppMissTest(Case):
         """})
 
 
+M1 = "supabase/migrations/20250101000000_init.sql"
+M2 = "supabase/migrations/20250201000000_fix.sql"
+
+
+class MigrationReplayTest(Case):
+    """Round one of the held-out evaluation: Supabase migrations are applied in order, so only the final state counts.
+    Inputs written for the test."""
+
+    def test_policy_dropped_by_a_later_migration(self):
+        self.clean("PAH-W012", {
+            M1: """
+                create table public.profiles (id uuid primary key, email text);
+                alter table public.profiles enable row level security;
+                create policy "Anyone can view profiles" on public.profiles for select using (true);
+            """,
+            M2: """
+                drop policy if exists "Anyone can view profiles" on public.profiles;
+                create policy "Own profile" on public.profiles for select using (auth.uid() = id);
+            """})
+
+    def test_policy_dropped_and_created_open_again(self):
+        self.hit("PAH-W012", {
+            M1: """
+                create table public.notes (id uuid primary key, user_id uuid, body text);
+                alter table public.notes enable row level security;
+                create policy "open" on public.notes for update using (true);
+            """,
+            M2: """
+                drop policy "open" on public.notes;
+                create policy "open" on public.notes for update using (true);
+            """}, "high")
+
+    def test_order_is_the_file_name_not_the_listing(self):
+        self.hit("PAH-W012", {
+            M2: 'create policy "open" on public.notes for delete using (true);\n',
+            M1: """
+                create table public.notes (id uuid primary key, user_id uuid, body text);
+                alter table public.notes enable row level security;
+                drop policy if exists "open" on public.notes;
+            """}, "high")
+
+    def test_table_name_in_a_comment_is_not_a_table(self):
+        self.clean("PAH-W012", {M1: """
+            -- Create table for player videos
+            CREATE TABLE IF NOT EXISTS public.player_videos (id uuid primary key, player_id uuid);
+            /* create table for later */
+            ALTER TABLE public.player_videos ENABLE ROW LEVEL SECURITY;
+            CREATE POLICY "own videos" ON public.player_videos FOR SELECT USING (auth.uid() = player_id);
+        """})
+
+    def test_rls_switched_off_then_on_again(self):
+        self.clean("PAH-W012", {M1: """
+            create table public.bundles (id uuid primary key, name text);
+            alter table public.bundles disable row level security;
+            alter table public.bundles enable row level security;
+            create policy "admins" on public.bundles for all using (public.has_role(auth.uid(), 'admin'));
+        """})
+
+    def test_rls_switched_off_by_a_later_migration(self):
+        self.hit("PAH-W012", {
+            M1: """
+                create table public.bundles (id uuid primary key, name text);
+                alter table public.bundles enable row level security;
+            """,
+            M2: "alter table public.bundles disable row level security;\n"}, "high")
+
+    def test_a_dropped_table_needs_nothing(self):
+        self.clean("PAH-W012", {
+            M1: "create table public.scratch (id uuid primary key);\n",
+            M2: "drop table if exists public.scratch;\n"})
+
+    def test_schema_file_outside_migrations_comes_first(self):
+        self.clean("PAH-W012", {
+            "src/database/schema.sql": """
+                create table public.discounts (id uuid primary key, user_id uuid);
+                alter table public.discounts enable row level security;
+                create policy "System can insert discounts" on public.discounts for insert with check (true);
+            """,
+            M1: 'drop policy "System can insert discounts" on public.discounts;\n'})
+
+    def test_rows_without_an_owner_are_open_to_everyone(self):
+        self.hit("PAH-W012", {M1: """
+            create table public.orders (id uuid primary key, user_id uuid, total int);
+            alter table public.orders enable row level security;
+            create policy "Orders access" on public.orders for all using (
+              auth.uid() = user_id or user_id is null
+            );
+        """})
+
+    def test_anonymous_events_without_an_owner_are_by_design(self):
+        self.clean("PAH-W012", {M1: """
+            create table public.funnel_events (id uuid primary key, user_id uuid, name text);
+            alter table public.funnel_events enable row level security;
+            create policy "Track" on public.funnel_events for insert with check (user_id = auth.uid() or user_id is null);
+        """})
+
+    def test_open_signup_form_is_by_design(self):
+        self.clean("PAH-W012", {M1: """
+            create table public.early_access_signups (id uuid primary key, email text);
+            alter table public.early_access_signups enable row level security;
+            create policy "Anyone can sign up" on public.early_access_signups for insert with check (true);
+        """})
+
+    def test_open_insert_into_other_tables_still_counts(self):
+        self.hit("PAH-W012", {M1: """
+            create table public.security_audit_logs (id uuid primary key, user_id uuid, action text);
+            alter table public.security_audit_logs enable row level security;
+            create policy "System can insert" on public.security_audit_logs for insert with check (true);
+        """})
+
+
+ADMIN_ROUTE = """
+    import { canViewUsers } from "@/permissions";
+    import { getUsers } from "@/queries/user";
+    export async function GET(request: Request) {
+      const { auth } = await parseRequest(request);
+      if (!(await canViewUsers(auth))) {
+        return unauthorized();
+      }
+      return json(await getUsers());
+    }
+"""
+
+
+class CrossFileGuardTest(Case):
+    """Round one of the held-out evaluation: the role check often lives in another file. Inputs written for the
+    test."""
+
+    def test_role_helper_defined_in_another_file(self):
+        self.clean("PAH-W003", {
+            "src/app/api/admin/users/route.ts": ADMIN_ROUTE,
+            "src/permissions/user.ts": """
+                export async function canViewUsers({ user }: Auth) {
+                  return user?.isAdmin ?? false;
+                }
+            """})
+
+    def test_helper_that_checks_only_a_sign_in_is_not_a_role_check(self):
+        self.hit("PAH-W003", {
+            "src/app/api/admin/users/route.ts": ADMIN_ROUTE,
+            "src/permissions/user.ts": """
+                export async function canViewUsers({ user }: Auth) {
+                  return !!user;
+                }
+            """})
+
+    def test_helper_that_only_mentions_a_role_is_not_a_check(self):
+        self.hit("PAH-W003", {
+            "src/app/api/admin/users/route.ts": ADMIN_ROUTE,
+            "src/permissions/user.ts": """
+                export async function canViewUsers({ user }: Auth) {
+                  const label = user.role;
+                  console.log(label);
+                  return true;
+                }
+            """})
+
+    def test_role_helper_two_calls_away(self):
+        self.clean("PAH-W003", {
+            "src/app/api/admin/users/route.ts": ADMIN_ROUTE,
+            "src/permissions/user.ts": """
+                function isAdminUser(user) {
+                  return user?.role === "admin";
+                }
+                export const canViewUsers = async ({ user }) => isAdminUser(user);
+            """})
+
+    def test_one_line_helper_without_semicolons_is_not_a_role_check(self):
+        self.hit("PAH-W003", {
+            "src/app/api/admin/users/route.ts": ADMIN_ROUTE.replace("canViewUsers(auth)", "sleep(10)"),
+            "lib/utils.ts": """
+                export const sleep = async (ms: number) => await new Promise((r) => setTimeout(r, ms))
+                export function isAccounting () {
+                  return (req, res, next) => {
+                    if (req.user?.role === 'accounting') next()
+                    else res.status(403).end()
+                  }
+                }
+            """})
+
+    def test_generated_contract_file_is_not_a_route(self):
+        self.clean("PAH-W003", {"src/app/api/admin/teams/contract.generated.ts": """
+            export const getTeams = defineOperation({ method: "GET", path: "/api/admin/teams", request, response });
+        """})
+
+    def test_admin_page_that_only_renders_a_component(self):
+        self.clean("PAH-W003", {"src/app/(main)/admin/users/page.tsx": """
+            import { UsersPage } from "./UsersPage";
+            export default function () {
+              return <UsersPage />;
+            }
+        """})
+
+    def test_spa_admin_page_in_the_browser_is_not_the_server_hole(self):
+        files = {
+            "package.json": '{"dependencies": {"react": "18", "@supabase/supabase-js": "2"}, '
+                            '"devDependencies": {"vite": "5"}}',
+            "src/pages/admin/Users.tsx": """
+                export default function Users() {
+                  const [rows, setRows] = useState([]);
+                  useEffect(() => { supabase.from("users").select("*").then(({ data }) => setRows(data)); }, []);
+                  return <Table rows={rows} />;
+                }
+            """}
+        self.clean("PAH-W003", files)
+
+    def test_router_whose_routes_check_the_role(self):
+        self.clean("PAH-W003", {
+            "server/src/app.ts": """
+                import adminRoutes from "./routes/admin";
+                app.use("/api/admin", adminRoutes);
+            """,
+            "server/src/routes/admin.ts": """
+                const router = Router();
+                router.get("/users", requireAuth, requireRole("MASTER", "ADMIN"), listUsers);
+                router.post("/users", requireAuth, requireRole("MASTER", "ADMIN"), createUser);
+                export default router;
+            """})
+
+    def test_router_whose_routes_do_not_check_the_role(self):
+        self.hit("PAH-W003", {
+            "server/src/app.ts": """
+                const adminRoutes = require("./routes/admin");
+                app.use("/api/admin", adminRoutes);
+            """,
+            "server/src/routes/admin.js": """
+                const router = Router();
+                router.get("/users", requireAuth, listUsers);
+                module.exports = router;
+            """})
+
+    def test_route_guards_stay_with_the_handler(self):
+        self.clean("PAH-W006", {"server/src/routes/admin.ts": """
+            router.post('/create-user', requireAuth, requireRole('MASTER', 'ADMIN'), asyncHandler(async (req, res) => {
+              const { username, role } = req.body;
+              const user = await User.create({ username, role: role === 'ADMIN' ? 'ADMIN' : 'USER' });
+              res.json(user);
+            }));
+        """})
+
+    def test_supabase_function_that_looks_up_the_admin_role(self):
+        self.clean("PAH-W006", {"supabase/functions/create-user/index.ts": """
+            serve(async (req) => {
+              const { data: { user } } = await supabase.auth.getUser(token);
+              const { data: roleRow } = await supabaseAdmin.from('user_roles').select('role')
+                .eq('user_id', user.id).eq('role', 'admin').maybeSingle();
+              if (!roleRow) throw new Error('not an admin');
+              const { email, role } = await req.json();
+              await supabaseAdmin.from('user_roles').insert({ user_id: created.id, role });
+              return new Response('ok');
+            });
+        """})
+
+    def test_express_handler_that_checks_the_admin_flag(self):
+        self.clean("PAH-W006", {"src/controllers/users.js": """
+            exports.adminCreateUser = async (req, res) => {
+              const user = await User.findOne({ username: decoded.user });
+              if (!user || !user.admin) return res.status(403).send({ error: "Forbidden" });
+              const created = new User(req.body);
+              await created.save();
+              res.json(created);
+            };
+        """})
+
+    def test_admin_only_endpoint_reaches_any_record(self):
+        self.clean("PAH-W002", {
+            "src/app/api/admin/users/[userId]/2fa/route.ts": """
+                export async function POST(request: Request, { params }) {
+                  const { auth } = await parseRequest(request);
+                  const { userId } = await params;
+                  if (!(await canEnforceTwoFactor(auth))) return unauthorized();
+                  const user = await prisma.user.update({ where: { id: userId }, data: { twoFactor: true } });
+                  return json(user);
+                }
+            """,
+            "src/permissions/user.ts": """
+                export async function canEnforceTwoFactor({ user }: Auth) {
+                  return user.isAdmin;
+                }
+            """})
+
+
+VITE_APP = {
+    "package.json": '{"dependencies": {"react": "18", "react-router-dom": "6"}, "devDependencies": {"vite": "5"}}',
+    "vite.config.ts": "export default defineConfig({ plugins: [react()] });\n",
+    "src/main.tsx": 'import App from "./App";\ncreateRoot(document.getElementById("root")!).render(<App />);\n',
+    "src/App.tsx": """
+        import Home from "./pages/Home";
+        const Admin = lazy(() => import("@/pages/Admin"));
+        export default function App() {
+          return <Routes><Route path="/" element={<Home />} /><Route path="/admin" element={<Admin />} /></Routes>;
+        }
+    """,
+    "src/pages/Home.tsx": 'import { Comment } from "../components/Comment";\nexport default () => <Comment />;\n',
+    "src/pages/Admin.tsx": "export default () => <div />;\n",
+}
+XSS_COMPONENT = """
+    export function {name}({{ html }}) {{
+      return <div dangerouslySetInnerHTML={{{{ __html: html }}}} />;
+    }}
+"""
+
+
+class ReachabilityTest(Case):
+    """Round one of the held-out evaluation: findings in code that never runs, and values no attacker controls.
+    Inputs written for the test."""
+
+    def test_component_the_app_imports(self):
+        self.hit("PAH-W001", dict(VITE_APP, **{"src/components/Comment.tsx": XSS_COMPONENT.format(name="Comment")}))
+
+    def test_component_nothing_imports(self):
+        files = dict(VITE_APP, **{"src/components/Unused.tsx": XSS_COMPONENT.format(name="Unused")})
+        self.clean("PAH-W001", files)
+        low = [f for f in run(files).findings if f.rule == "PAH-W001"]  # still listed, as low
+        self.assertEqual([(f.severity, "imports" in f.message) for f in low], [("low", True)])
+
+    def test_apache_header_is_not_a_vendored_library(self):
+        self.hit("PAH-W001", {"static/js/app.js": """
+            /*
+             * Copyright 2024 Example Corp.
+             * Licensed under the Apache License, Version 2.0
+             */
+            const q = new URLSearchParams(location.search).get("q");
+            document.getElementById("out").innerHTML = q;
+        """}, "high")
+
+    def test_component_imported_only_by_dead_code(self):
+        files = dict(VITE_APP, **{
+            "src/pages/Plans.tsx": 'import { Pay } from "@/components/Pay";\nexport default () => <Pay />;\n',
+            "src/components/Pay.tsx": XSS_COMPONENT.format(name="Pay")})
+        self.clean("PAH-W001", files)
+
+    def test_lazy_import_through_an_alias_is_reached(self):
+        files = dict(VITE_APP, **{"src/pages/Admin.tsx": XSS_COMPONENT.format(name="Admin")})
+        self.hit("PAH-W001", files)
+
+    def test_glob_imports_keep_everything(self):
+        files = dict(VITE_APP, **{"src/App.tsx": 'const pages = import.meta.glob("./pages/*.tsx");\n',
+                                  "src/components/Unused.tsx": XSS_COMPONENT.format(name="Unused")})
+        self.hit("PAH-W001", files)
+
+    def test_next_pages_are_entry_points(self):
+        self.hit("PAH-W001", {
+            "package.json": '{"dependencies": {"next": "14", "react": "18"}}',
+            "app/notes/page.tsx": XSS_COMPONENT.format(name="Page")})
+
+    def test_vendored_library_is_skipped(self):
+        self.clean("PAH-W001", {"static/jquery/jquery.js": """
+            /*!
+             * jQuery JavaScript Library v3.5.1
+             * Released under the MIT license
+             */
+            function buildFragment(elems, context) { tmp.innerHTML = wrapMap[0] + elem.replace(rxhtmlTag, "<$1></$2>"); }
+        """})
+
+    def test_own_static_script_is_still_read(self):
+        self.hit("PAH-W001", {"static/js/app.js": """
+            // comments widget
+            const q = new URLSearchParams(location.search).get("q");
+            document.getElementById("out").innerHTML = q;
+        """}, "high")
+
+    def test_stock_shadcn_chart_style(self):
+        self.clean("PAH-W001", {"src/components/ui/chart.tsx": """
+            const ChartStyle = ({ id, config }) => {
+              const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
+              return (
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: Object.entries(THEMES).map(([theme, prefix]) => `${prefix} [data-chart=${id}] {}`).join("\\n"),
+                  }}
+                />
+              );
+            };
+        """})
+
+    def test_seed_scripts_and_deno_tests_are_not_the_app(self):
+        weak = "export const pick = () => { const inviteCode = Math.random().toString(36).slice(2); return inviteCode; };\n"
+        self.hit("PAH-W011", {"lib/invite.ts": weak})
+        self.clean("PAH-W011", {"prisma/seed.ts": weak})
+        self.clean("PAH-W011", {"sast/seeds/invite.js": weak})
+        self.clean("PAH-W011", {"supabase/functions/invite/index_test.ts": weak})
+
+    def test_ejs_layout_slot_is_the_rendered_view(self):
+        self.clean("PAH-W001", {"views/layout.ejs": "<html><body><%- body %></body></html>\n"})
+        self.hit("PAH-W001", {"views/profile.ejs": "<p><%- user.bio %></p>\n"})
+
+
+VITE_PKG = '{"dependencies": {"react": "18", "@supabase/supabase-js": "2"}, "devDependencies": {"vite": "5"}}'
+
+
+class PaymentWordsTest(Case):
+    """Round one of the held-out evaluation: words that look like payments. Inputs written for the test."""
+
+    def client(self, code: str, path: str = "src/hooks/useThing.ts") -> dict:
+        return {"package.json": VITE_PKG, path: code}
+
+    def test_payment_status_on_a_payments_table(self):
+        self.hit("PAH-W008", self.client("""
+            export async function pay(groupId, amount) {
+              await supabase.from('group_member_payments').upsert({ group_id: groupId, amount, payment_status: 'completed' });
+            }
+        """), "high")
+
+    def test_status_on_a_payments_table(self):
+        self.hit("PAH-W008", self.client("""
+            export const markPaid = (id) => supabase.from('orders').update({ status: 'paid' }).eq('id', id);
+        """), "high")
+
+    def test_match_or_league_status_is_not_a_payment(self):
+        self.clean("PAH-W008", self.client("""
+            export async function finish(id) {
+              await supabase.from('matches').update({ status: 'completed', winner: id }).eq('id', id);
+              await supabase.from('mini_leagues').insert({ name: 'Spring', status: 'active' });
+            }
+        """))
+
+    def test_plan_in_a_request_waits_for_approval(self):
+        self.clean("PAH-W008", self.client("""
+            export const ask = (plan) => supabase.from('user_requests').insert({ plan, status: 'pending' });
+        """))
+
+    def test_plan_set_from_an_admin_page_is_for_the_database_policies(self):
+        self.clean("PAH-W008", self.client("""
+            export default function Requests() {
+              const approve = (r) => supabase.from('users').insert({ email: r.email, plan: r.plan });
+              return <List onApprove={approve} />;
+            }
+        """, "src/pages/admin/Requests.tsx"))
+
+    def test_webhook_settings_page_is_not_a_webhook(self):
+        self.clean("PAH-W008", {"pages/teams/[slug]/webhooks.tsx": """
+            const Webhooks = () => {
+              const { data } = useWebhooks(slug);
+              return <WebhookList webhooks={data} />;
+            };
+            export default Webhooks;
+        """})
+
+    def test_webhook_with_its_own_signature_check(self):
+        self.clean("PAH-W008", {"supabase/functions/jvzoo-webhook/index.ts": """
+            async function verifyJvzooSignature(fields, secret) {
+              const digest = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(joined + "|" + secret));
+              return hex(digest).slice(0, 8).toUpperCase() === fields.cverify;
+            }
+            serve(async (req) => {
+              const fields = Object.fromEntries(await req.formData());
+              if (!(await verifyJvzooSignature(fields, SECRET))) return new Response("bad", { status: 401 });
+              await supabase.from("subscriptions").update({ status: "active", plan: fields.cproditem });
+              return new Response("ok");
+            });
+        """})
+        self.clean("PAH-W007", {"supabase/functions/jvzoo-webhook/index.ts": """
+            async function verifyJvzooSignature(fields, secret) { return check(fields, secret); }
+            serve(async (req) => {
+              const fields = Object.fromEntries(await req.formData());
+              if (!(await verifyJvzooSignature(fields, SECRET))) return new Response("bad", { status: 401 });
+              await stripe.charges.create({ amount: fields.ctransamount });
+              return new Response("ok");
+            });
+        """})
+
+    def test_thank_you_page_that_only_reads_the_plan(self):
+        self.clean("PAH-W008", self.client("""
+            const ThankYou = () => {
+              const [searchParams] = useSearchParams();
+              const plan = searchParams.get('plan') || 'basic';
+              const { subscription } = useSubscription();
+              return <p>{subscription?.plan === plan ? 'Welcome!' : 'Waiting for the payment...'}</p>;
+            };
+            export default ThankYou;
+        """, "src/pages/ThankYou.tsx"))
+
+
+class SampleValueTest(Case):
+    """Round one of the held-out evaluation: sample values in files meant to be shared. Inputs written for the
+    test; keys are generated at run time."""
+
+    def test_example_file_with_generated_sample_secrets(self):
+        self.clean("PAH-W013", {".env.example": (
+            f"NEXTAUTH_SECRET={fake_key('', 44, seed=11)}\n"
+            f"JWT_SECRET={fake_key('', 32, seed=12)}\n"
+            f"STRIPE_SKEY={fake_key('sk_' + 'test_', 24, seed=13)}\n"
+            "ALPHA_VANTAGE_KEY=alpha-vantage-api-key\n"
+            "SMTP_PASSWORD=email-server-password\n")})
+
+    def test_example_file_with_a_real_key_format(self):
+        self.hit("PAH-W013", {".env.example": f"OPENAI_API_KEY={fake_key('sk-proj-', 64)}\n"}, "high")
+
+    def test_placeholder_that_spells_out_its_name(self):
+        self.clean("PAH-W013", {".env": "DISCORD_CLIENT_SECRET=discord-client-secret\nGOOGLE_MAP_API_KEY=google-map-api-key\n"})
+
+    def test_weak_real_password_still_counts(self):
+        self.hit("PAH-W013", {".env": "SQL_PASSWORD=mysecretpassword\n"}, git={"tracked": {".env"}, "untracked": set(),
+                                                                                "history": {".env"}})
+
+    def test_real_looking_third_party_key_in_an_example(self):
+        uuid = "-".join(fake_key("", n, seed=9 + n).lower() for n in (8, 4, 4, 4, 12))
+        self.hit("PAH-W013", {"server/.env.example": f"JWT_SECRET=replace_with_a_long_random_secret\nCRICAPI_KEY={uuid}\n"})
+
+    def test_hockey_is_not_a_key(self):
+        self.clean("PAH-W013", {".env": f"SPORTS_API_HOCKEY_BASE=https://v1.hockey.api-sports.io/{fake_key('', 20)}\n"})
+
+    def test_generated_secret_in_an_env_file(self):
+        self.hit("PAH-W013", {".env": f"SESSION_SECRET={fake_key('', 40, seed=5)}\n"})
+
+    def test_aws_key_id_without_its_secret(self):
+        akia = "AKIA" + fake_key("", 16, seed=2).upper()
+        self.clean("PAH-W013", {"integrations/aws/client.py": f'"""Example: x-amz-credential: {akia}/20240101/eu-west-1/s3"""\n'})
+        secret = fake_key("", 40, seed=4)
+        self.hit("PAH-W013", {"integrations/aws/client.py":
+                              f'AWS = dict(key="{akia}",\n           secret="{secret}")\n'}, "high")
+
+
+class HeldOutMissTest(Case):
+    """Round one of the held-out evaluation: holes the vulnerable apps document that no rule saw. Inputs written for
+    the test."""
+
+    def test_express_fileupload_saved_under_its_own_name(self):
+        self.hit("PAH-W014", {"src/controllers/files.js": """
+            module.exports.post = (req, res) => {
+              const sampleFile = req.files.file;
+              const filePath = __dirname + '/../../public/uploads/' + req.user.id + "/" + sampleFile.name;
+              sampleFile.mv(filePath, (err) => res.json({ ok: !err }));
+            };
+        """}, "high")
+
+    def test_express_fileupload_with_a_generated_name(self):
+        self.clean("PAH-W014", {"src/controllers/files.js": """
+            module.exports.post = (req, res) => {
+              const sampleFile = req.files.file;
+              if (!["image/png", "image/jpeg"].includes(sampleFile.mimetype)) return res.status(400).end();
+              sampleFile.mv(path.join(UPLOADS, crypto.randomUUID() + ".png"), (err) => res.json({ ok: !err }));
+            };
+        """})
+
+    def test_agent_that_can_run_sql(self):
+        self.hit("PAH-W005", {"chatbot/agent.py": """
+            from langchain_community.agent_toolkits import SQLDatabaseToolkit
+            from langgraph.prebuilt import create_react_agent
+
+            async def build_agent(llm, db):
+                toolkit = SQLDatabaseToolkit(db=db, llm=llm)
+                return create_react_agent(llm, toolkit.get_tools(), prompt=SYSTEM)
+        """})
+
+    def test_agent_with_harmless_tools(self):
+        self.clean("PAH-W005", {"chatbot/agent.py": """
+            from langgraph.prebuilt import create_react_agent
+
+            async def build_agent(llm):
+                return create_react_agent(llm, [get_weather, search_docs], prompt=SYSTEM)
+        """})
+
+    def test_every_user_listed_to_any_signed_in_user(self):
+        self.hit("PAH-W003", {"src/routes/users.js": """
+            router.get("/api/v2/users", requireAuth, async (req, res) => {
+              const users = await User.find({});
+              res.json(users);
+            });
+        """})
+
+    def test_user_list_used_only_inside_the_handler(self):
+        self.clean("PAH-W003", {"routes/search.ts": """
+            module.exports = function searchProducts () {
+              return (req, res, next) => {
+                models.sequelize.query(`SELECT * FROM Products`).then(([products]) => {
+                  UserModel.findAll().then(users => {
+                    for (const u of users) { if (JSON.stringify(products).includes(u.email)) solve('dump') }
+                  })
+                  res.json(products)
+                })
+              }
+            }
+        """})
+
+    def test_user_list_for_admins(self):
+        self.clean("PAH-W003", {"src/routes/users.js": """
+            router.get("/api/v2/users", requireAuth, async (req, res) => {
+              if (!req.user.admin) return res.status(403).end();
+              const users = await User.find({});
+              res.json(users);
+            });
+        """})
+
+    def test_backend_next_to_a_vite_frontend_is_server_code(self):
+        files = {
+            "frontend/package.json": '{"devDependencies": {"vite": "5", "@sveltejs/kit": "2"}}',
+            "frontend/vite.config.js": "export default {};\n",
+            "frontend/src/main.js": "console.log(1);\n",
+            "package.json": '{"dependencies": {"express": "4"}}',
+            "src/controllers/users.js": """
+                module.exports = {
+                  getAll: async (req, res) => {
+                    const users = await User.find({});
+                    res.send({ result: users });
+                  },
+                };
+            """}
+        self.hit("PAH-W003", files)
+        project = appsec._project({k: textwrap.dedent(v) for k, v in files.items()}, None)
+        self.assertTrue(project.srcs["frontend/src/main.js"].client)
+        self.assertFalse(project.srcs["src/controllers/users.js"].client)
+
+    def test_django_view_listing_every_user(self):
+        self.hit("PAH-W003", {"accounts/views.py": """
+            @api_view(["GET"])
+            @permission_classes([IsAuthenticated])
+            def user_list(request):
+                return Response(UserSerializer(User.objects.all(), many=True).data)
+        """})
+
+
 class GeneralTest(Case):
     def test_every_rule_has_metadata(self):
         for n in range(1, 15):

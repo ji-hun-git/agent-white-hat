@@ -105,6 +105,24 @@ class ScoreTest(unittest.TestCase):
         self.assertNotIn("juice-shop/juice-shop", set(appsec_eval.VULNERABLE + appsec_eval.WELL_BUILT))
         self.assertFalse(set(appsec_eval.DEVELOPMENT) & set(appsec_eval.VULNERABLE + appsec_eval.WELL_BUILT))
 
+    def test_round_two_draws_nothing_round_one_saw(self):
+        first = json.loads(appsec_eval.FIXTURE.read_text(encoding="utf-8"))
+        seen = set(appsec_eval.DEVELOPMENT) | {a["repo"] for apps in first["strata"].values() for a in apps}
+        self.assertFalse(seen & set(appsec_eval.VULNERABLE_2 + appsec_eval.WELL_BUILT_2))
+        self.assertNotEqual(appsec_eval.ROUNDS[1]["seed"], appsec_eval.ROUNDS[2]["seed"])
+        self.assertNotEqual(appsec_eval.ROUNDS[1]["results"], appsec_eval.ROUNDS[2]["results"])
+
+    def test_round_two_fixture_when_drawn(self):
+        fixture = appsec_eval._paths(2)[0]
+        if not fixture.exists():
+            self.skipTest("round two not drawn")
+        doc = json.loads(fixture.read_text(encoding="utf-8"))
+        drawn = {a["repo"] for apps in doc["strata"].values() for a in apps}
+        self.assertFalse(drawn & set(doc["development_set"]))
+        first = json.loads(appsec_eval.FIXTURE.read_text(encoding="utf-8"))
+        examined = {s["repo"] for s in first["frame"]["ai_built"]["skipped_in_order"]}
+        self.assertFalse(drawn & examined)
+
 
 if __name__ == "__main__":
     unittest.main()

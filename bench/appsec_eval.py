@@ -33,6 +33,13 @@ The protocol, fixed in bench/fixtures/appsec-heldout-round1.json before the firs
 
 Results go to bench/results/<date>-appsec-heldout.json: per app its commit, verdict, files, seconds and per finding
 the rule, severity, file, line and message. Never the evidence lines: AI-built apps commit real keys.
+
+Round two (--round 2, fixture bench/fixtures/appsec-heldout-round2.json) is the fresh draw that measures the fixes
+round one led to, under the same protocol. Round one's 34 apps join the development set. Its vulnerable and
+well-built apps are the first candidates of the ranked lists VULNERABLE_2 and WELL_BUILT_2 that can be read, are not
+forks and are written in a language appsec reads (well-built ones also pushed in the last year); its apps built with
+AI are drawn with its own seed from round one's saved search results, without every repository round one examined.
+Results go to bench/results/<date>-appsec-heldout-round2.json.
 """
 from __future__ import annotations
 
@@ -80,6 +87,34 @@ WELL_BUILT = [
 GIT = ["git", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=" + os.devnull, "-c", "core.longpaths=true",
        "-c", "core.symlinks=false", "-c", "protocol.file.allow=never"]
 
+# Round two (2026-11-25): a fresh draw after the fixes round one led to. Round one's 34 apps are development data now.
+# The apps are the first candidates of these ranked lists that qualify (see _qualifies), in this order; the lists were
+# written before any candidate was checked, and the fixture records why each skipped one was skipped.
+VULNERABLE_2 = [
+    "snyk-labs/nodejs-goof", "fportantier/vulpy", "Checkmarx/capital", "payatu/vuln-nodejs-app",
+    "WithSecureLabs/damn-vulnerable-llm-agent", "SirAppSec/vuln-node.js-express.js-app", "nVisium/django.nV",
+    "OWASP/DVSA", "trottomv/python-insecure-app", "jorritfolmer/vulnerable-api", "carvesystems/vulnerable-graphql-api",
+    "harishsg993010/DamnVulnerableLLMProject", "Contrast-Security-OSS/vulnpy",
+]
+WELL_BUILT_2 = [
+    "lukevella/rallly", "documenso/documenso", "mfts/papermark", "linkwarden/linkwarden", "elie222/inbox-zero",
+    "mealie-recipes/mealie", "healthchecks/healthchecks", "wger-project/wger", "formbricks/formbricks", "dubinc/dub",
+    "openstatusHQ/openstatus", "outline/outline", "langfuse/langfuse", "calcom/cal.com",
+]
+LANGUAGES = {"JavaScript", "TypeScript", "Python", "HTML", "EJS", "Pug", "Handlebars", "Vue", "Svelte", "Jinja"}
+ROUNDS = {
+    1: {"fixture": "appsec-heldout-round1.json", "labels": "appsec-heldout-round1-labels.json",
+        "seed": SEED, "results": "{date}-appsec-heldout.json"},
+    2: {"fixture": "appsec-heldout-round2.json", "labels": "appsec-heldout-round2-labels.json",
+        "seed": "pah-appsec-heldout-round2-2026-11-25", "results": "{date}-appsec-heldout-round2.json"},
+}
+
+
+def _paths(n: int) -> tuple[Path, Path, str, str]:
+    r = ROUNDS[n]
+    fixtures = ROOT / "bench" / "fixtures"
+    return fixtures / r["fixture"], fixtures / r["labels"], r["seed"], r["results"]
+
 
 def _gh(path: str) -> dict | None:
     res = subprocess.run(["gh", "api", path], capture_output=True, timeout=60, check=False)
@@ -123,10 +158,67 @@ def draw_ai_built(frame: list[str], seed: str = SEED, want: int = AI_BUILT) -> t
     return kept, skipped
 
 
+def _qualifies(repo: str, stratum: str, year_ago: str) -> str:
+    """"" when the candidate can be used, else why not. Fixed before any candidate was checked."""
+    meta = _gh(f"repos/{repo}")
+    if meta is None:
+        return "cannot be read"
+    if meta.get("fork"):
+        return "fork"
+    if (meta.get("language") or "") not in LANGUAGES:
+        return f"written in {meta.get('language')}"
+    if stratum == "well_built" and (meta.get("pushed_at") or "") < year_ago:
+        return "no push in the last year"
+    if (meta.get("size") or 0) > 400_000:
+        return "larger than 400 MB"
+    return ""
+
+
+def _plan_round2(args) -> int:
+    fixture, _, seed, _ = _paths(2)
+    if fixture.exists() and not args.force:
+        print(f"{fixture} exists: the sample is already drawn", file=sys.stderr)
+        return 2
+    first = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    used = set(DEVELOPMENT) | {a["repo"] for apps in first["strata"].values() for a in apps}
+    examined = used | {s["repo"] for s in first["frame"]["ai_built"]["skipped_in_order"]}
+    year_ago = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 365 * 86400))
+    strata, candidates = {}, {}
+    for name, ranked, want in (("vulnerable", VULNERABLE_2, 9), ("well_built", WELL_BUILT_2, 10)):
+        strata[name], candidates[name] = [], []
+        for repo in ranked:
+            if len(strata[name]) >= want:
+                break
+            why = "in the development set" if repo in used else _qualifies(repo, name, year_ago)
+            commit = None if why else head(repo)
+            if not why and not commit:
+                why = "no commit"
+            candidates[name].append({"repo": repo, "used": not why, **({"why": why} if why else {})})
+            if not why:
+                strata[name].append({"repo": repo, "commit": commit})
+    frame = [r for r in first["frame"]["ai_built"]["results"] if r not in examined]
+    strata["ai_built"], skipped = draw_ai_built(frame, seed=seed)
+    rev = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False)
+    doc = {"kind": "appsec-heldout-round2", "drawn": time.strftime("%Y-%m-%d"), "seed": seed,
+           "code_at_draw": rev.stdout.strip(), "code_hash_at_draw": code_hash(),
+           "development_set": sorted(used), "strata": strata, "candidates": candidates,
+           "frame": {"ai_built": {"query": QUERY, "from": "round one's saved search results, without every repository "
+                                                       "round one examined", "results": sorted(frame),
+                                  "skipped_in_order": skipped}},
+           "expected": {}, "out_of_scope": {}}
+    fixture.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"pinned {sum(len(v) for v in strata.values())} apps -> {fixture}")
+    return 0
+
+
 def cmd_plan(args) -> int:
+    if args.round == 2:
+        return _plan_round2(args)
     if FIXTURE.exists() and not args.force:
         print(f"{FIXTURE} exists: the sample is already drawn", file=sys.stderr)
         return 2
+    if not args.frame:
+        raise SystemExit("round one needs --frame")
     frame = [ln.strip() for ln in Path(args.frame).read_text(encoding="utf-8").splitlines() if ln.strip()]
     frame = [r for r in frame if r not in DEVELOPMENT]
     strata = {}
@@ -155,7 +247,7 @@ def _dir(cache: Path, repo: str) -> Path:
 
 
 def cmd_fetch(args) -> int:
-    doc = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    doc = json.loads(_paths(args.round)[0].read_text(encoding="utf-8"))
     cache = Path(args.cache)
     cache.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GIT_LFS_SKIP_SMUDGE="1")
@@ -181,10 +273,11 @@ def cmd_fetch(args) -> int:
 def cmd_run(args) -> int:
     from pah.appsec import check
 
-    doc = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    fixture, _, _, results_name = _paths(args.round)
+    doc = json.loads(fixture.read_text(encoding="utf-8"))
     cache = Path(args.cache)
     rev = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False)
-    out = {"name": "appsec-heldout-round1", "date": time.strftime("%Y-%m-%d"), "platform": sys.platform,
+    out = {"name": f"appsec-heldout-round{args.round}", "date": time.strftime("%Y-%m-%d"), "platform": sys.platform,
            "code": code_hash(), "commit": rev.stdout.strip(), "apps": []}
     for stratum, apps in doc["strata"].items():
         for app in apps:
@@ -200,7 +293,9 @@ def cmd_run(args) -> int:
             top = Counter(f.severity for f in rep.findings)
             print(f"{stratum:10} {app['repo'][:44]:44} {rep.verdict:5} {seconds:6}s  "
                   f"{top.get('critical', 0) + top.get('high', 0)} high+, {top.get('medium', 0)} medium")
-    dest = ROOT / "bench" / "results" / f"{out['date']}-appsec-heldout.json"
+    dest = ROOT / "bench" / "results" / results_name.format(date=out["date"])
+    if dest.exists():
+        raise SystemExit(f"{dest} exists: the run is made once")
     dest.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"-> {dest}")
     return 0
@@ -316,16 +411,18 @@ def cmd_publish(args) -> int:
     results = json.loads(Path(args.results).read_text(encoding="utf-8"))
     labels = json.loads(Path(args.labels).read_text(encoding="utf-8"))
     pub_results, pub_labels = publish(results, labels)
+    labels_out = _paths(args.round)[1]
     Path(args.out_results).write_text(json.dumps(pub_results, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    LABELS.write_text(json.dumps(pub_labels, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"-> {args.out_results}\n-> {LABELS}")
+    labels_out.write_text(json.dumps(pub_labels, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"-> {args.out_results}\n-> {labels_out}")
     return 0
 
 
 def cmd_score(args) -> int:
+    fixture_path, labels_path, _, _ = _paths(args.round)
     results = json.loads(Path(args.results).read_text(encoding="utf-8"))
-    labels = json.loads(Path(args.labels).read_text(encoding="utf-8"))
-    fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    labels = json.loads(Path(args.labels or labels_path).read_text(encoding="utf-8"))
+    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
     out = score(results, labels, fixture)
     if args.json:
         print(json.dumps(out, indent=1))
@@ -346,26 +443,25 @@ def cmd_score(args) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("plan", help="pin the sample (names and commits only)")
-    p.add_argument("--frame", required=True, help="file with the code search results, one owner/name per line")
+    def add(name: str, func, help_: str):
+        p = sub.add_parser(name, help=help_)
+        p.add_argument("--round", type=int, choices=sorted(ROUNDS), default=1)
+        p.set_defaults(func=func)
+        return p
+
+    p = add("plan", cmd_plan, "pin the sample (names and commits only)")
+    p.add_argument("--frame", help="round one: file with the code search results, one owner/name per line")
     p.add_argument("--force", action="store_true")
-    p.set_defaults(func=cmd_plan)
-    p = sub.add_parser("fetch", help="fetch each app at its pinned commit")
-    p.add_argument("--cache", required=True)
-    p.set_defaults(func=cmd_fetch)
-    p = sub.add_parser("run", help="pah appsec on each app, once")
-    p.add_argument("--cache", required=True)
-    p.set_defaults(func=cmd_run)
-    p = sub.add_parser("publish", help="write the results and labels safe to publish (AI-built apps pseudonymized)")
+    add("fetch", cmd_fetch, "fetch each app at its pinned commit").add_argument("--cache", required=True)
+    add("run", cmd_run, "pah appsec on each app, once").add_argument("--cache", required=True)
+    p = add("publish", cmd_publish, "write the results and labels safe to publish (AI-built apps pseudonymized)")
     p.add_argument("results", help="the full results (kept outside git)")
     p.add_argument("labels", help="the full labels (kept outside git)")
     p.add_argument("out_results", help="where the published results go")
-    p.set_defaults(func=cmd_publish)
-    p = sub.add_parser("score", help="precision and recall from the labels")
+    p = add("score", cmd_score, "precision and recall from the labels")
     p.add_argument("results")
-    p.add_argument("--labels", default=str(LABELS))
+    p.add_argument("--labels", help="default: the round's published labels")
     p.add_argument("--json", action="store_true")
-    p.set_defaults(func=cmd_score)
     args = ap.parse_args(argv)
     return args.func(args)
 
