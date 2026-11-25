@@ -50,6 +50,7 @@ class Decision:
         self.action = action  # defer | ask | deny
         self.reason = reason
         self.findings = findings if findings is not None else []
+        self.shields: list[dict] = []  # shields that matched, enforced or in report-only (monitor) mode
 
     def stricter(self, action: str, reason: str) -> None:
         order = {"defer": 0, "ask": 1, "deny": 2}
@@ -72,6 +73,20 @@ def _action_for(findings: list) -> str:
 
     sev = worst((f.severity for f in findings), "info")
     return "deny" if rank(sev) >= rank("high") else ("ask" if rank(sev) >= rank("medium") else "defer")
+
+
+def _shields(decision: Decision, kind: str, **subject) -> Decision:
+    """Shields for an incident happening now (pah/shields.py) judge the step last. They can only make the decision
+    stricter, and a broken shields file leaves the rest of the guard as it was."""
+    if not (HOME / "shields.json").exists():
+        return decision
+    try:
+        from .shields import apply
+
+        apply(decision, kind, **subject)
+    except Exception:  # noqa: BLE001 - the guard's own verdict stands whatever a shield does
+        pass
+    return decision
 
 
 # ------------------------------------------------------------------------------------------- commands
@@ -143,6 +158,7 @@ SETUP = re.compile(
     r"|\b(?:llama-cli|llama-server|llama-run)\b|\bollama\s+create\b|\blms\s+load\b", re.I)
 SELF_CONTROL = re.compile(
     r"\b(?:pah|pah_entry\.py)\b[^\n|;&]{0,80}\b(?:trust|untrust|install)\b|\b(?:pah|pah_entry\.py)\b[^\n|;&]{0,40}\bwatch\s+(?:accept|init)\b"
+    r"|\b(?:pah|pah_entry\.py)\b[^\n|;&]{0,40}\bshield\s+(?:add|remove|enforce|monitor|import|trust-key|untrust-key)\b"
     r"|\.personal-anti-hack(?![\w.-])|\bPAH_HOME\s*=|\bclaude\s+plugin\s+(?:disable|uninstall|remove)\b[^\n]{0,80}(?:personal-anti-hack|agent-virus-check|agent-white-hat)", re.I)
 CD_PREFIX = re.compile(r"^\s*(?:cd|pushd|Set-Location)\s+(\"[^\"]+\"|'[^']+'|\S+)\s*(?:&&|;)")
 
@@ -245,7 +261,10 @@ def repo_verdict(root: Path, max_seconds: float = 25.0) -> dict:
 # ------------------------------------------------------------------------------------------- decisions
 
 
-def check_command(command: str, cwd: str = "", *, scan_repos: bool = True, max_seconds: float = 25.0) -> Decision:
+def check_command(command: str, cwd: str = "", *, scan_repos: bool = True, max_seconds: float = 25.0,
+                  record: bool = True) -> Decision:
+    """record=False for a question about a command (pah check-command, the MCP tool) rather than a step an agent
+    takes: shields still answer, but nothing is counted in their report."""
     from .model import Finding
     from .names import R_LOOKALIKE, lookalike, lookalike_severity, names_in_command
     from .hosts import classify_host, urls
@@ -319,7 +338,7 @@ def check_command(command: str, cwd: str = "", *, scan_repos: bool = True, max_s
             elif verdict == "incomplete":
                 decision.stricter("ask", f"agent-white-hat could not scan all of {where} "
                                          f"({'; '.join(entry.get('incomplete') or [])}); review before running it")
-    return decision
+    return _shields(decision, "command", texts=texts, record=record)
 
 
 GLOBAL_AGENT_FILES = re.compile(
@@ -378,7 +397,7 @@ def check_write(path: str, content: str | None = None, cwd: str = "") -> Decisio
         if found:
             decision.findings = found
             decision.stricter("deny", "agent-white-hat: the content hides text or code: " + _summary(found))
-    return decision
+    return _shields(decision, "write", path=norm, content=content or "")
 
 
 def check_read(path: str, cwd: str = "") -> Decision:
@@ -386,7 +405,7 @@ def check_read(path: str, cwd: str = "") -> Decision:
     norm = str(Path(path).expanduser())
     if SECRET_PATHS.search(norm.replace("\\", "/")) or re.search(r"[\\/]\.ssh[\\/]|[\\/]\.gnupg[\\/]|[\\/]\.aws[\\/]", norm):
         decision.stricter("ask", f"agent-white-hat: the agent wants to read a credential store ({norm})")
-    return decision
+    return _shields(decision, "read", path=norm)
 
 
 def check_fetch(url: str) -> Decision:
@@ -399,7 +418,7 @@ def check_fetch(url: str) -> Decision:
     if re.search(r"[?&#/=][A-Za-z0-9+/_=-]{120,}", url):
         decision.stricter("ask", "agent-white-hat: the URL carries a long encoded value, a common way to leak data "
                                  "through a fetch")
-    return decision
+    return _shields(decision, "fetch", url=url)
 
 
 CLONE = re.compile(r"\b(?:git\s+clone|gh\s+repo\s+clone)\s+(.+)")

@@ -1,5 +1,5 @@
 """Command line: pah scan | audit | diff | sweep | protect | quarantine | check-command | hook | watch | checkup |
-incident | install | mcp | rules."""
+incident | install | shield | log | mcp | rules."""
 from __future__ import annotations
 
 import argparse
@@ -87,12 +87,15 @@ def cmd_diff(args) -> int:
 def cmd_check_command(args) -> int:
     from .guard import check_command
 
-    d = check_command(args.command, args.cwd or os.getcwd(), scan_repos=not args.no_scan)
+    d = check_command(args.command, args.cwd or os.getcwd(), scan_repos=not args.no_scan, record=False)
     if args.json:
-        print(json.dumps({"action": d.action, "reason": d.reason,
-                          "findings": [f.to_dict() for f in d.findings]}, indent=2, ensure_ascii=False))
+        print(json.dumps({"action": d.action, "reason": d.reason, "findings": [f.to_dict() for f in d.findings],
+                          "shields": d.shields}, indent=2, ensure_ascii=False))
     else:
         print(f"{d.action.upper()}: {d.reason or 'no objection from agent-white-hat'}")
+        for s in d.shields:
+            if s["mode"] == "monitor":
+                print(f"MONITOR: shield {s['id']} would {s['action']} this once enforced ({s['why']})")
     return {"defer": 0, "ask": 1, "deny": 2}[d.action]
 
 
@@ -108,6 +111,7 @@ def cmd_watch(args) -> int:
     if args.action in ("init", "accept"):
         snap = watch.init()
         n = sum(1 for e in snap["files"].values() if e.get("exists"))
+        _log(f"watch-{args.action}", files=n, folders=len(snap["dirs"]))
         print(f"Baseline saved to {watch.BASELINE}: {n} agent and shell configuration files, "
               f"{len(snap['dirs'])} folders, {len(snap.get('run_keys', {}))} Run keys.")
         return 0
@@ -221,6 +225,7 @@ def cmd_protect(args) -> int:
             return 0
         for line in protect.apply_plan(plan):
             print("  " + line)
+        _log("protect-login-remove" if args.uninstall else "protect-login-add", quarantine=bool(args.quarantine))
         return 0
     try:
         protect.protect(args.interval, do_quarantine=args.quarantine)
@@ -252,15 +257,18 @@ def cmd_quarantine(args) -> int:
         if args.action == "add":
             m = protect.quarantine(args.target, "moved by hand")
             print(f"Quarantined {m['original']} as {m['id']}.")
+            _log("quarantine-add", id=m["id"], path=m["original"])
         elif args.action == "restore":
             m = protect.restore(args.target)
             print(f"Restored {m['original']}.")
+            _log("quarantine-restore", id=m["id"], path=m["original"])
         else:
             if not args.yes:
                 print("Deleting cannot be undone. Run the same command with --yes to delete it.")
                 return 0
             m = protect.delete(args.target)
             print(f"Deleted {m['original']} from quarantine for good.")
+            _log("quarantine-delete", id=m["id"], path=m["original"])
     except (OSError, ValueError, KeyError) as e:
         print(f"Could not {args.action}: {e}")
         return 3
@@ -280,12 +288,14 @@ def cmd_trust(args) -> int:
         return 64
     if args.remove:
         print(f"No longer trusted: {set_trust(path, False)}")
+        _log("trust-remove", path=str(path.resolve()))
         return 0
     if is_trusted(path):
         print(f"Already trusted: {path.resolve()}")
         return 0
     print(f"Trusted: {set_trust(path, True)}\nThe guard still judges commands here but no longer scans this project before "
           "setup. Trust only projects you wrote or have reviewed; undo with `pah trust --remove`.")
+    _log("trust-add", path=str(path.resolve()))
     return 0
 
 
@@ -302,7 +312,13 @@ def cmd_install(args) -> int:
     if unknown:
         print(f"Unknown agent(s): {', '.join(unknown)}. Choose from: {', '.join(AGENT_NAMES)}", file=sys.stderr)
         return 64
-    return apply(build(names, skills=args.skills, mcp=args.mcp, hooks=not args.no_hooks), write=args.yes)
+    plans = build(names, skills=args.skills, mcp=args.mcp, hooks=not args.no_hooks)
+    changed = [str(c.path) for plan in plans for c in plan.changes]
+    code = apply(plans, write=args.yes)
+    if args.yes and changed and code == 0:
+        _log("install", agents=names, skills=bool(args.skills), mcp=bool(args.mcp), hooks=not args.no_hooks,
+             files=changed)
+    return code
 
 
 def cmd_mcp(args) -> int:
@@ -416,6 +432,220 @@ def cmd_incident(args) -> int:
     for inc in [i for i in chosen if any(h[0] is i for h in hits)]:
         print(incidents.text(inc, located=[(t, p) for i, t, p in hits if i is inc]))
         print()
+    return 2
+
+
+def _log(action: str, **detail) -> None:
+    """Record a change to the user's protection in the protection log (pah/ledger.py)."""
+    from . import ledger
+
+    try:
+        ledger.record(action, **detail)
+    except (OSError, RuntimeError) as err:
+        print(f"pah: the change was made, but the protection log could not record it: {err}", file=sys.stderr)
+
+
+def _when(text: str) -> str:
+    return str(text).replace("T", " ").replace("Z", " UTC")
+
+
+def _read_bundle(file: str) -> dict:
+    from .shields import ShieldError
+
+    try:
+        return json.loads(Path(file).read_text(encoding="utf-8"))
+    except ValueError as err:
+        raise ShieldError(f"{file} is not JSON ({err})") from None
+
+
+def _shield_add(args, shields) -> int:
+    from datetime import timedelta
+
+    match = {kind: values for kind, values in (("package", args.package), ("command", args.command),
+                                                ("host", args.host), ("path", args.path)) if values}
+    if not 1 <= args.days <= shields.MAX_DAYS:
+        raise shields.ShieldError(f"--days is 1 to {shields.MAX_DAYS}: a shield bridges to a fix, it is not one")
+    sid = args.id or f"local-{shields._now():%Y%m%d}-{os.urandom(2).hex()}"
+    title = args.title or ", ".join(v for values in match.values() for v in values)[:120]
+    s = shields.add({"id": sid, "title": title, "reason": args.reason, "ref": args.ref or "", "match": match,
+                     "action": args.effect, "mode": "enforce" if args.enforce else "monitor",
+                     "expires": shields.fmt_time(shields._now() + timedelta(days=args.days))})
+    if s["mode"] == "monitor":
+        print(f"Added shield {s['id']} in monitor mode until {_when(s['expires'])}. It records what it would "
+              f"{s['action']} and changes nothing yet: `pah shield report {s['id']}` shows what it caught, and "
+              f"`pah shield enforce {s['id']}` makes it {s['action']}.")
+    else:
+        print(f"Added shield {s['id']}, enforced until {_when(s['expires'])}: the guard will {s['action']} what it "
+              f"matches. `pah shield monitor {s['id']}` switches it back to report-only.")
+    return 0
+
+
+def _shield_list(args, shields) -> int:
+    from collections import Counter
+
+    shields.note_expired()
+    items = shields.load()
+    counts = Counter(h.get("shield") for h in shields.hits())
+    problems = shields.drift()
+    if args.json:
+        print(json.dumps({"shields": [dict(s, expired=shields.expired(s), hits=counts.get(s["id"], 0)) for s in items],
+                          "problems": problems}, indent=1, ensure_ascii=False))
+        return 2 if problems else 0
+    if not items:
+        print("No shields. `pah shield add` adds one for an incident happening now; `pah shield import` adds a "
+              "signed bundle.")
+    for s in items:
+        state = "expired" if shields.expired(s) else s.get("mode", "?")
+        print(f"{s.get('id', '?'):<30} {state:<8} {s.get('action', '?'):<5} until {_when(s.get('expires', ''))}  "
+              f"{counts.get(s.get('id'), 0)} matches")
+        print(f"    {s.get('title', '')}  [{s.get('source', '')}]")
+        for kind, values in (s.get("match") or {}).items():
+            print(f"    {kind}: {', '.join(values)[:150]}")
+    if problems:
+        print("\nThe protection log disagrees with the shields on disk:")
+        for line in problems:
+            print("  - " + line)
+        return 2
+    return 0
+
+
+def _shield_report(args, shields) -> int:
+    rows = shields.report(args.id)
+    if args.json:
+        print(json.dumps(rows, indent=1, ensure_ascii=False))
+        return 0
+    if not rows:
+        print("No such shield." if args.id else "No shields yet.")
+        return 64 if args.id else 0
+    for r in rows:
+        state = "expired" if r["expired"] else r["mode"]
+        print(f"{r['id']} ({state}, {r['action']}): {r['hits']} matches; {r['new']} of them the guard alone would "
+              f"have let through" + (f"; last {_when(r['last'])}" if r["last"] else ""))
+        for e in r["examples"]:
+            print(f"    {_when(e['t'])}  {e['kind']:<7} guard alone: {e['before']:<5}  {e['subject'][:110]}")
+    print("\nRead each match before enforcing: a legitimate step among them means the shield is too broad.")
+    return 0
+
+
+def _shield_import(args, shields) -> int:
+    imported = shields.import_bundle(_read_bundle(args.file), allow_unsigned=args.unsigned, enforce=args.enforce)
+    if not imported:
+        print("Nothing imported: every shield in the bundle has expired.")
+        return 0
+    for s in imported:
+        print(f"Imported shield {s['id']} ({s['mode']}, {s['action']}) until {_when(s['expires'])}: {s['title']}")
+    if not args.enforce:
+        print("They record what they would stop and change nothing yet; `pah shield report` shows what they caught "
+              "and `pah shield enforce <id>` turns one on.")
+    return 0
+
+
+def _shield_verify(args, shields) -> int:
+    bundle = _read_bundle(args.file)
+    key = shields.verify_bundle(bundle)
+    print(f"Signed by key {key['id']} ({key.get('name', '')}{', built in' if key.get('builtin') else ''}); "
+          f"{len(bundle['shields'])} shield(s) from {bundle.get('publisher')}, issued {bundle.get('issued', '?')}.")
+    return 0
+
+
+def _shield_sign(args, shields) -> int:
+    signed = shields.sign_bundle(_read_bundle(args.file), shields.read_secret(args.key))
+    out = Path(args.output or args.file)
+    out.write_text(json.dumps(signed, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Signed {len(signed['shields'])} shield(s) with key {signed['signature']['key']}: {out}")
+    return 0
+
+
+def _shield_keygen(args, shields) -> int:
+    info = shields.keygen(args.out)
+    print(f"Key {info['id']}\n  secret: {info['secret_file']} (keep it to yourself; it signs your bundles)\n"
+          f"  public: {info['public_file']} (give it to people who import your bundles)")
+    return 0
+
+
+def _shield_keys(args, shields) -> int:
+    keys = shields.trusted_keys()
+    if not keys:
+        print("No trusted signing keys. `pah shield trust-key <file.pub> --name <owner>` adds one.")
+    for k in keys:
+        print(f"{k.get('id')}  {k.get('name', '')}{'  (built in)' if k.get('builtin') else ''}")
+    return 0
+
+
+def _shield_trust_key(args, shields) -> int:
+    k = shields.trust_key(args.key, args.name)
+    print(f"Trusted key {k['id']} ({k['name']}): bundles it signs can be imported. Undo with "
+          f"`pah shield untrust-key {k['id']}`.")
+    return 0
+
+
+def _shield_untrust_key(args, shields) -> int:
+    shields.untrust_key(args.id)
+    print(f"No longer trusted: {args.id}. Shields already imported stay until you remove them.")
+    return 0
+
+
+def _shield_mode(args, shields) -> int:
+    s = shields.set_mode(args.id, "enforce" if args.action == "enforce" else "monitor")
+    print(f"Shield {s['id']} is now " + ("enforced: the guard will " + s["action"] + " what it matches."
+                                          if s["mode"] == "enforce" else "report-only: it records what it would stop."))
+    return 0
+
+
+def _shield_remove(args, shields) -> int:
+    if args.expired:
+        gone = shields.remove_expired()
+        print(f"Removed {len(gone)} expired shield(s)" + (": " + ", ".join(gone) if gone else "."))
+        return 0
+    if not args.id:
+        print("pah shield remove needs a shield id, or --expired", file=sys.stderr)
+        return 64
+    shields.remove(args.id)
+    print(f"Removed shield {args.id}.")
+    return 0
+
+
+SHIELD_ACTIONS = {"add": _shield_add, "list": _shield_list, "report": _shield_report, "import": _shield_import,
+                  "verify": _shield_verify, "sign": _shield_sign, "keygen": _shield_keygen, "keys": _shield_keys,
+                  "trust-key": _shield_trust_key, "untrust-key": _shield_untrust_key, "enforce": _shield_mode,
+                  "monitor": _shield_mode, "remove": _shield_remove}
+
+
+def cmd_shield(args) -> int:
+    from . import shields
+
+    try:
+        return SHIELD_ACTIONS[args.action](args, shields)
+    except shields.ShieldError as err:
+        print(f"pah: {err}", file=sys.stderr)
+        return 2 if args.action == "verify" else 64
+
+
+def cmd_log(args) -> int:
+    from . import ledger, shields
+
+    result = ledger.verify(anchor=args.anchor)
+    problems = result["problems"] + shields.drift()
+    shown = ledger.entries()[-args.limit:] if args.action == "show" else []
+    if args.json:
+        print(json.dumps(dict(result, ok=not problems, problems=problems, entries=shown), indent=1, ensure_ascii=False))
+        return 2 if problems else 0
+    for e in shown:
+        detail = ", ".join(f"{k}={v}" for k, v in (e.get("detail") or {}).items() if k not in ("sha", "public"))
+        print(f"{e.get('n', '?'):>5}  {_when(e.get('t', ''))}  {str(e.get('action', '')):<20} {detail[:120]}")
+    if shown:
+        print()
+    if not problems:
+        print(f"Protection log OK: {result['count']} entries, head {result['head'] or '(empty)'}")
+        if args.action == "show" and result["head"]:
+            print("Note the head somewhere off this computer; `pah log verify --anchor <head>` later shows whether the "
+                  "history before it was rewritten.")
+        return 0
+    print("The protection log does not hold together:")
+    for line in problems:
+        print("  - " + line)
+    print("Something other than pah changed the guard's state. Treat the shields, trusted projects and configuration "
+          "baseline as suspect: review them (pah shield list, pah trust --list, pah watch check) and run pah checkup.")
     return 2
 
 
@@ -571,6 +801,59 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--limit", type=int, default=20)
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_session)
+
+    p = sub.add_parser("shield", help="narrow, expiring guard rules for an incident happening now: report-only first, "
+                       "then enforced; signed bundles")
+    ss = p.add_subparsers(dest="action", required=True)
+    q = ss.add_parser("add", help="add a shield (report-only unless --enforce)")
+    q.add_argument("--package", action="append", help="npm:name@version or pypi:name@version (no version: any)")
+    q.add_argument("--command", action="append", help="regular expression for commands the agent runs")
+    q.add_argument("--host", action="append", help="host name a command or fetch reaches; its subdomains match too")
+    q.add_argument("--path", action="append", help="glob for files the agent writes or reads (*/.vscode/tasks.json)")
+    q.add_argument("--reason", required=True, help="why: shown to the agent and to you")
+    q.add_argument("--title")
+    q.add_argument("--ref", help="https:// link to the advisory")
+    q.add_argument("--id")
+    q.add_argument("--action", dest="effect", choices=("deny", "ask"), default="deny")
+    q.add_argument("--days", type=int, default=14, help="how long it lasts (at most 90)")
+    q.add_argument("--enforce", action="store_true", help="act at once instead of recording first")
+    q = ss.add_parser("list", help="the shields, their mode, expiry and matches")
+    q.add_argument("--json", action="store_true")
+    q = ss.add_parser("report", help="what each shield caught, and how much of it the guard alone would have allowed")
+    q.add_argument("id", nargs="?")
+    q.add_argument("--json", action="store_true")
+    for name, text in (("enforce", "make a shield act"), ("monitor", "make a shield report-only again")):
+        q = ss.add_parser(name, help=text)
+        q.add_argument("id")
+    q = ss.add_parser("remove", help="remove a shield, or every expired one")
+    q.add_argument("id", nargs="?")
+    q.add_argument("--expired", action="store_true")
+    q = ss.add_parser("import", help="add a signed bundle of shields (report-only unless --enforce)")
+    q.add_argument("file")
+    q.add_argument("--unsigned", action="store_true", help="accept a bundle without a signature (only one you wrote)")
+    q.add_argument("--enforce", action="store_true")
+    q = ss.add_parser("verify", help="check a bundle's signature against the keys you trust")
+    q.add_argument("file")
+    q = ss.add_parser("sign", help="sign a bundle with your secret key (publishers)")
+    q.add_argument("file")
+    q.add_argument("--key", required=True, help="secret key file from `pah shield keygen`")
+    q.add_argument("-o", "--output", help="write the signed bundle here (default: in place)")
+    q = ss.add_parser("keygen", help="make a signing key pair: OUT and OUT.pub (publishers)")
+    q.add_argument("out")
+    ss.add_parser("keys", help="the signing keys whose bundles you accept")
+    q = ss.add_parser("trust-key", help="accept bundles signed by this public key")
+    q.add_argument("key", help="a .pub file or 64 hex digits")
+    q.add_argument("--name", required=True, help="whose key it is")
+    q = ss.add_parser("untrust-key", help="stop accepting bundles signed by this key")
+    q.add_argument("id")
+    p.set_defaults(func=cmd_shield)
+
+    p = sub.add_parser("log", help="the protection log: every change to what the guard allows, hash-chained")
+    p.add_argument("action", nargs="?", choices=("show", "verify"), default="show")
+    p.add_argument("--anchor", help="a head noted earlier: it must still be in the chain")
+    p.add_argument("--limit", type=int, default=20)
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_log)
 
     p = sub.add_parser("mcp", help="run as an MCP server over stdio (scan, check_command, checkup, watch_check, incident)")
     p.set_defaults(func=cmd_mcp)

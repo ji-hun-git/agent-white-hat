@@ -62,7 +62,7 @@ def call_tool(name: str, args: dict) -> tuple[str, bool]:
     if name == "check_command":
         from .guard import check_command
 
-        d = check_command(str(args.get("command", "")), str(args.get("cwd") or ""))
+        d = check_command(str(args.get("command", "")), str(args.get("cwd") or ""), record=False)
         return json.dumps({"action": d.action, "reason": d.reason}, ensure_ascii=False), False
     if name == "checkup":
         from .checkup import run

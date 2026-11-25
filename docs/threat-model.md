@@ -38,6 +38,11 @@ tokens, which infostealers now collect on purpose.
   them; CI pipelines run on the CI provider's machines; container build steps run inside the image. Their findings are
   kept but do not block, except disguised binaries, bytecode without source, links and archive tricks, which block
   wherever they are (the xz-utils backdoor lived in test fixtures).
+- **The guard's own state is the user's.** The agent may not write the guard's folder, and commands that trust a
+  project, accept a baseline, install hooks or add, enforce, remove or import shields are asked about. Every such change
+  goes into a hash-chained protection log; `pah log verify` shows an entry edited, removed or cut off, and shields or
+  signing keys changed by hand. Shield bundles are signed with Ed25519 and refused unless the user trusts the key, and
+  a shield can only make the guard stricter ([shields](shields.md)).
 
 ## Where it stops
 
@@ -51,6 +56,8 @@ tokens, which infostealers now collect on purpose.
 - **Output checks look for instructions, not intent.** Injected text that reads like ordinary documentation can pass;
   the session rules then still require approval for sends, setting changes and runs of downloaded files only after
   an output was flagged.
+- **The protection log is a file, not a TPM.** Someone with the user's file permissions can rewrite the whole history
+  and its head consistently; only a head noted somewhere else (`pah log verify --anchor`) shows that.
 - **Rules are public.** An attacker can test against them, as with every open scanner. New techniques need new rules;
   report bypasses (see SECURITY.md).
 - **Severity is a judgment.** Rules are tuned to block what runs on its own and to stay quiet on ordinary code; a

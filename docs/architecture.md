@@ -35,8 +35,9 @@ instead of a target (checkup.py, incidents.py, flows.py). Model files are read i
 ```
 hook payload  each agent's own format, read into one ToolEvent (agents.py; hooks.py for Claude Code)
    |
-judge alone   the command, write, read or fetch on its own (guard.py, with patterns.py), and a scan of the
-   |          project before setup or a model load
+judge alone   the command, write, read or fetch on its own (guard.py, with patterns.py), a scan of the
+   |          project before setup or a model load, and last the active shields (shields.py), which can only
+   |          make the answer stricter and, in monitor mode, only record
 judge in its  the step reduced to tags (credential read, download, send, run, persistence, tamper, ...) and
 session       checked against the session's earlier steps (behavior.py, session.py)
    |
@@ -69,6 +70,8 @@ ran            and marks the session, so its later sensitive steps need the user
 | `checkup.py`, `watch.py`, `protect.py`, `av.py` | The computer: exposures and traces, configuration baseline, real-time protection and quarantine, the local antivirus engine |
 | `guard.py`, `hooks.py`, `install.py`, `agents.py` | The guard in each agent's hook protocol, and installing it |
 | `behavior.py`, `session.py` | Steps judged by the steps before them (PAH-B rules), and the per-session record behind `pah session` |
+| `shields.py`, `ed25519.py`, `data/shield-keys.json` | Shields for an incident happening now: matching, monitor and enforce, expiry, signed bundles (Ed25519 in pure Python) and the keys shipped with pah ([shields](shields.md)) |
+| `ledger.py` | The protection log: every change to what the guard allows, hash-chained, and its verification |
 | `outputs.py` | What tools return: injected instructions, hidden text, exfiltration links, terminal sequences (PAH-O rules) |
 | `models.py` | Model files read without loading them: pickles, PyTorch, Keras, GGUF, NumPy, remote code (PAH-M rules) |
 | `intel.py`, `names.py`, `lockfiles.py`, `review.py` | Registry and OSV lookups (opt-in), look-alike names, pinned versions, the model review (opt-in) |

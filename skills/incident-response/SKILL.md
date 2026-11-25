@@ -28,6 +28,7 @@ Order matters: stop the damage, find out what ran, take back the accounts, remov
   downloads, data sent out, settings changed) and the chain behind each alert. Records are kept for a week.
 - Audit it with the malware-audit skill (`pah audit <path or URL>`) to learn what it collects, where it sends data and what it leaves behind.
 - Check this computer: `pah checkup` (keys saved in plain files, risky agent settings, planted instruction files, `curl | sh` and ClickFix traces, known malware traces, outdated agents) and `pah watch check` (changes to agent and shell configuration since the baseline). Persistence locations to inspect by hand are in [persistence](references/persistence.md).
+- Check that the guard itself was not changed: `pah log verify` recomputes the protection log and compares the shields and trusted keys on disk with it. If it does not hold together, something other than the user changed what the guard allows; treat trusted projects, shields and the baseline as suspect.
 
 ## 3. Take back the accounts (highest value first)
 
@@ -53,6 +54,7 @@ The full checklist with where each setting lives is in [rotation](references/rot
 ## 5. Harden
 
 - `pah install` for the user's agents (the guard that stops setup commands in repositories that fail a scan), and `pah watch init` once the machine is clean.
+- While the fix for what got in is not out yet (the hijacked version is still the newest, the collection host still answers), suggest a shield and let the user run it: `pah shield add --package npm:<name>@<version>` (or `--host`, `--command`, `--path`) `--reason "<what happened>" --days 14`. It records what it would stop until they run `pah shield enforce <id>`, or acts at once with `--enforce` when the attack is still spreading ([shields](../../docs/shields.md)).
 - Passkeys or app-based 2FA everywhere; fine-grained, expiring tokens; no long-lived keys in plain files (`pah checkup` lists them).
 - Run untrusted code only in a disposable VM, container or cloud dev environment, never with approvals switched off on the main machine.
 

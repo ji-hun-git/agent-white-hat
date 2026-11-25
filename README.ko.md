@@ -139,6 +139,7 @@ repos:
 | **보안 스킬**: 어떤 에이전트에서든 | Agent Skills 4개: 일상 규칙, 전체 **악성코드 감사** 절차(실행 표면, 정적 디코딩, 행위 분류, 출처 확인, 판정), 악용 가능한 버그와 취약한 의존성을 찾는 **보안 리뷰**(LLM 기능의 프롬프트 인젝션·과도한 권한 포함), 이미 실행돼 버렸을 때의 **사고 대응**. |
 | **`pah sweep`**, **`pah protect`**, **`pah quarantine`** | 백신이 하는 일. `pah sweep`은 다운로드·바탕화면, 코드 폴더의 모든 프로젝트, 설치된 에이전트 스킬·플러그인·확장, 에디터 확장을 하나씩 검사하고, checkup과 운영체제 기본 엔진을 더하고, 바뀌지 않은 것은 기억해 둡니다. `pah protect`는 들어오는 즉시 같은 일을 하고 로그인할 때 시작할 수 있습니다. 막힌 항목은 격리할 수 있습니다(다운로드·확장·스킬은 통째로, 프로젝트는 페이로드 파일만). `pah quarantine restore`로 되돌립니다. |
 | **`pah watch`** | 모든 에이전트의 설정·훅·MCP 서버·API 주소·승인 모드(Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, Claude Desktop, VS Code, Windsurf)와 셸 프로필, git·npm 설정, 시작 프로그램, LaunchAgents, Run 키의 기준선을 만들고 무엇이 바뀌었는지 보여 줍니다. 비밀 값은 해시로만 저장합니다. |
+| **`pah shield`**, **`pah log`** | 지금 진행 중인 사고를 위한 실드입니다. OpenAI와 Cisco의 [Shirudo](https://openai.com/index/introducing-shirudo/)에서 가져온 생각으로, 탈취된 패키지 버전·호스트·명령·경로 하나만 겨누는 좁은 규칙입니다. **막기 전에 먼저 지켜보고**(enforce 전까지는 기록만 하며, 무엇을 막았을지 보고서로 보여 줍니다), 90일 안에 **스스로 만료**되며, **서명된 묶음**(Ed25519)으로 받을 수 있고 신뢰한 키가 아니면 거부합니다. 실드는 가드를 더 엄격하게만 만듭니다. 가드가 허용하는 범위를 바꾸는 모든 변경(실드, 신뢰한 프로젝트, 기준선, 설치, 격리)은 **해시 체인으로 이어진 보호 기록**에 남고, `pah log verify`는 고쳐지거나 지워지거나 잘려 나간 항목과 손으로 바꾼 실드를 보여 줍니다([docs/shields.md](docs/shields.md)). |
 | **`pah checkup`** | 이 컴퓨터가 이미 노출됐는지: 평문 파일에 저장된 API 키, 위험한 에이전트 설정, 다운로드·바탕화면에 심어진 `AGENTS.md`/`CLAUDE.md`, 셸·Win+R 기록의 `curl \| sh`와 ClickFix 흔적, AI 도구 사용자를 노린 캠페인의 알려진 흔적, 알려진 취약점이 고쳐지지 않은 에이전트와 git. 키 값은 절대 보여 주지 않습니다. |
 | **`pah incident`** | AI 에이전트를 쓰는 사람을 노린 실제 공격 39건(2025~2026년: 웜, 악성 패키지·확장·스킬·MCP 서버, CI 탈취, 정보 탈취 악성코드): 무슨 일이 있었는지, 어떤 규칙과 함정 레포가 잡는지, 컴퓨터에 남기는 파일, 그리고 **해야 할 일을 순서대로**. 순서가 중요합니다: 훔친 토큰을 폐기하면 홈 폴더를 지우는 웜이 여럿이라, 그 상주 장치부터 없애야 합니다. `pah incident check`는 흔적을 찾고(`pah checkup`도 찾습니다), `pah incident show <이름>`은 대응 절차를 보여 주며, MCP 서버도 같은 조회에 답합니다([docs/incidents.md](docs/incidents.md)). |
 | **`pah diff OLD NEW`** | 패키지·레포지토리·확장·스킬의 새 버전이 이전 버전에 없던 일을 하는지: 추가된 파일, **새로 생긴 능력**(네트워크, 자격 증명, 프로그램 실행, 디코딩, 설치 훅), 새 의존성, 새 발견. `--source`를 주면 배포된 패키지에는 있고 같은 태그의 소스에는 없는 것을 찾습니다. xz-utils 백도어처럼 배포 시점에 끼워 넣은 코드가 있는 곳입니다. 폴더와 압축 파일(.tgz, .whl, .zip, .vsix, .crate, .gem) 모두 됩니다. |
@@ -547,6 +548,9 @@ Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설
 | `pah quarantine list \| restore ID \| delete ID --yes \| add 경로` | 격리 목록, 되돌리기, 삭제 |
 | `pah check-command "<명령>"` | 명령 하나에 대한 가드의 판정 (`--cwd`, `--json`, `--no-scan`) |
 | `pah watch init \| check \| accept` | 에이전트·셸 설정의 기준선과 변경 |
+| `pah shield add \| list \| report \| enforce \| monitor \| remove` | 지금 진행 중인 사고를 위한 실드: `--package npm:name@1.2.3`, `--command REGEX`, `--host`, `--path`, `--reason`, `--days`(최대 90), `--action deny\|ask`. `enforce`(또는 `--enforce`) 전까지는 기록만 합니다([docs/shields.md](docs/shields.md)) |
+| `pah shield import \| verify \| sign \| keygen \| keys \| trust-key \| untrust-key` | 서명된 실드 묶음: 신뢰한 키로 서명된 것만 가져오며(직접 만든 것은 `--unsigned`), `--enforce`가 없으면 기록만 합니다 |
+| `pah log [show \| verify] [--anchor HEAD]` | 보호 기록: 가드가 허용하는 범위를 바꾼 모든 변경을 해시 체인으로 남깁니다. 앞뒤가 맞지 않으면 종료 코드 2 |
 | `pah checkup` | 이 컴퓨터: 파일 속 키, 위험한 설정, 심어진 지시 파일, 흔적, 오래된 에이전트 |
 | `pah trust [폴더] [--remove] [--list]` | 직접 만들었거나 검토한 프로젝트: 명령 판정은 계속하되 설치 전 검사는 하지 않습니다. 사용자만 할 수 있고, 에이전트가 시도하면 가드가 사용자에게 묻습니다 |
 | `pah install [에이전트...] [--all] [--skills] [--mcp] [--yes]` | `claude-code codex gemini antigravity cursor copilot devin kiro cline`의 훅(기본: 찾은 에이전트), 스킬 4개, MCP 서버. `--yes` 없이는 바뀔 내용만 보여 줍니다 |

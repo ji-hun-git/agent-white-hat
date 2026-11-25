@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+**Shields for an incident happening now, and a protection log.** After Shirudo (OpenAI and Cisco, November 2026),
+which shields a running service from one exploit path until its patch ships, `pah shield` adds narrow guard rules for
+the days between an advisory and its fix: a package version an agent would install (`npm:@ctrl/tinycolor@4.1.1`; an
+install without an exact version counts, since it may resolve to it), a command pattern, a host and its subdomains, or
+a path the agent writes or reads. A shield starts in monitor mode: it records what it would have denied or asked
+about, with what the guard alone decided, and changes nothing until the user runs `pah shield enforce`;
+`pah shield report` shows how many of its matches the guard would otherwise have let through, and
+`pah check-command` names monitor shields without counting the question. Every shield expires, after 14 days unless
+told otherwise and never more than 90. Shields judge commands once their disguises are undone, and `package.json` and
+`requirements*.txt` the agent writes. A shield can only make the guard stricter, a broken `shields.json` leaves the
+rest of the guard as it was, and shields that would match everything (a pattern matching an empty command, a path of
+wildcards) are refused. Bundles of shields from a publisher are signed with Ed25519 (`pah shield keygen`, `sign`) and
+imported only when a key the user trusts signed them (`trust-key`, `verify`, `import`); they arrive in monitor mode
+whatever the publisher wrote. The standard library cannot verify signatures, so `pah/ed25519.py` implements RFC 8032
+in pure Python, tested against the RFC's vectors and, both ways, against OpenSSL 3.5. Every change to what the guard
+allows now goes into `protection-log.jsonl`, each entry chained to the one before by SHA-256: shields and keys, `pah
+trust`, `pah watch init` and `accept`, `pah install --yes`, quarantine, and protection at login. `pah log verify` shows
+an entry edited, removed or reordered, a tail cut off and a deleted log, and compares the shields and keys on disk with
+what the log says they should be; `--anchor` checks against a head noted somewhere else, which is what shows a history
+rewritten whole. The guard asks before an agent runs the shield commands that change protection
+([docs/shields.md](docs/shields.md)). Scanning is untouched: no rule changed, and the scan never loads the guard or
+shields, so round three of the held-out evaluation gets the same verdicts on either side of this change (the code hash
+its results record covers every file in `pah/`, so that hash will differ). TrapRepo, the fuzzer and both drills give
+the same verdicts as before.
+
 **A held-out test on real malware.** `bench/independent.py` measures the rules on software they were never tuned
 on: a random draw of 1,423 malicious samples from Datadog's malicious software packages dataset (npm and PyPI packages
 published to attack, agent skills, IDE extensions and hijacked releases of real packages) and the latest release of
