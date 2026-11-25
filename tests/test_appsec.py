@@ -1201,6 +1201,13 @@ class GeneralTest(Case):
                      "dist/app.js": "el.innerHTML = data.html;\n"}, at_least="low")
         self.assertEqual(got, {})
 
+    def test_evidence_never_carries_a_key(self):
+        key = fake_key("sk-proj-", 64, seed=11)
+        rep = run({"lib/ai.ts": f'export const ai = new OpenAI({{ dangerouslyAllowBrowser: true, apiKey: "{key}" }});\n'})
+        self.assertEqual({f.rule for f in rep.findings}, {"PAH-W004", "PAH-W013"})
+        for f in rep.findings:
+            self.assertNotIn(key[8:30], f.evidence + f.message, f)
+
     def test_skips_built_bundles(self):
         got = found({"static/js/index.k-9rUdPI.js": "el.innerHTML = data.html;\n",
                      "public/app.min.js": "el.innerHTML = data.html;\n",

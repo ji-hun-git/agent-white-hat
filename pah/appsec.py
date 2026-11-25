@@ -236,7 +236,7 @@ class Out:
         line = src.line(pos)
         key = (rule_id, src.rel, line)
         if evidence is None:
-            evidence = src.line_text(pos).strip() if pos >= 0 else ""
+            evidence = _mask(src.line_text(pos).strip()) if pos >= 0 else ""
         finding = Finding(rule_id, severity, src.rel, line, message, clip(evidence, 160), "app")
         if key in self._seen:  # one finding per rule and line: the most severe
             for i, old in enumerate(self.findings):
@@ -1285,6 +1285,19 @@ def _secrets(text: str) -> list[tuple[int, str, str]]:
     for m in PRIVATE_KEY.finditer(text):
         found.append((m.start(), "private key", "----"))
     return found
+
+
+LONG_TOKEN = re.compile(r"[A-Za-z0-9_\-+/=.]{32,}")
+
+
+def _mask(line: str) -> str:
+    """A line of code safe to print: every key-shaped value cut to its first four characters."""
+    def cut(m: re.Match) -> str:
+        return m.group(0)[:4] + "…"
+    for _, rx in _key_patterns():
+        line = rx.sub(cut, line)
+    line = JWT.sub(cut, line)
+    return LONG_TOKEN.sub(lambda m: cut(m) if _entropy(m.group(0)) >= 3.5 else m.group(0), line)
 
 
 def _browser_keys(src: Src, out: Out) -> None:

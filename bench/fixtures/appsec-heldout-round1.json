@@ -1,0 +1,1540 @@
+{
+ "kind": "appsec-heldout-round1",
+ "drawn": "2026-11-25",
+ "seed": "pah-appsec-heldout-round1-2026-11-25",
+ "code_at_draw": "fd86626070a30f7d7533d9add77e5f4e5a37b730",
+ "code_hash_at_draw": "6973d10cd5db",
+ "development_set": [
+  "nextjs/saas-starter",
+  "vercel/ai-chatbot",
+  "mckaywrigley/chatbot-ui",
+  "shadcn-ui/taxonomy",
+  "vercel/nextjs-subscription-payments",
+  "fastapi/full-stack-fastapi-template",
+  "gothinkster/node-express-realworld-example-app",
+  "gothinkster/django-realworld-example-app",
+  "juice-shop/juice-shop",
+  "OWASP/NodeGoat",
+  "appsecco/dvna",
+  "adeyosemanputra/pygoat"
+ ],
+ "strata": {
+  "vulnerable": [
+   {
+    "repo": "erev0s/VAmPI",
+    "commit": "f16052dce83f05847133ec98f01c5193a41de7d8"
+   },
+   {
+    "repo": "snoopysecurity/dvws-node",
+    "commit": "4221c04f132960a0ccca4bf5aa5f3a9f53172778"
+   },
+   {
+    "repo": "cr0hn/vulnerable-node",
+    "commit": "d68f2a3c9277ece2c2feb9976052033bdecd7fbe"
+   },
+   {
+    "repo": "we45/Vulnerable-Flask-App",
+    "commit": "b6a4f97afd466e83e1f60781494252dec1c37039"
+   },
+   {
+    "repo": "anxolerd/dvpwa",
+    "commit": "4a8f4a43fafcc1b304f1b97d0f0a8dea755a7756"
+   },
+   {
+    "repo": "payatu/Tiredful-API",
+    "commit": "0134124496b3c4f1b969e51a24fd8a059104fb98"
+   },
+   {
+    "repo": "stamparm/DSVW",
+    "commit": "9ca3c9acf3defa0a6148d40e5f5cebeb5dcbb908"
+   },
+   {
+    "repo": "dolevf/Damn-Vulnerable-GraphQL-Application",
+    "commit": "a961308c02d1fb462b192681c336b0739e432da7"
+   },
+   {
+    "repo": "OWASP/crAPI",
+    "commit": "b5fc307f3e5f875809b095b771108ef342a33724"
+   }
+  ],
+  "well_built": [
+   {
+    "repo": "umami-software/umami",
+    "commit": "dbb8d606fbd4e99220fb83bcb4abad3e0f97f42a"
+   },
+   {
+    "repo": "boxyhq/saas-starter-kit",
+    "commit": "abc9b686823cbfb4973c79bc36fea37a3244be6c"
+   },
+   {
+    "repo": "ixartz/SaaS-Boilerplate",
+    "commit": "e3952a7ed5b0ef172ac4363c4644b8c334d1094b"
+   },
+   {
+    "repo": "sahat/hackathon-starter",
+    "commit": "42fb2beaa517e15f888c50eeedcead9eeb08afcd"
+   },
+   {
+    "repo": "hagopj13/node-express-boilerplate",
+    "commit": "179ae84efec61b14206d0305d941daed6c6d07f9"
+   },
+   {
+    "repo": "danielfsousa/express-rest-boilerplate",
+    "commit": "b8bed6d7cfce3cf2ef89ec1b5e47b52dfc50e874"
+   },
+   {
+    "repo": "miguelgrinberg/microblog",
+    "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752"
+   },
+   {
+    "repo": "nsidnev/fastapi-realworld-example-app",
+    "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c"
+   },
+   {
+    "repo": "HackSoftware/Django-Styleguide-Example",
+    "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e"
+   },
+   {
+    "repo": "Razikus/supabase-nextjs-template",
+    "commit": "d519bf18d747bc0956346910414db68adb5a45bf"
+   }
+  ],
+  "ai_built": [
+   {
+    "repo": "msacks2692-sudo/unmute-every-voice",
+    "commit": "b824f1069aaee2397163b7b376f8ad680e389ce8"
+   },
+   {
+    "repo": "lulubun/devlog-hub",
+    "commit": "213bb6cec3db83b916971478d8fe2cbda95adade"
+   },
+   {
+    "repo": "forsureclub/forsureclub",
+    "commit": "b4cfb50397acd3c4f9fb9bae5632758291e09896"
+   },
+   {
+    "repo": "ThomasPolesel/App-de-Controle-Financeiro",
+    "commit": "ee76a54d562154252c67d5fea97bf794fdcbf4bb"
+   },
+   {
+    "repo": "kartik7raturi/ketopia",
+    "commit": "6f1d3d17939a9ca33dc42f1f4234691ed8e1eddf"
+   },
+   {
+    "repo": "patel239-bit/repo-ai-44",
+    "commit": "fc54440d5a0f56d7eb9ea86695815708302159a7"
+   },
+   {
+    "repo": "lgpecin/PecinDesign-Website",
+    "commit": "9cba2b4e76d757bfbe23b72cd90b5ad9ab558c42"
+   },
+   {
+    "repo": "axelrada8/baseball-stats-central",
+    "commit": "def8bda0446d2046e3c445c4d62a90b5564f8e88"
+   },
+   {
+    "repo": "pankajsir914/games-website",
+    "commit": "6f93f5262188cb7e6cdafa07169fcd6eb39f69af"
+   },
+   {
+    "repo": "ewuket/khrate-app",
+    "commit": "17837c2a94e001d11f819bef279302e763911e14"
+   },
+   {
+    "repo": "Maksudur7/Approve-nexus",
+    "commit": "457d858901d61549d10264bd058d11f11c767138"
+   },
+   {
+    "repo": "Aftab48/verified-learning",
+    "commit": "1e5e34a06a9992bc3f58f2c25613e0511101bd38"
+   },
+   {
+    "repo": "aarjjun/EventSync-test",
+    "commit": "740c6cf0d643d38dfc5d5086ca26bd69b79a74b8"
+   },
+   {
+    "repo": "Anyagit19/valyo-ai",
+    "commit": "254f9c35675b129ee43c8de5c4963c5c39a23bb2"
+   },
+   {
+    "repo": "Vharika31/agriconnect-nextjs",
+    "commit": "38e5f99165064947c06b76ff0d5fac4a94393ee1"
+   }
+  ]
+ },
+ "frame": {
+  "ai_built": {
+   "query": "\"Welcome to your Lovable project\" filename:README.md",
+   "searched": "2026-11-25",
+   "results": [
+    "1U22CS102-SASIKUMAR/sasikumar",
+    "1raghubirkumar/eveee",
+    "7yas/labournet",
+    "988673251/farm-field-friend",
+    "ASLRadek/easy-build-belgium",
+    "Aashish788/zunopayroll",
+    "AbdelrahmanSalemQotb/Domain",
+    "AbhiXO7/inlighn-tech-spark",
+    "Adarsh1019/neon-legal-core",
+    "Adityacse22/Eveee",
+    "Aftab48/verified-learning",
+    "Alessandro1022/sheiktest12",
+    "Ananta-Paul/S.K.DEVELOPERS",
+    "AnasJadoon31/Suffa-MS",
+    "AndresSantosSotec/migra-asm-hub",
+    "Anshuman77777/OdooHackathon25",
+    "Anyagit19/valyo-ai",
+    "AyushD95/location-risk-alert",
+    "BBMPRODUCCIONES/Plataforma-BBM",
+    "BRobertsonRed/profit-plunder-insight",
+    "BaseemMayala/SW26052025",
+    "Bayebaradiop/medibook_web",
+    "Bennyplus/obiokala-portfolio",
+    "CACO1972/predict-care-guide",
+    "CACO1972/predict-care-report",
+    "ChMubasharAli/transcription-application",
+    "ChristianMuuo/apex-marketplace",
+    "Christine-code-crypto/kind-deeds-united",
+    "CristianoLongoDev/pluggy_front",
+    "Cubenft2/xray-alpha-hub",
+    "CyberMindX-AI/smartdataanalyst",
+    "DEV6210/doctorezy-indian-health-hub",
+    "Davidfestus20/vibraze-youth-vibe",
+    "Davieschikelu/We-Vote",
+    "DenisDanov/talknest-design",
+    "DevJadhwani1/alpha-lens-nexus",
+    "Dhanasri-Parisam/box-office-hub-main",
+    "Dhaniskasri/Gemini-ai",
+    "Dheerajhacks/styled-image-blog",
+    "Dineshraja03/my-portfolio",
+    "DiveshSutar/pulse-writer",
+    "ERPICADEV/Frontend-cleanlink",
+    "Edufrms/toolbox-trade-tutor",
+    "ElavazhaganS/harmony-hub-43",
+    "ElmiraMirzabeigi/personal_web",
+    "Emberate/code-spark-forge-verse",
+    "Eslamunto/eslamunto.github.io",
+    "FacelessLee/fulfillit-edu",
+    "FahmyAlmaliki/cattlecare_ngantang",
+    "Gauranshgoel123/Vendor-Empanelment-Portal",
+    "Gautam5514/WhiteByte_React",
+    "Gev1401/veyalab-website",
+    "HarishRM24/portfolio",
+    "HenryB08/syntrexio",
+    "HolisticPeople/HP-Funnel-FastingKit",
+    "ImDrewDiggs/c2c",
+    "Jugucan/kynetik",
+    "Kaustav-Banerjee2005/sidhhants_portfolio",
+    "Kavathe/cardio-hub",
+    "KirranKumar18/Quorum",
+    "KrystalDeFi/vault-leaderboard",
+    "Kushal7-collab/email-safe-sentinel",
+    "Legalparihar/shreegopaljibhoginternal",
+    "LeoSemAcento/lurdinha-chic-hiver-collection",
+    "LexnaDesigns/sarac-auto-elite",
+    "Linushaddai99/happy_birthday",
+    "MALTECH2025/tune-delivery-system",
+    "MDharunPrasad/giglabs-intern-venture",
+    "MMA560/my_landing-page",
+    "Maksudur7/Approve-nexus",
+    "Manavrmanai/footy-iq-frontend",
+    "Mangaverse2025/manga-verse-ts",
+    "MatheusFelipeDuarte/podo_pes-react-app",
+    "MattiaArcellaschi/zeus-launchpad",
+    "Mayank06711/blogs_ads_phonix",
+    "MerilinMartinson/merilinmartinson",
+    "Mohit25022005/AI_IDS",
+    "Moksh-Digital/Livique",
+    "MrAnujBabu/Certificate-Portfolio",
+    "Muskan16-web/pathfinder-palette-12",
+    "MykeShale/Tuzotap",
+    "NANDHINI7390/cricket-fantasy-flare",
+    "NIRAV-DON/ask-ai-shop",
+    "NandeeshSN/devant-insight",
+    "Nareshkumarbalamurugan/responsive-react-web",
+    "Narutomithun/Quorum",
+    "Othman-Sah/dev-matrix-interface",
+    "OthmaneWahbi/gab-flow-insights",
+    "PavanDurgaSaiGupta/remarket-notion-ads",
+    "Pavankalyan2006/stylish-prediction-pal",
+    "PedroLages/exact-widget-magic",
+    "PetrmMichal/Petrm.github.io",
+    "PicaPika22/paper-hub-central",
+    "Pupper0n1/personal-portfolio",
+    "RadheshyamDhakarwal/ipl-match-tracker-view-main",
+    "Raj9229/india-cab-voyager-web",
+    "Reggy501/abode-harmony-fe",
+    "Ritamattos/bebase",
+    "Rkreels/odoo",
+    "Rohitbanala/bomma-buddy-greetings-hub",
+    "Roustammmmm/Rr",
+    "SDSamarasinghe/dash-cal-pro-frame",
+    "Saahiti402/browse-boost-store-30586",
+    "Samreen272/future-pathfinder-script",
+    "SergeySmolkinGrodt/ChatRoulett",
+    "Shashikala-G14/AgriShield",
+    "Simpopapp/barberio-portal",
+    "Sneha-2045/insight-spark",
+    "Sri-Amirdha-Sudha/portfolio",
+    "Stanlywayne/coilquote-auth-pro",
+    "Stxanskiy/super_frontend_message-",
+    "SuperMindTeam/vapi-analytics-beacon",
+    "Tanmay1906/cybernetic-guardian-suite",
+    "TatianaFlorentino/kart-track-pulse-36",
+    "TejusKhadri/Eduplay",
+    "ThomasPolesel/App-de-Controle-Financeiro",
+    "Tour-Der-Wang-Dev/baan-wang-delivery-khrap",
+    "Tour-Der-Wang-Dev/wanderlust-hero-launch",
+    "UNAI-TECH/my-vidyon-static",
+    "UditJain2622004/bot-battleground-game",
+    "Vanshjais1777/Hire-Flow-frontend",
+    "Vharika31/agriconnect-nextjs",
+    "Vijay-Hozo/zionarch",
+    "Vkc134/ehs-final",
+    "Wizdevi/tweet-insight-explorer-ai",
+    "WonbinShin/wonbin-korean-tutoring",
+    "Wondergasper/connectifyfrontend",
+    "YAmIiii10/Ewheroson",
+    "YVMAi/verdo-site-hub",
+    "Yobra28/Hotel",
+    "Yojanamani/Calculator",
+    "Yongrui-Su/migraine-virtual-ai-assistant",
+    "Yugpatel009/New-System",
+    "Zainab-007/OPTIMA",
+    "Zeyad-Diaa-1242/hexaglow-portfolio",
+    "a-for-adarsh/ScanX",
+    "aarjjun/EventSync-test",
+    "aasif-vip-dev/aasifvip-craft-code",
+    "access-plus/eventpro-site",
+    "aditya023kiet/the-aditya-showcase",
+    "aditya0249/Medisynn",
+    "adriano2891/gestaorhgrupoativa",
+    "alameen-furniture/alameen-furniture.github.io",
+    "allaboutrohit/academic-insights-system",
+    "alnutile/lovable-auth-template",
+    "amalvarghese-30/StillWorks-portfolio",
+    "amitshob/spinesupport",
+    "amohanty66GT/resume-next",
+    "amrutha-ponduri/lovely-lilac-store",
+    "anirban2k22/bitey-witey-bites",
+    "anshp1108/code_review",
+    "aofphy/CSEA_web",
+    "arianXdev/smart-constitution-client",
+    "asadsirazi/asadsirazi.github.io",
+    "asher-letti/gabrielportfolio",
+    "ashi1207/harsh-code-without-3d",
+    "athrvchvn/TLMMS",
+    "aurorawinters0506-cell/co",
+    "austinle99/alpha-spin-win",
+    "axelrada8/baseball-stats-central",
+    "ayaan9618/edventurepark-networkmap-p-74",
+    "ayelletm-work/trendline-playbook-forge",
+    "ayodhyamohanthy/skipwaitmanus",
+    "beast955/tasty-talk-tracker",
+    "bharathy2302/finverse-finance",
+    "bhaskar601/bharat-gaming-legacy",
+    "bilal280/almehdi",
+    "bilal280/tariq-bin-ziyad-institute",
+    "blissuae/invite-creator-symphony",
+    "bonnyoswald/trip-sensei-ai-planner",
+    "cbussalleu/teleperformance-insight-hub",
+    "chbhavanishankar539/resume",
+    "chiquanluu/listen-guard-app",
+    "chiragnahata/WEATHER-DASHBOARD",
+    "chumankum/gasfee",
+    "codepog/nexus",
+    "davmoha/veteran-finance-sense",
+    "dewanshrawat15/kundli-dating-spark",
+    "dineshbuilds/portfolio",
+    "dived253/fleet-club-prompt",
+    "divyanshjadon/shaenx-learn-earn",
+    "elwardi777/GestionStagaire",
+    "emirirr/OrderTracking",
+    "engineer915/the-site",
+    "euleozed/contratos-controle",
+    "evshvarov/credit-app-maker",
+    "ewuket/khrate-app",
+    "ezabhishek1/CodeFolio-Camp",
+    "fidowro3/catusso-art-folio",
+    "forsureclub/forsureclub",
+    "gd03champ-swg/prompt-library",
+    "gongaakshay/cloud-health-insights",
+    "guitrein/smart-finance-forecast-system",
+    "hamagold/coffcekrd",
+    "hany-UPS/code-camp-academy-app",
+    "harrybarnes/encode-mail-canvas",
+    "hcsilva/path-wise-chatter",
+    "hiagoragazini/voxemy-ui-reimagined",
+    "hkirat/solana-connect-chat",
+    "hkirat/solana-connect-chat-1",
+    "hoanglong2534/figma-pixel-magic-53",
+    "huzonforml/Solonest",
+    "hybriddemo/ksrtc-bus-track",
+    "ifaaz-builder/bcl-wicket-register",
+    "ihagodaniel2010-blip/site-do-site",
+    "iles-git/profilo",
+    "jana839/bridge-builder",
+    "janespotted/spottedsocial",
+    "japatraderdev99/lp-reboot-studio",
+    "jatinchaurasiya/mindful-wellbeing-clinic-site",
+    "javelit/java-ride-easy",
+    "jeremyrdavis/daily-wisdom-shadowbox",
+    "jjsmith118118-design/baggies-wicket-web",
+    "joelbenedict12/Swiftora-Backend",
+    "johnlar455/utilify-web-hub",
+    "jtk16/zygraph",
+    "kartik7raturi/ketopia",
+    "kirukatogit/Trabajo_Especialidad",
+    "kirukatogit/bizhive-honeycomb-front",
+    "kirukatogit/bizhive-refactor-hub",
+    "koreyfunding-oss/neon21_bjfinal-14",
+    "kristal2012/nexus-crypto-bot",
+    "kritsanan1/wang-sam-mho-report-0f16147b",
+    "leotansingapore/aia-product-compass-hub",
+    "lgpecin/PecinDesign-Website",
+    "lindo315/wits-runner-go",
+    "lokcodes7/trade-scribe-chronicles-91",
+    "lprnmns/lokaSkor",
+    "lucasmateuslid/k-tag-tracker-hub",
+    "lulubun/devlog-hub",
+    "m-aryan-ali/stock-savvy",
+    "marcbue/serpent-social",
+    "marcioabreuba/pixel-pulse-shopify-tracker",
+    "mattcho/mattcho.github.io",
+    "mc3ccc/GrowKids-Mentorship",
+    "miny662/interchat-ai-studio",
+    "mk-505/the_apex_accelerator",
+    "mnjtds59-afk/office-orbit-app",
+    "mohammedzaamin123/chatbot-management",
+    "mr-rohit-7903/DebAI",
+    "mrjamesweb/taleem-pathway-revamp-project",
+    "msacks2692-sudo/unmute-every-voice",
+    "mtiegel/biovind-data-nexus",
+    "mypennytree2/pennytree-website",
+    "naitik99045/ethical-hacker-quest-mobile",
+    "nuurhasan/quick-hire-uk-connect",
+    "oaklandunited/VSD-SHRA",
+    "omarramy11/Ibtaker_Platform",
+    "omsingh10/Rail-Pravha",
+    "pankajsir914/games-website",
+    "patel239-bit/repo-ai-44",
+    "pepealps/doce-magia-instantanea-landing",
+    "praveeenyalla/influence-flow-analytics-suite",
+    "princejabez1/circuitstocode-jabez-portfolio",
+    "purushotham123400/india-price-radar",
+    "rahmabens/prototype-creative-spark",
+    "rahulkohlerit/-synthdoc-generator",
+    "rahulkuma55587/bnbfee-dapp",
+    "resortsoffers-hub/resortsoffers",
+    "ricci-alessandro-ENERGENT/veggiefinder",
+    "ringojuice03/ShrinkMCP-Web",
+    "rizzikhan/All-Social-Media-Downloader",
+    "runkzein2/rze",
+    "sagar2018/wealth-wellbeing-ui",
+    "sahilkadam11/eco-wares-hub",
+    "sanodiyaatul/atul-codes-beyond",
+    "satyajeet-rout/fill-and-sign-studio-09882-26225",
+    "shahzaib-191/tool-blog-nexus",
+    "shazzar00ni/snips-platform",
+    "sholoksell/Sholok",
+    "shreyaskommuri/Miraqua",
+    "shriyamalik-mb/Meobyr-tsx",
+    "skarnz/Generator_Student_Calendar",
+    "smontoyac22/bimbi-boutique-blossom-shop",
+    "stravanama/clue-duo-contact-29",
+    "stuidoanom/purple-grid-design",
+    "t-y-p-i-n-g/abhi-Codefolio",
+    "technthspace-create/Swiftora-Frontend",
+    "templatesflexi/tools-old-bolt",
+    "theonlyvinan/cheqIn",
+    "thomasbourque/thomas-bourque-planipret-juin2025",
+    "tiago-cenci/vital-trainer-suite",
+    "toddpress/modular-dashboard-sphere",
+    "toufikze77/b2bnest.app",
+    "uausmani/pakmobility1",
+    "uday68/teamColab",
+    "vaibhav8600-rgb/FitNotesX",
+    "vanessatrizah/crime-watch-network-hub",
+    "vibin-alt/YAS",
+    "vikashDubey910/vikash-qa-folio",
+    "vinitguptaother/angel-totp-buddy",
+    "vissatt1/main-copy",
+    "vshimpi-bit/autochef01",
+    "wilcorrea/wilcorrea.github.io",
+    "wubin28/lab-ai-programming-assistants-cursor",
+    "yantze/tinyread-landing",
+    "yashdodwani/agent-path-forge",
+    "yassine-mlk/mbgold",
+    "zahzouh2004/designo-pack-it-up",
+    "zerovacancy/zerovacancy-96"
+   ],
+   "skipped_in_order": [
+    {
+     "repo": "yashdodwani/agent-path-forge",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Kavathe/cardio-hub",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Zeyad-Diaa-1242/hexaglow-portfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "blissuae/invite-creator-symphony",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "miny662/interchat-ai-studio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Yobra28/Hotel",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Eslamunto/eslamunto.github.io",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "skarnz/Generator_Student_Calendar",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "javelit/java-ride-easy",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "AnasJadoon31/Suffa-MS",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Othman-Sah/dev-matrix-interface",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "ayodhyamohanthy/skipwaitmanus",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "huzonforml/Solonest",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "hcsilva/path-wise-chatter",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "stravanama/clue-duo-contact-29",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "joelbenedict12/Swiftora-Backend",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "aurorawinters0506-cell/co",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "rahulkohlerit/-synthdoc-generator",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "BaseemMayala/SW26052025",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Manavrmanai/footy-iq-frontend",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "shazzar00ni/snips-platform",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "anshp1108/code_review",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "AbdelrahmanSalemQotb/Domain",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "vikashDubey910/vikash-qa-folio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "runkzein2/rze",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Rkreels/odoo",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "YAmIiii10/Ewheroson",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "HolisticPeople/HP-Funnel-FastingKit",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Edufrms/toolbox-trade-tutor",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "a-for-adarsh/ScanX",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "OthmaneWahbi/gab-flow-insights",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Zainab-007/OPTIMA",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "marcioabreuba/pixel-pulse-shopify-tracker",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "smontoyac22/bimbi-boutique-blossom-shop",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "vaibhav8600-rgb/FitNotesX",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Kaustav-Banerjee2005/sidhhants_portfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "wubin28/lab-ai-programming-assistants-cursor",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Mohit25022005/AI_IDS",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "purushotham123400/india-price-radar",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Bennyplus/obiokala-portfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "mtiegel/biovind-data-nexus",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "hoanglong2534/figma-pixel-magic-53",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "vshimpi-bit/autochef01",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "fidowro3/catusso-art-folio",
+     "why": "no supabase/ folder"
+    }
+   ]
+  }
+ },
+ "expected": {
+  "erev0s/VAmPI": [
+   {
+    "id": "vampi-sqli-get-user",
+    "class": "PAH-W012",
+    "what": "SQL injection in GET /users/v1/{username}: the username is formatted into a raw SELECT in User.get_user (models/user_model.py), called from get_by_username in api_views/users.py.",
+    "source": "README.md"
+   },
+   {
+    "id": "vampi-unauth-password-change",
+    "class": "PAH-W002",
+    "what": "Unauthorized password change: PUT /users/v1/{username}/password lets any logged-in user overwrite the password of the user named in the URL with no owner check (update_password in api_views/users.py).",
+    "source": "README.md"
+   },
+   {
+    "id": "vampi-bola-book-secret",
+    "class": "PAH-W002",
+    "what": "BOLA: GET /books/v1/{book} returns a book's secret to any logged-in user, not only its owner (get_by_title in api_views/books.py).",
+    "source": "README.md"
+   },
+   {
+    "id": "vampi-mass-assignment-admin",
+    "class": "PAH-W006",
+    "what": "Mass assignment: POST /users/v1/register accepts an 'admin' field from the client and creates an admin account (register_user in api_views/users.py).",
+    "source": "README.md"
+   }
+  ],
+  "snoopysecurity/dvws-node": [
+   {
+    "id": "dvws-sqli-passphrase-get",
+    "class": "PAH-W012",
+    "what": "SQL injection in GET /api/v2/passphrase/:username: the username is concatenated into a raw SELECT (get in src/controllers/passphrase.js, routed in src/routes/passphrase.js).",
+    "source": "CHALLENGES.md (1)"
+   },
+   {
+    "id": "dvws-sqli-passphrase-save",
+    "class": "PAH-W012",
+    "what": "SQL injection in POST /api/v2/passphrase: the passphrase and reminder fields are concatenated into a raw INSERT (save in src/controllers/passphrase.js).",
+    "source": "CHALLENGES.md (1)"
+   },
+   {
+    "id": "dvws-nosqli-notesearch",
+    "class": "PAH-W012",
+    "what": "NoSQL injection in POST /api/v2/notesearch: the search value is embedded in a MongoDB $where JavaScript expression (search_note in src/controllers/notes.js).",
+    "source": "CHALLENGES.md (2)"
+   },
+   {
+    "id": "dvws-mass-assign-register",
+    "class": "PAH-W006",
+    "what": "Mass assignment at registration: POST /api/v2/users passes req.body to new User(), so the client can set admin:true (add in src/controllers/users.js).",
+    "source": "CHALLENGES.md (14), README.md"
+   },
+   {
+    "id": "dvws-mass-assign-xml-import",
+    "class": "PAH-W006",
+    "what": "Mass assignment through the unauthenticated XML profile import: POST /api/v2/users/profile/import/xml accepts an <admin> element and writes it to the account (importProfileXml in src/controllers/users.js).",
+    "source": "CHALLENGES.md (13, Appendix)"
+   },
+   {
+    "id": "dvws-mass-assign-notification-prefs",
+    "class": "PAH-W006",
+    "what": "Mass assignment: PUT /api/v2/users/notification-preferences copies every submitted field onto the account, including admin (updateNotificationPreferences in src/controllers/integrations.js).",
+    "source": "CHALLENGES.md (47)"
+   },
+   {
+    "id": "dvws-idor-notes",
+    "class": "PAH-W002",
+    "what": "IDOR on notes: GET/PUT/DELETE /api/v2/notes/:noteId read, change or delete any user's note by its sequential id or name with no ownership check (read_a_note, update_a_note, delete_a_note in src/controllers/notes.js).",
+    "source": "CHALLENGES.md (15, 19), frontend/SECURITY.md (11)"
+   },
+   {
+    "id": "dvws-idor-passphrase",
+    "class": "PAH-W002",
+    "what": "Horizontal access control: GET /api/v2/passphrase/:username returns any user's passphrases, with no authentication at all (get in src/controllers/passphrase.js).",
+    "source": "CHALLENGES.md (19), frontend/SECURITY.md (11)"
+   },
+   {
+    "id": "dvws-bfla-users-list",
+    "class": "PAH-W003",
+    "what": "Vertical access control: the admin-only GET /api/v2/users (all users including password hashes) works with a regular user's token (getAll in src/controllers/users.js).",
+    "source": "CHALLENGES.md (18)"
+   },
+   {
+    "id": "dvws-bfla-sysinfo",
+    "class": "PAH-W003",
+    "what": "Vertical access control: GET /api/v2/sysinfo/:command, which should be admin-only, works with a regular user's token (get_sysinfo in src/controllers/notes.js).",
+    "source": "CHALLENGES.md (18)"
+   },
+   {
+    "id": "dvws-bfla-soap-user-service",
+    "class": "PAH-W003",
+    "what": "Vertical access control: the admin SOAP user lookup at POST /dvwsuserservice needs no authentication (src/services/soap/user-service.js).",
+    "source": "CHALLENGES.md (18)"
+   },
+   {
+    "id": "dvws-xss-soap",
+    "class": "PAH-W001",
+    "what": "XML XSS: POST /dvwsuserservice reflects the username into the SOAP response unescaped, so script runs if a client renders it with innerHTML (src/services/soap/user-service.js).",
+    "source": "CHALLENGES.md (21a)"
+   },
+   {
+    "id": "dvws-xss-register-content-type",
+    "class": "PAH-W001",
+    "what": "Content-Type XSS: POST /api/v2/users reflects the username in a text/plain response without X-Content-Type-Options: nosniff (add in src/controllers/users.js).",
+    "source": "CHALLENGES.md (21b)"
+   },
+   {
+    "id": "dvws-fe-dom-xss-dashboard",
+    "class": "PAH-W001",
+    "what": "DOM XSS: the dashboard renders the URL hash through {@html} (frontend/src/routes/(app)/dashboard/+page.svelte).",
+    "source": "frontend/SECURITY.md (1, 2)"
+   },
+   {
+    "id": "dvws-fe-xss-notes",
+    "class": "PAH-W001",
+    "what": "Stored XSS: note responses and note bodies are rendered unsanitized through {@html} (frontend/src/routes/(app)/notes/+page.svelte, frontend/src/routes/(app)/search/+page.svelte).",
+    "source": "frontend/SECURITY.md (1)"
+   },
+   {
+    "id": "dvws-fe-xss-error-messages",
+    "class": "PAH-W001",
+    "what": "XSS: login/register and admin error messages, which echo user input such as the username, are rendered through {@html} (frontend/src/routes/+page.svelte, frontend/src/routes/(app)/admin/+page.svelte).",
+    "source": "frontend/SECURITY.md (1)"
+   },
+   {
+    "id": "dvws-graphql-readnote-idor",
+    "class": "PAH-W002",
+    "what": "GraphQL access control: the readNote(name) query returns any user's private notes to any token holder (src/graphql/schema.js).",
+    "source": "CHALLENGES.md (33)"
+   },
+   {
+    "id": "dvws-graphql-userfindbyid-idor",
+    "class": "PAH-W002",
+    "what": "GraphQL access control: userFindbyId (with an id from userSearchByUsername) returns another account's record, including its password hash and admin flag, to anonymous and regular callers with no ownership or role check (src/graphql/schema.js).",
+    "source": "CHALLENGES.md (33, 36a)"
+   },
+   {
+    "id": "dvws-profile-details-authz",
+    "class": "PAH-W002",
+    "what": "Broken object authorization: GET /api/v2/users/:id/profile-details checks the profile owner's admin flag instead of the caller's, so any user can read the admin account's email and home address by id (getUserProfileDetails in src/controllers/users.js).",
+    "source": "CHALLENGES.md (38)"
+   },
+   {
+    "id": "dvws-account-recovery-idor",
+    "class": "PAH-W002",
+    "what": "Account recovery IDOR: POST /api/v2/account-recovery/reset sets a new password for any userId (found through POST /api/v2/account-recovery/lookup) with no ownership check or proof of recovery (resetAccountPassword in src/controllers/users.js).",
+    "source": "CHALLENGES.md (39)"
+   },
+   {
+    "id": "dvws-support-ticket-idor",
+    "class": "PAH-W002",
+    "what": "Support ticket IDOR: GET /api/v2/support/tickets/:id returns another user's ticket because ownership is not checked (read in src/controllers/support-tickets.js).",
+    "source": "CHALLENGES.md (53)"
+   },
+   {
+    "id": "dvws-unrestricted-upload",
+    "class": "PAH-W014",
+    "what": "Unrestricted file upload: POST /api/upload checks only that the name ends in .xml (no content check) and stores the file under the client's file name in the publicly served public/uploads/<username>/ (post in src/controllers/files.js; the frontend file input has no accept filter).",
+    "source": "CHALLENGES.md (37), frontend/SECURITY.md (10)"
+   },
+   {
+    "id": "dvws-graphql-upload-file-write",
+    "class": "PAH-W014",
+    "what": "GraphQL updateUserUploadFile joins the client-supplied filePath to the upload directory unsanitized, so ../ writes the uploaded content anywhere on disk (src/graphql/schema.js).",
+    "source": "CHALLENGES.md (34)"
+   },
+   {
+    "id": "dvws-negative-quantity",
+    "class": "PAH-W010",
+    "what": "Negative quantities: POST /api/v2/resource-store/orders accepts quantities down to -1000, and unitPrice x quantity then credits the wallet (src/routes/resource-store.js); this covers both Resource Store challenges.",
+    "source": "CHALLENGES.md (54, 55), README.md"
+   }
+  ],
+  "cr0hn/vulnerable-node": [
+   {
+    "id": "vn-bola-order-web",
+    "class": "PAH-W002",
+    "what": "BOLA: GET /orders/:id loads any order, including another customer's address and full card number, with no ownership check (routes/orders.js, orderById in model/db.js).",
+    "source": "docs/labs/01-bola-idor.md, README.md"
+   },
+   {
+    "id": "vn-bola-order-api",
+    "class": "PAH-W002",
+    "what": "BOLA in the JSON API: GET /api/v1/orders?user_id= returns any user's orders (routes/api/v1.js, ordersForUser in model/db.js).",
+    "source": "docs/labs/01-bola-idor.md, README.md"
+   },
+   {
+    "id": "vn-sqli-login",
+    "class": "PAH-W012",
+    "what": "SQL injection login bypass: POST /login/auth concatenates the username into SQL (login in model/db.js, routes/auth.js).",
+    "source": "docs/labs/03-sqli.md, README.md"
+   },
+   {
+    "id": "vn-sqli-search",
+    "class": "PAH-W012",
+    "what": "UNION SQL injection: GET /search?q= concatenates q into the products query (searchProducts in model/db.js, routes/shop.js).",
+    "source": "docs/labs/03-sqli.md, README.md"
+   },
+   {
+    "id": "vn-sqli-orders-sort",
+    "class": "PAH-W012",
+    "what": "ORDER BY SQL injection: GET /orders?sort= is interpolated into the query (ordersForUserSorted in model/db.js).",
+    "source": "docs/labs/03-sqli.md"
+   },
+   {
+    "id": "vn-nosqli-tags-filter",
+    "class": "PAH-W012",
+    "what": "NoSQL operator injection: POST /api/tags-filter passes user JSON such as {\"$ne\":null} straight into a Mongo query on product_meta (routes/shop.js).",
+    "source": "docs/labs/03b-nosql.md, README.md"
+   },
+   {
+    "id": "vn-nosqli-meta",
+    "class": "PAH-W012",
+    "what": "NoSQL operator injection: GET /api/meta turns bracket query parameters (origin[$ne], origin[$regex]) into Mongo operators (routes/shop.js).",
+    "source": "docs/labs/03b-nosql.md"
+   },
+   {
+    "id": "vn-mass-assign-register",
+    "class": "PAH-W006",
+    "what": "Mass assignment at signup: POST /register writes the whole request body to the user row, so role=admin and balance are accepted (routes/auth.js, views/register.ejs).",
+    "source": "docs/labs/04-mass-assignment.md, README.md"
+   },
+   {
+    "id": "vn-mass-assign-account",
+    "class": "PAH-W006",
+    "what": "Mass assignment on profile update: POST /account accepts role and balance from the form (routes/account.js, updateProfile in model/db.js).",
+    "source": "docs/labs/04-mass-assignment.md, README.md"
+   },
+   {
+    "id": "vn-stored-xss-reviews",
+    "class": "PAH-W001",
+    "what": "Stored XSS: review bodies posted to /products/:id/reviews (routes/shop.js) are rendered unescaped with <%- r.body %> (views/product_detail.ejs).",
+    "source": "docs/labs/05-xss-token-theft.md, README.md"
+   },
+   {
+    "id": "vn-price-tamper-checkout",
+    "class": "PAH-W007",
+    "what": "Price tampering: POST /checkout trusts the client's amount_cents and stores it as the charged amount (routes/orders.js, views/checkout.ejs, createOrder in model/db.js).",
+    "source": "docs/labs/06-price-tamper-checkout.md, README.md"
+   },
+   {
+    "id": "vn-hardcoded-jwt-secret",
+    "class": "PAH-W013",
+    "what": "Committed secret: the API JWT signing secret jwt-super-secret is hardcoded in config.js (jwtSecret) and docker-compose.yml, so anyone with the repo can mint tokens.",
+    "source": "docs/labs/07-jwt-weak-secret.md, tests/README.md"
+   },
+   {
+    "id": "vn-sast-sqli-concat",
+    "class": "PAH-W012",
+    "what": "SAST seed: SQL injection by string concatenation in queryUser (sast/seeds/sqli-concat.js).",
+    "source": "sast/README.md, sast/ground-truth.yaml"
+   },
+   {
+    "id": "vn-sast-nosql-operator",
+    "class": "PAH-W012",
+    "what": "SAST seed: NoSQL operator injection from user JSON in findUser (sast/seeds/nosql-operator.js).",
+    "source": "sast/README.md, sast/ground-truth.yaml"
+   },
+   {
+    "id": "vn-sast-xss-raw-echo",
+    "class": "PAH-W001",
+    "what": "SAST seed: reflected XSS in an HTML response in renderPage (sast/seeds/xss-raw-echo.js).",
+    "source": "sast/README.md, sast/ground-truth.yaml"
+   },
+   {
+    "id": "vn-sast-hardcoded-secret",
+    "class": "PAH-W013",
+    "what": "SAST seed: hardcoded API secret in getConfig (sast/seeds/hardcoded-secret.js).",
+    "source": "sast/README.md, sast/ground-truth.yaml, docs/LEARNINGS.md"
+   }
+  ],
+  "we45/Vulnerable-Flask-App": [],
+  "anxolerd/dvpwa": [
+   {
+    "id": "dvpwa-sqli-student-create",
+    "class": "PAH-W012",
+    "what": "SQL injection: POST /students/ formats the student name into an INSERT with % string formatting (Student.create in sqli/dao/student.py, via students in sqli/views.py).",
+    "source": "README.rst (SQL Injection)"
+   },
+   {
+    "id": "dvpwa-stored-xss-review",
+    "class": "PAH-W001",
+    "what": "Stored XSS: review text posted to /courses/{id}/review renders unescaped on /courses/{id} (sqli/templates/course.jinja2), because Jinja2 is set up with autoescape=False in sqli/app.py.",
+    "source": "README.rst (Stored XSS)"
+   },
+   {
+    "id": "dvpwa-stored-xss-other-fields",
+    "class": "PAH-W001",
+    "what": "Stored XSS in other fields: student names and course titles/descriptions render unescaped (sqli/templates/students.jinja2, courses.jinja2, course.jinja2, evaluate.jinja2, review.jinja2; autoescape=False in sqli/app.py).",
+    "source": "README.rst (Stored XSS in other fields)"
+   },
+   {
+    "id": "dvpwa-missing-authorization",
+    "class": "PAH-W003",
+    "what": "Missing function-level authorization: the admin-only POST /courses/ and POST /students/{student_id}/evaluate/{course_id} (plus POST /students/ and /courses/{id}/review) have no server-side check in sqli/views.py, because authorize(ensure_admin=True) from sqli/utils/auth.py is never used.",
+    "source": "README.rst (Missing authorization)"
+   }
+  ],
+  "payatu/Tiredful-API": [
+   {
+    "id": "tiredful-xss-advertisements",
+    "class": "PAH-W001",
+    "what": "Cross-site scripting: POST /api/v1/advertisements/ accepts XSS metacharacters in the advertisement fields (headline/info), which are stored and listed back (advts in Tiredful-API/advertisements/views.py).",
+    "source": "Tiredful-API/advertisements/templates/advertisements/index.html, README.md"
+   },
+   {
+    "id": "tiredful-bfla-approve-article",
+    "class": "PAH-W003",
+    "what": "Access control: the admin-only GET /api/v1/approve-article/<article-id>/ can be run by non-admin users (approve_article in Tiredful-API/blog/views.py).",
+    "source": "Tiredful-API/blog/templates/blog/index.html, README.md"
+   },
+   {
+    "id": "tiredful-idor-exams",
+    "class": "PAH-W002",
+    "what": "IDOR: GET /api/v1/exams/<exam_id>/ (base64 ids) returns other students' exam results (get_score in Tiredful-API/exams/views.py).",
+    "source": "Tiredful-API/exams/templates/exams/index.html, README.md"
+   },
+   {
+    "id": "tiredful-sqli-activities",
+    "class": "PAH-W012",
+    "what": "SQL injection (SQLite): the month field of POST /api/v1/activities/ is formatted into a raw query (get_activity in Tiredful-API/health/views.py).",
+    "source": "Tiredful-API/health/templates/health/index.html, README.md"
+   }
+  ],
+  "stamparm/DSVW": [
+   {
+    "id": "dsvw-sqli-id",
+    "class": "PAH-W012",
+    "what": "SQL injection through the ?id= parameter on / (dsvw.py), behind the index-page cases Blind SQL Injection (boolean), Blind SQL Injection (time) and UNION SQL Injection.",
+    "source": "dsvw.py (CASES list rendered on the index page), README.md"
+   },
+   {
+    "id": "dsvw-sqli-login-bypass",
+    "class": "PAH-W012",
+    "what": "Login bypass by SQL injection in the password parameter of /login (dsvw.py).",
+    "source": "dsvw.py (CASES list rendered on the index page)"
+   },
+   {
+    "id": "dsvw-xss-reflected",
+    "class": "PAH-W001",
+    "what": "Reflected XSS: the ?v= parameter is echoed into the page unescaped (dsvw.py); the index page's Frame Injection (phishing and content spoofing) cases use the same sink.",
+    "source": "dsvw.py (CASES list rendered on the index page)"
+   },
+   {
+    "id": "dsvw-xss-stored",
+    "class": "PAH-W001",
+    "what": "Stored XSS: comments submitted through ?comment= are stored and rendered unescaped (dsvw.py).",
+    "source": "dsvw.py (CASES list rendered on the index page)"
+   },
+   {
+    "id": "dsvw-xss-dom",
+    "class": "PAH-W001",
+    "what": "DOM XSS: the #lang= URL fragment is written into the page by client-side script (dsvw.py).",
+    "source": "dsvw.py (CASES list rendered on the index page)"
+   },
+   {
+    "id": "dsvw-xss-jsonp",
+    "class": "PAH-W001",
+    "what": "JSONP XSS: /users.json?callback= reflects the callback name without validation, so it runs arbitrary JavaScript (dsvw.py).",
+    "source": "dsvw.py (CASES list rendered on the index page)"
+   }
+  ],
+  "dolevf/Damn-Vulnerable-GraphQL-Application": [
+   {
+    "id": "dvga-stored-xss-pastes",
+    "class": "PAH-W001",
+    "what": "Stored XSS / HTML injection: the createPaste and importPaste mutations (core/views.py) accept any characters in the title and content, which then render as HTML on the public and private paste pages (templates/paste.html).",
+    "source": "templates/partials/solutions/solution_12.html, templates/partials/solutions/solution_14.html, README.md"
+   },
+   {
+    "id": "dvga-sqli-pastes-filter",
+    "class": "PAH-W012",
+    "what": "SQL injection: the filter argument of the pastes query is inserted into a raw SQL text() filter (resolve_pastes in core/views.py).",
+    "source": "templates/partials/solutions/solution_15.html, README.md"
+   },
+   {
+    "id": "dvga-upload-paste-filename",
+    "class": "PAH-W014",
+    "what": "Upload stored under the uploader's file name: the uploadPaste mutation writes content to the upload folder using the client-supplied filename unsanitized, so ../ writes anywhere on disk (UploadPaste in core/views.py, save_file in core/helpers.py).",
+    "source": "templates/partials/solutions/solution_18.html, README.md"
+   }
+  ],
+  "OWASP/crAPI": [
+   {
+    "id": "crapi-bola-mechanic-report",
+    "class": "PAH-W002",
+    "what": "BOLA: GET /workshop/api/mechanic/mechanic_report?report_id= (a hidden endpoint linked from the contact_mechanic response) returns any user's mechanic report when the report id is changed (GetReportView in services/workshop/crapi/mechanic/views.py).",
+    "source": "docs/challenges.md (Challenge 2), docs/challengeSolutions.md"
+   },
+   {
+    "id": "crapi-order-mass-assignment",
+    "class": "PAH-W006",
+    "what": "Mass assignment: a shadow PUT /workshop/api/shop/orders/{order_id} lets the user edit order properties (status, quantity), giving refunds for items never returned (OrderControlView.put in services/workshop/crapi/shop/views.py).",
+    "source": "docs/challenges.md (Challenges 8, 9)"
+   },
+   {
+    "id": "crapi-negative-quantity",
+    "class": "PAH-W010",
+    "what": "Negative quantity: POST /workshop/api/shop/orders accepts a negative quantity, which increases the available credit (OrderControlView.post in services/workshop/crapi/shop/views.py).",
+    "source": "docs/challengeSolutions.md (Challenges 8, 9)"
+   },
+   {
+    "id": "crapi-sqli-apply-coupon",
+    "class": "PAH-W012",
+    "what": "SQL injection to redeem an already-claimed coupon by modifying the database; the workshop coupon-redemption endpoint is POST /workshop/api/shop/apply_coupon (ApplyCouponView in services/workshop/crapi/shop/views.py). The docs do not name the endpoint; it comes from the OpenAPI spec and the coupon feature.",
+    "source": "docs/challenges.md (Challenge 13), openapi-spec/crapi-openapi-spec.json"
+   },
+   {
+    "id": "crapi-llm-prompt-injection",
+    "class": "PAH-W005",
+    "what": "Prompt injection: text sent to the chatbot (POST /genai/ask in services/chatbot/src/chatbot/chat_api.py, agent in langgraph_agent.py) steers the LLM into returning content that is rendered client-side in the web chat widget (services/web/src/components/bot/).",
+    "source": "docs/challenges.md (Challenge 16)"
+   },
+   {
+    "id": "crapi-llm-credential-extraction",
+    "class": "PAH-W005",
+    "what": "LLM data leak: the chatbot can be prompted to reveal another user's credentials (services/chatbot).",
+    "source": "docs/challenges.md (Challenge 17)"
+   },
+   {
+    "id": "crapi-llm-action-on-behalf",
+    "class": "PAH-W005",
+    "what": "Excessive LLM agency: the chatbot agent can be made to act on behalf of another user, for example placing an order, through its tool calls (services/chatbot/src/chatbot/langgraph_agent.py, services/chatbot/src/mcpserver/server.py).",
+    "source": "docs/challenges.md (Challenge 18)"
+   }
+  ]
+ },
+ "out_of_scope": {
+  "erev0s/VAmPI": [
+   {
+    "what": "Excessive data exposure through the debug endpoint GET /users/v1/_debug, which shows every user's details including passwords (api_views/users.py debug).",
+    "why": "class not covered"
+   },
+   {
+    "what": "User and password enumeration through login and user lookup responses (api_views/users.py).",
+    "why": "class not covered"
+   },
+   {
+    "what": "RegexDOS in the email validation of PUT /users/v1/{username}/email (api_views/users.py update_email).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Lack of resources and rate limiting.",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT authentication bypass through a weak signing key (SECRET_KEY in config.py).",
+    "why": "class not covered"
+   }
+  ],
+  "snoopysecurity/dvws-node": [
+   {
+    "what": "OS command injection in GET /api/v2/sysinfo/:command (CHALLENGES.md 3).",
+    "why": "class not covered"
+   },
+   {
+    "what": "XXE in the SOAP service POST /dvwsuserservice (4).",
+    "why": "class not covered"
+   },
+   {
+    "what": "XML bomb and XXE in POST /api/v2/notes/import/xml (5).",
+    "why": "class not covered"
+   },
+   {
+    "what": "SSRF through the XML-RPC method dvws.CheckUptime at /xmlrpc (6).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure deserialization (node-serialize RCE) in POST /api/v2/export (7).",
+    "why": "class not covered"
+   },
+   {
+    "what": "XPath injection in GET /api/v2/release/:release, which exposes a promotion code (8).",
+    "why": "class not covered"
+   },
+   {
+    "what": "LDAP injection in /api/v2/users/ldap-search (9).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Path traversal in the file download POST /api/download (10).",
+    "why": "class not covered"
+   },
+   {
+    "what": "SOAP injection that spoofs response fields in /dvwsuserservice (11; also frontend/SECURITY.md 7).",
+    "why": "class not covered"
+   },
+   {
+    "what": "XML injection in the signed profile export/restore that adds an <admin> element (PUT /api/v2/users/profile/bio, POST /api/v2/users/profile/export/xml and restore/xml) (12).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT 'none' algorithm accepted and expiry ignored (16).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT secret key brute force (weak secret 'access') (17).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Open redirect in GET /api/v2/users/logout/:redirect (20).",
+    "why": "class not covered"
+   },
+   {
+    "what": "CSRF on the cookie-authenticated POST /api/v2/admin/create-user and on all state-changing operations (22, 41; frontend/SECURITY.md 4).",
+    "why": "class not covered"
+   },
+   {
+    "what": "CORS misconfiguration that reflects any origin with credentials (23).",
+    "why": "class not covered"
+   },
+   {
+    "what": "CRLF injection / log pollution through the login username (24).",
+    "why": "class not covered"
+   },
+   {
+    "what": "User enumeration through the login API and the SOAP service (25).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Information disclosure: GET /api/v1/info returns process.env, plus stack traces and X-Powered-By fingerprinting (26).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Sensitive data exposure of password hashes through GET /api/v2/users and the GraphQL User type (27).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Prototype pollution through upload metadata in POST /api/upload, which changes the allowed extension (28).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Missing rate limit allowing password brute force through POST /api/v2/export (29).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Rate limit bypass by spoofing X-Forwarded-For on POST /api/v2/login (30).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Hidden API functionality exposed through the public Swagger docs at /api-docs (31).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL introspection enabled (32).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL batching brute force of userLogin (35).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL userLogin mutation returns the password hash (36).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Sessions not revoked after a password change (40).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JSONP cross-origin profile sharing without an origin check (42).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Cross-site WebSocket hijacking on /ws/notifications (43).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Server-side template injection in GET /api/v2/greeter (44).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Unsafe YAML supplier import executing !js/function tags (45).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Cross-customer monthly statement path traversal in GET /api/v2/reports/monthly (46).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Undocumented TRACE /internal/diagnostics that discloses account details (48).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Legacy login POST /api/v1/login skips password verification (49).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Excessive activity report page size in GET /api/v2/reports/activity (50).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Missing security headers (51).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL alias amplification of userSearchByUsername (52).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT jku key-source trust (56).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT kid path traversal (57).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Resource Store promotion-code timing side channel (58).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT disclosure through postMessage with target '*' and receivers that do not check origin (59; frontend/SECURITY.md 3).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Frontend: password field type=text, JWT stored in localStorage, Math.random fallback in passgen.js, Base64 used as security, raw error messages, no HTTPS enforcement, client-side-only validation (frontend/SECURITY.md 5, 6, 12-16).",
+    "why": "class not covered"
+   },
+   {
+    "what": "README-only items with no challenge write-up: HTTP method confusion (state change through GET), ignored Accept headers / content-type confusion, credentials in URLs and Base64 mistaken for encryption, HTTP method override bypass, shared caching of authenticated reports, inconsistent request format handling, timing attacks.",
+    "why": "class not covered"
+   }
+  ],
+  "cr0hn/vulnerable-node": [
+   {
+    "what": "SSRF from the /tools URL fetcher to the IMDS and vault mocks (routes/tools.js /tools/fetch, /tools/vault-check; lab 02).",
+    "why": "class not covered"
+   },
+   {
+    "what": "CSRF: no tokens on any POST route, e.g. /account and /checkout (lab 06b).",
+    "why": "class not covered"
+   },
+   {
+    "what": "PAN and CVV stored and shown in clear text; plaintext passwords (model/db.js createOrder/logPaymentAttempt, views/order_detail.ejs; lab 08).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Debug mode and verbose SQL errors/stack traces (DEBUG_ERRORS, server.js error handler, views/error.ejs; lab 09).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Passwords in logs and log injection in /login/auth and /contact (routes/auth.js, routes/pages.js; lab 10).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Poisoned CI pipelines: secrets exposed to PR builds, script injection, unpinned actions, overbroad tokens (.github/workflows/ci.yml, azure-pipelines.yml; lab 11).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Prototype pollution through POST /preferences (model/merge.js, routes/account.js; lab 13).",
+    "why": "class not covered"
+   },
+   {
+    "what": "ReDoS in the /tools/regex validator (routes/tools.js; lab 14).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Path traversal in GET /download?file= (routes/extras.js; lab 15).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Command injection in the /tools/ping host parameter (routes/extras.js; lab 16).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Docker deployment hardening: root user, writable rootfs, full capabilities (Dockerfile, docker-compose.yml; lab 17).",
+    "why": "class not covered"
+   },
+   {
+    "what": "API token kept in localStorage, readable by injected script (public/js/app.js; lab 05).",
+    "why": "class not covered"
+   },
+   {
+    "what": "SAST seeds for other classes: path-traversal.js, ssrf-fetch.js, eval-code.js, crypto-weak.js, redos-nested.js, prototype-pollution.js, open-redirect.js, deserialization.js (sast/ground-truth.yaml).",
+    "why": "class not covered"
+   }
+  ],
+  "we45/Vulnerable-Flask-App": [],
+  "anxolerd/dvpwa": [
+   {
+    "what": "Session fixation: the AIOHTTP_SESSION id is not rotated on login.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Passwords stored as unsalted MD5 (sqli/dao/user.py).",
+    "why": "class not covered"
+   },
+   {
+    "what": "CSRF: the token middleware is commented out in sqli/app.py.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure session cookie: httponly=False, and no Secure or SameSite (sqli/middlewares.py).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Information disclosure: debug=True and error.__dict__ in sqli/templates/errors/50x.jinja2.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Missing input validation: the schemas in sqli/schema/forms.py are unused.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Password brute force: no rate limiting on login (sqli/views.py).",
+    "why": "class not covered"
+   }
+  ],
+  "payatu/Tiredful-API": [
+   {
+    "what": "Information disclosure (stack trace) in GET /api/v1/books/<ISBN>/ (library app).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Missing throttling / rate limit on POST /api/v1/trains/ (trains app).",
+    "why": "class not covered"
+   }
+  ],
+  "stamparm/DSVW": [
+   {
+    "what": "HTTP parameter pollution on /login (repeated password parameters reassembled into a SQL injection).",
+    "why": "class not covered"
+   },
+   {
+    "what": "XML external entity, local and remote (?xml=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Server-side request forgery (?path=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Blind XPath injection (?name=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Cross-site request forgery (?comment= through an injected img).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Clickjacking.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Unvalidated redirect (?redir=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Arbitrary code execution / OS command injection (?domain=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Full path disclosure and source code disclosure (?path=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Path traversal (?path=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Remote file inclusion (?include=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "HTTP header injection / phishing (?charset=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Component with known vulnerability: pickle deserialization (?object=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Denial of service, memory (?size=).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Server-side template injection (?tmpl=).",
+    "why": "class not covered"
+   }
+  ],
+  "dolevf/Damn-Vulnerable-GraphQL-Application": [
+   {
+    "what": "Reconnaissance: discovering and fingerprinting GraphQL.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Denial of service: batch query, deep recursion, resource-intensive systemUpdate, field duplication, aliases and circular fragments (solutions 1-5, 20).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Information disclosure: introspection, the GraphiQL interface, field suggestions and stack trace errors (solutions 6-8, 21).",
+    "why": "class not covered"
+   },
+   {
+    "what": "SSRF through importPaste (solution 9).",
+    "why": "class not covered"
+   },
+   {
+    "what": "OS command injection #1 through importPaste and #2 through systemDiagnostics (solutions 10, 11).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Log injection / log spoofing through operation names (solution 13).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphiQL interface protection bypass through the env cookie (solution 16).",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL query deny-list bypass through operation names (solution 17).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Weak password and no rate limit on systemDiagnostics (solution 19).",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT token forge on the me query (solution 22).",
+    "why": "class not covered"
+   }
+  ],
+  "OWASP/crAPI": [
+   {
+    "what": "Challenge 1: BOLA on another user's vehicle location, GET /identity/api/v2/vehicle/{vehicleId}/location (identity service), with vehicle ids leaked by /community/api/v2/community/posts/recent (community service).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 3: reset another user's password by brute-forcing the reset OTP (OTP handled by the Java identity service; v2/v3 check-otp endpoints).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 4: an endpoint leaks other users' sensitive information (endpoint not named in the docs).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Challenge 5: an endpoint leaks an internal property of a video (identity video API).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 6: layer-7 DoS through the contact mechanic feature (workshop).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Challenge 7: BFLA, deleting another user's video through the admin endpoint DELETE /identity/api/v2/admin/videos/{video_id} (identity service).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 10: updating internal video properties through PUT /identity/api/v2/user/videos/{video_id} (identity service).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 11: SSRF, making crAPI fetch www.google.com (endpoint not named in the docs).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Challenge 12: NoSQL injection to get free coupons, coupon validation at POST /community/api/v2/coupon/validate-coupon (community service).",
+    "why": "language"
+   },
+   {
+    "what": "Challenge 14: an endpoint that does not check authentication (endpoint not named in the docs).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Challenge 15: JWT forgery through algorithm confusion, an unchecked signature on the user dashboard, jku misuse and kid path traversal (identity service).",
+    "why": "language"
+   }
+  ]
+ },
+ "not_measured": {
+  "cr0hn/vulnerable-node": [
+   {
+    "id": "vn-secret-in-git-history",
+    "class": "PAH-W013",
+    "what": "Secret in git history: an early commit added .env with PIPELINE_TOKEN=VN-FAKE-..., and a later commit removed it from HEAD (so it is absent from the pinned tree and found only through git history).",
+    "source": "docs/labs/12-secrets-in-git.md, README.md",
+    "why": "only in git history, and apps are fetched at depth 1"
+   }
+  ]
+ },
+ "answer_key": {
+  "by": "a reviewer that did not write the rules, from each app's own documentation read at the pinned commit, before the run",
+  "notes": [
+   "we45/Vulnerable-Flask-App documents no vulnerabilities: it counts for precision only",
+   "one entry per vulnerable code location; the same sink named twice in the documentation is one entry",
+   "dvws-node frontend XSS lives in .svelte files, which appsec reads as JavaScript"
+  ]
+ }
+}
