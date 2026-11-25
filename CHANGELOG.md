@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+**`pah appsec`: the holes in the app your agent built.** A new command reads the user's own web app for the fourteen
+holes attackers try first in apps built fast with AI (PAH-W001 to W014): a script in a username (raw HTML from data,
+templates marked safe, request data in HTML responses), another user's ID in the URL (lookups by a request ID with no
+owner in the query or after it, Django REST Framework viewsets serving `objects.all()`), /admin typed by hand (admin
+routes, mounted routers, Next.js pages and Flask or FastAPI blueprints with no role check on the server; a Next.js
+middleware that checks the role counts), an API key in the browser (secret names behind `NEXT_PUBLIC_`, `VITE_` and
+other public prefixes, `dangerouslyAllowBrowser`, AI and payment APIs called from browser code, real keys in it),
+prompt injection (model output passed to `eval`, `exec`, shells, raw SQL or `innerHTML`; request text in the system
+prompt), admin at signup (whole request bodies saved, `role`, `plan` or `credits` from the request, roles in Supabase
+`user_metadata`, `fields = "__all__"`), an edited price, a faked payment (webhooks that never verify a signature,
+success pages that mark orders paid, browser code that writes the paid flag), a coupon redeemed 100 times
+(read-check-update without a conditional update, lock or unique constraint), -1 items, a guessed login code (no
+attempt limit anywhere, codes from `Math.random` or `random`), a database anyone can query (SQL from template literals,
+f-strings, `%` and `+`; Supabase tables without row level security and `using (true)` policies; Firebase test-mode
+rules), .env in git (tracked, untracked but not ignored, or still in history after it was deleted; real keys in
+`.env.example` and in code) and an upload that is not a photo (stored under the uploader's file name, with no type or
+size check, or with SVG allowed). It reads route handlers in Express, Hono, Fastify, Next.js, SvelteKit, Flask,
+FastAPI and Django; request data is followed through destructuring, loops and schema parsing but not through database
+lookups, so a price looked up by the ID a client sent is not flagged. Secret values are never printed. Test and
+example files report low at most; dependencies and minified or hashed bundles are skipped. Text, JSON and SARIF
+output, the same CI options as `pah scan`, an MCP tool (`check_app`), a `/appsec` plugin command and a fifth skill,
+`app-security`, for what the code alone cannot show. In Claude Code the PostToolUse hook now also sees `Write`, `Edit`
+and `MultiEdit`: after the agent writes a file, the holes that file shows on its own come back to the agent with the
+fix, as context, never as a block (`PAH_NO_APP_HINTS=1` turns it off; existing installs pick it up with
+`pah install --yes` or a plugin update); the tool-output check still leaves the agent's own writes alone. Every
+rule has a vulnerable case and its fixed twin in `tests/test_appsec.py` (124 tests); on the installed FastAPI,
+Starlette, Streamlit, OpenAI, Anthropic, SQLAlchemy and Jinja packages it raises nothing at medium or above except
+one SQL string formatted in SQLAlchemy's MSSQL dialect. `pah scan` and its rules are untouched.
+
 **Shields for an incident happening now, and a protection log.** After Shirudo (OpenAI and Cisco, November 2026),
 which shields a running service from one exploit path until its patch ships, `pah shield` adds narrow guard rules for
 the days between an advisory and its fix: a package version an agent would install (`npm:@ctrl/tinycolor@4.1.1`; an

@@ -1,6 +1,6 @@
 """agent-white-hat as an MCP server over stdio, for any MCP host (Codex, Cursor, Gemini CLI, VS Code, Claude).
 
-Tools: scan_path, check_command, checkup, watch_check. All are read-only and local.
+Tools: scan_path, check_app, check_command, checkup, watch_check, incident. All are read-only and local.
 Protocol: JSON-RPC 2.0, one message per line; speaks the 2026-07-28 revision and the earlier handshake revisions.
 """
 from __future__ import annotations
@@ -23,6 +23,14 @@ TOOLS = [
      "(agent hooks, install scripts, folder-open tasks, MCP servers) and for hidden or malicious code. Returns a verdict "
      "(pass, warn, block, incomplete) and the evidence.",
      "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "folder, file or git URL"}},
+                     "required": ["path"]}, "annotations": {"readOnlyHint": True}},
+    {"name": "check_app", "description": "Check the user's own web app for the 14 holes attackers try first: user text "
+     "rendered as HTML, records fetched by ID without an owner check, admin routes without a role check, secret keys in "
+     "browser code, prompt injection, request bodies saved whole, prices or payments trusted from the client, "
+     "check-then-update races, unchecked quantities, guessable login codes, SQL injection and open Supabase or Firebase "
+     "rules, .env files in git, and unchecked uploads. Returns each hole with file:line and the fix. Use it before "
+     "shipping code you wrote for the user.",
+     "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "the app's folder"}},
                      "required": ["path"]}, "annotations": {"readOnlyHint": True}},
     {"name": "check_command", "description": "Judge a shell command before running it: download-and-run, decode-and-run, "
      "credential access, persistence, look-alike packages, registry redirection, and whether the project it would set "
@@ -59,6 +67,11 @@ def call_tool(name: str, args: dict) -> tuple[str, bool]:
 
         rep = scan(str(args.get("path") or "."), max_seconds=120)
         return render.text(rep, color=False, limit=40), False
+    if name == "check_app":
+        from .appsec import check
+
+        rep = check(str(args.get("path") or "."), max_seconds=120)
+        return render.text(rep, color=False, limit=40, subject="app"), False
     if name == "check_command":
         from .guard import check_command
 

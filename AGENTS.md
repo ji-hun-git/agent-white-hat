@@ -18,6 +18,7 @@ No installation and no third-party packages are needed: Python 3.10 or newer, st
 | "Is this repo / package / skill / MCP server safe?" | `pah audit <path or git URL>` | follow `skills/malware-audit/SKILL.md` for anything flagged |
 | "Check it for viruses" | `pah audit <path>` (uses Microsoft Defender or ClamAV when installed) | explain each detection |
 | "Find security bugs or vulnerable dependencies" | `pah audit <path> --online` for dependencies | follow `skills/security-review/SKILL.md` for the code |
+| "Is my app safe to launch?" / "Check the app we built for security holes" | `pah appsec <app folder>` | confirm each finding in the code, fix it, run it again; follow `skills/app-security/SKILL.md` for what the code cannot show |
 | "Is this command safe to run?" | `pah check-command "<command>"` | explain the decision |
 | "Was I hacked?" / "I ran something bad" | `pah checkup`, `pah incident check` and `pah watch check` | follow `skills/incident-response/SKILL.md`, and the incident's own order from `pah incident show <name>` |
 | "What did my agent just do?" / "Why was that blocked?" | `pah session show latest` | explain each step and the chain the alert completed |

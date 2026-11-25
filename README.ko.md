@@ -42,7 +42,7 @@ agent-white-hat은 AI 코딩 에이전트를 쓰는 사람을 위한 백신입�
 
 Python 3.10 이상만 있으면 됩니다.
 
-**Claude Code 플러그인** (검사·가드·감시·점검, 스킬 4개, `/audit`·`/scan`·`/checkup`·`/watch` 명령):
+**Claude Code 플러그인** (검사·가드·감시·점검, 스킬 5개, `/audit`·`/scan`·`/appsec`·`/checkup`·`/watch` 명령):
 
 ```
 /plugin marketplace add ji-hun-git/agent-white-hat
@@ -136,7 +136,8 @@ repos:
 | **`pah audit`**: 대상 하나에 대한 판정 하나 | 검사에 더해 **이미 설치된 백신 엔진**(Microsoft Defender 또는 ClamAV, 로컬에서, 치료 기능은 끈 채로), `--online`이면 악성·없는·갓 올라온 패키지와 **고정된 의존성 버전의 알려진 취약점**(OSV, 올려야 할 버전까지)을 확인하고, 다음에 할 일을 쉬운 말로 알려 줍니다. |
 | **가드**: 에이전트 훅 | Claude Code(플러그인 또는 훅), Codex, Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro, Cline을 각자의 훅 프로토콜로 지킵니다([docs/agent-setup.md](docs/agent-setup.md)). 명령 실행 전: 다운로드 후 실행, 디코드 후 실행, 자격 증명 읽기, 지속성 설치, 승인 없이 에이전트 실행, 비슷한 이름의 패키지, 레지스트리 변경. 설치·설정(`npm install`, `pip install -e .`, `make`, `pytest`, `cargo build`, dev container) 전: 프로젝트를 검사하고 **차단 판정이면 명령을 거부**합니다. 에이전트 설정·셸 프로필·git 훅을 고치려 하면 승인을 받게 합니다. Claude Code에서는 새로 클론한 레포와 세션 시작 시 폴더도 검사합니다. **단계마다 같은 세션의 앞 단계와 함께 판단**하고, **도구가 돌려준 내용**(웹 페이지, MCP 결과, 이슈 본문, 검토하지 않은 프로젝트의 파일)에 에이전트를 향한 지시가 있는지 봅니다. 그런 출력이 있었으면 그 세션의 외부 전송·설정 변경·내려받은 파일 실행은 사용자가 정합니다([공격 연쇄](#공격-연쇄)). 훅·승인 확인·가드를 끄는 쓰기는 거부합니다. 모델을 불러오는 명령(`from_pretrained`, `torch.load`)도 폴더를 먼저 검사합니다. 가드는 더 엄격하게만 만들 뿐, "허용"으로 답하지 않습니다. |
 | **`pah session`** | 에이전트가 한 일을 훅이 기록한 대로 한 단계씩, 그리고 경고마다 그 연쇄(완성시킨 앞 단계)를 보여 줍니다. 기록은 이 컴퓨터에만, 토큰처럼 보이는 값은 가린 채로 일주일 동안 남습니다. |
-| **보안 스킬**: 어떤 에이전트에서든 | Agent Skills 4개: 일상 규칙, 전체 **악성코드 감사** 절차(실행 표면, 정적 디코딩, 행위 분류, 출처 확인, 판정), 악용 가능한 버그와 취약한 의존성을 찾는 **보안 리뷰**(LLM 기능의 프롬프트 인젝션·과도한 권한 포함), 이미 실행돼 버렸을 때의 **사고 대응**. |
+| **`pah appsec`**: 에이전트가 만든 내 앱 점검 | AI로 빠르게 만든 앱에서 공격자가 가장 먼저 시도하는 14가지 구멍을 내 코드에서 찾습니다. **사용자 이름에 넣은 스크립트**(XSS), **URL의 다른 사람 ID**(IDOR), **역할 확인 없는 /admin**, **브라우저에 실린 API 키**(공개 환경 변수 접두사, `dangerouslyAllowBrowser`, 클라이언트 코드의 키), **프롬프트 인젝션**(모델 답을 코드·SQL로 실행, 시스템 프롬프트에 들어간 사용자 글), **가입하면서 관리자 되기**(요청 본문을 통째로 저장, Supabase `user_metadata`의 역할), **클라이언트가 정한 가격**, **가짜 결제**(서명을 확인하지 않는 웹훅, 열기만 하면 결제 완료로 바꾸는 성공 페이지), **쿠폰 100번 사용**(확인 후 갱신 사이의 경쟁 상태), **-1개 주문**, **추측 가능한 로그인 코드**(시도 횟수 제한 없음, `Math.random`), **열린 데이터베이스**(문자열로 만든 SQL, 행 수준 보안 없는 Supabase 테이블, Firebase 테스트 모드 규칙), **git에 들어간 .env**(추적 중이거나 기록에 남은 것), **사진이 아닌 업로드**. 항목마다 줄 번호와 고치는 방법을 알려 줍니다. Claude Code에서는 에이전트가 파일을 쓰자마자 그 파일만으로 보이는 구멍을 바로 전해 듣습니다([docs/appsec.md](docs/appsec.md)). |
+| **보안 스킬**: 어떤 에이전트에서든 | Agent Skills 5개: 일상 규칙, 전체 **악성코드 감사** 절차(실행 표면, 정적 디코딩, 행위 분류, 출처 확인, 판정), 악용 가능한 버그와 취약한 의존성을 찾는 **보안 리뷰**(LLM 기능의 프롬프트 인젝션·과도한 권한 포함), 출시 전에 공격 하나하나를 따라가는 **앱 보안** 점검, 이미 실행돼 버렸을 때의 **사고 대응**. |
 | **`pah sweep`**, **`pah protect`**, **`pah quarantine`** | 백신이 하는 일. `pah sweep`은 다운로드·바탕화면, 코드 폴더의 모든 프로젝트, 설치된 에이전트 스킬·플러그인·확장, 에디터 확장을 하나씩 검사하고, checkup과 운영체제 기본 엔진을 더하고, 바뀌지 않은 것은 기억해 둡니다. `pah protect`는 들어오는 즉시 같은 일을 하고 로그인할 때 시작할 수 있습니다. 막힌 항목은 격리할 수 있습니다(다운로드·확장·스킬은 통째로, 프로젝트는 페이로드 파일만). `pah quarantine restore`로 되돌립니다. |
 | **`pah watch`** | 모든 에이전트의 설정·훅·MCP 서버·API 주소·승인 모드(Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, Claude Desktop, VS Code, Windsurf)와 셸 프로필, git·npm 설정, 시작 프로그램, LaunchAgents, Run 키의 기준선을 만들고 무엇이 바뀌었는지 보여 줍니다. 비밀 값은 해시로만 저장합니다. |
 | **`pah shield`**, **`pah log`** | 지금 진행 중인 사고를 위한 실드입니다. OpenAI와 Cisco의 [Shirudo](https://openai.com/index/introducing-shirudo/)에서 가져온 생각으로, 탈취된 패키지 버전·호스트·명령·경로 하나만 겨누는 좁은 규칙입니다. **막기 전에 먼저 지켜보고**(enforce 전까지는 기록만 하며, 무엇을 막았을지 보고서로 보여 줍니다), 90일 안에 **스스로 만료**되며, **서명된 묶음**(Ed25519)으로 받을 수 있고 신뢰한 키가 아니면 거부합니다. 실드는 가드를 더 엄격하게만 만듭니다. 가드가 허용하는 범위를 바꾸는 모든 변경(실드, 신뢰한 프로젝트, 기준선, 설치, 격리)은 **해시 체인으로 이어진 보호 기록**에 남고, `pah log verify`는 고쳐지거나 지워지거나 잘려 나간 항목과 손으로 바꾼 실드를 보여 줍니다([docs/shields.md](docs/shields.md)). |
@@ -543,6 +544,7 @@ Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설
 | --- | --- |
 | `pah audit <폴더\|파일\|압축 파일\|git URL>` | 검사 + 로컬 백신 엔진(`--no-av`로 생략) + `--online`이면 악성·없는·갓 올라온·취약한 패키지; 마지막에 다음 단계 |
 | `pah scan <폴더\|파일\|압축 파일\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v`, `--sarif-out FILE`, `--github`(GitHub Actions에서 줄 표시, 단계 출력값, 작업 요약) |
+| `pah appsec [앱 폴더]` | 내 웹 앱: 공격자가 가장 먼저 시도하는 14가지 구멍(PAH-W001~W014)을 줄 번호와 고치는 방법과 함께 보여 줍니다. `--json`, `--sarif`, `-o FILE`, `--fail-on`, `--sarif-out FILE`, `--github`, `--lang ko` ([docs/appsec.md](docs/appsec.md)) |
 | `pah sweep [--only downloads code agent extensions] [--quarantine] [--fresh] [--no-engine] [--no-checkup]` | 이 컴퓨터 전체 검사. `--json`, `--lang ko` |
 | `pah protect [--quarantine] [--interval 초] [--install \| --uninstall] [--yes]` | 실시간 감시. `--install`은 로그인 시 시작(작업 스케줄러, LaunchAgent, systemd 사용자 서비스), 바뀌는 내용을 먼저 보여 줌 |
 | `pah quarantine list \| restore ID \| delete ID --yes \| add 경로` | 격리 목록, 되돌리기, 삭제 |
@@ -553,7 +555,7 @@ Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설
 | `pah log [show \| verify] [--anchor HEAD]` | 보호 기록: 가드가 허용하는 범위를 바꾼 모든 변경을 해시 체인으로 남깁니다. 앞뒤가 맞지 않으면 종료 코드 2 |
 | `pah checkup` | 이 컴퓨터: 파일 속 키, 위험한 설정, 심어진 지시 파일, 흔적, 오래된 에이전트 |
 | `pah trust [폴더] [--remove] [--list]` | 직접 만들었거나 검토한 프로젝트: 명령 판정은 계속하되 설치 전 검사는 하지 않습니다. 사용자만 할 수 있고, 에이전트가 시도하면 가드가 사용자에게 묻습니다 |
-| `pah install [에이전트...] [--all] [--skills] [--mcp] [--yes]` | `claude-code codex gemini antigravity cursor copilot devin kiro cline`의 훅(기본: 찾은 에이전트), 스킬 4개, MCP 서버. `--yes` 없이는 바뀔 내용만 보여 줍니다 |
+| `pah install [에이전트...] [--all] [--skills] [--mcp] [--yes]` | `claude-code codex gemini antigravity cursor copilot devin kiro cline`의 훅(기본: 찾은 에이전트), 스킬 5개, MCP 서버. `--yes` 없이는 바뀔 내용만 보여 줍니다 |
 | `pah session list \| show ID \| clear` | 에이전트가 한 일을 단계별로, 경고마다 그 연쇄와 함께(`show latest`는 가장 최근 세션) |
 | `pah hook pre\|post --agent <이름>` | 에이전트가 부르는 훅 진입점(stdin으로 에이전트의 JSON을 읽음) |
 | `pah mcp` | stdio MCP 서버 |

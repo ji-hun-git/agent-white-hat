@@ -44,7 +44,8 @@ session       checked against the session's earlier steps (behavior.py, session.
 answer        deny or ask in the agent's protocol, or nothing; the step is recorded with the answer
 
 after a tool  what it returned is read for instructions aimed at the agent (outputs.py); a hit warns the agent
-ran            and marks the session, so its later sensitive steps need the user
+ran            and marks the session, so its later sensitive steps need the user; a file the agent just wrote is
+               read for app security holes it shows on its own (appsec.py), and the agent is told the fix
 ```
 
 ## Modules
@@ -73,6 +74,7 @@ ran            and marks the session, so its later sensitive steps need the user
 | `shields.py`, `ed25519.py`, `data/shield-keys.json` | Shields for an incident happening now: matching, monitor and enforce, expiry, signed bundles (Ed25519 in pure Python) and the keys shipped with pah ([shields](shields.md)) |
 | `ledger.py` | The protection log: every change to what the guard allows, hash-chained, and its verification |
 | `outputs.py` | What tools return: injected instructions, hidden text, exfiltration links, terminal sequences (PAH-O rules) |
+| `appsec.py` | `pah appsec`: the user's own web app, read route handler by route handler for the fourteen holes attackers try first (PAH-W rules), and the note an agent gets after writing a file with one ([appsec](appsec.md)) |
 | `models.py` | Model files read without loading them: pickles, PyTorch, Keras, GGUF, NumPy, remote code (PAH-M rules) |
 | `intel.py`, `names.py`, `lockfiles.py`, `review.py` | Registry and OSV lookups (opt-in), look-alike names, pinned versions, the model review (opt-in) |
 | `report.py`, `ci.py`, `mcp_server.py`, `cli.py` | Text, JSON and SARIF; GitHub Actions; the MCP server; the command line |

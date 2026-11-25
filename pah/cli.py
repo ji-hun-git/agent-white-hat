@@ -1,4 +1,4 @@
-"""Command line: pah scan | audit | diff | sweep | protect | quarantine | check-command | hook | watch | checkup |
+"""Command line: pah scan | audit | appsec | diff | sweep | protect | quarantine | check-command | hook | watch | checkup |
 incident | install | shield | log | mcp | rules."""
 from __future__ import annotations
 
@@ -45,6 +45,37 @@ def cmd_scan(args) -> int:
         out = render.text(rep, lang=args.lang, verbose=args.verbose)
         if getattr(args, "audit", False):
             out += "\n\n" + render.next_steps(rep, lang=args.lang)
+    if args.output:
+        Path(args.output).write_text(out + "\n", encoding="utf-8")
+    else:
+        print(out)
+    prefix = None
+    if getattr(args, "github", False):
+        from .ci import github, workspace_prefix
+
+        prefix = workspace_prefix(args.target)
+        github(rep, prefix=prefix)
+    if getattr(args, "sarif_out", None):
+        Path(args.sarif_out).write_text(render.sarif(rep, base=prefix or "") + "\n", encoding="utf-8")
+    verdict = rep.verdict
+    if args.fail_on:
+        return EXIT_CODES[verdict] if FAIL_ORDER[verdict] >= FAIL_ORDER[args.fail_on] else 0
+    return EXIT_CODES[verdict]
+
+
+def cmd_appsec(args) -> int:
+    """The user's own web app: the fourteen holes attackers try first, read from the code."""
+    from . import report as render
+    from .appsec import check
+
+    rep = check(args.target, max_seconds=args.max_seconds)
+    if args.format == "json":
+        out = render.as_json(rep)
+    elif args.format == "sarif":
+        out = render.sarif(rep)
+    else:
+        out = render.text(rep, lang=args.lang, verbose=args.verbose, subject="app")
+        out += "\n\n" + render.APP_NEXT.get(args.lang, render.APP_NEXT["en"])
     if args.output:
         Path(args.output).write_text(out + "\n", encoding="utf-8")
     else:
@@ -328,7 +359,7 @@ def cmd_mcp(args) -> int:
 
 
 def cmd_rules(args) -> int:
-    from . import av, behavior, checkup, diff, guard, intel, models, outputs, packages, review, scan, surfaces, watch  # noqa: F401  (registers every rule)
+    from . import appsec, av, behavior, checkup, diff, guard, intel, models, outputs, packages, review, scan, surfaces, watch  # noqa: F401  (registers every rule)
     from .model import RULES
     from .report import rules_markdown
 
@@ -855,8 +886,24 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_log)
 
-    p = sub.add_parser("mcp", help="run as an MCP server over stdio (scan, check_command, checkup, watch_check, incident)")
+    p = sub.add_parser("mcp", help="run as an MCP server over stdio (scan, check_app, check_command, checkup, watch_check, incident)")
     p.set_defaults(func=cmd_mcp)
+
+    p = sub.add_parser("appsec", help="check your own web app for the 14 holes attackers try first: script in a "
+                       "username, another user's ID, open /admin, keys in the browser, prompt injection, admin at "
+                       "signup, client-set prices, fake payments, races, -1 items, guessable codes, open databases, "
+                       ".env in git, unchecked uploads")
+    p.add_argument("target", nargs="?", default=".", help="the app's folder (default: this folder)")
+    p.add_argument("--format", choices=("text", "json", "sarif"), default="text")
+    p.add_argument("--json", dest="format", action="store_const", const="json")
+    p.add_argument("--sarif", dest="format", action="store_const", const="sarif")
+    p.add_argument("-o", "--output", help="write the report to a file")
+    p.add_argument("--fail-on", choices=("block", "warn", "incomplete"), help="exit non-zero only at or above this verdict")
+    p.add_argument("--max-seconds", type=float, default=None)
+    p.add_argument("--lang", choices=("en", "ko"), default=os.environ.get("PAH_LANG", "en"))
+    p.add_argument("-v", "--verbose", action="store_true", help="also show info-level findings")
+    _ci_options(p)
+    p.set_defaults(func=cmd_appsec)
 
     p = sub.add_parser("rules", help="list every rule")
     p.add_argument("--markdown", action="store_true")

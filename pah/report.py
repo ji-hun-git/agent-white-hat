@@ -33,6 +33,26 @@ CHECKUP_KO = {
     "pass": "양호: 문제가 발견되지 않았습니다",
     "incomplete": "불완전: 일부 점검을 실행하지 못했습니다",
 }
+APP_TEXT = {
+    "block": "FIX: an attacker can use the holes below; fix them before you ship",
+    "warn": "REVIEW: check the findings below before you ship",
+    "pass": "PASS: none of the 14 checks found a hole; that is not a full security review",
+    "incomplete": "INCOMPLETE: parts could not be read, so this is not a clean result",
+}
+APP_KO = {
+    "block": "수정 필요: 공격자가 아래 구멍을 이용할 수 있습니다. 출시 전에 고치세요",
+    "warn": "확인 필요: 출시 전에 아래 항목을 확인하세요",
+    "pass": "통과: 14가지 점검에서 구멍을 찾지 못했습니다. 전체 보안 검토를 대신하지는 않습니다",
+    "incomplete": "불완전: 일부를 읽지 못했으므로 깨끗하다는 결과가 아닙니다",
+}
+APP_NEXT = {
+    "en": ("Next steps:\n  Fix each finding at the line it names (the Fix line says how), then run `pah appsec` again.\n"
+           "  These checks read the code. Hosting settings, dependencies and your business rules are not covered: ask "
+           "your agent to follow skills/app-security for the rest."),
+    "ko": ("다음 단계:\n  각 항목이 가리키는 줄을 고치고(조치 줄에 방법이 있습니다) `pah appsec`을 다시 실행하세요.\n"
+           "  이 점검은 코드만 읽습니다. 호스팅 설정, 의존성, 업무 규칙은 다루지 않으니 나머지는 에이전트에게 "
+           "skills/app-security 절차를 따르게 하세요."),
+}
 HEADINGS = {
     "en": {"surfaces": "Runs without being read", "findings": "Findings", "incomplete": "Not fully scanned",
            "why": "Why", "fix": "Fix", "none": "No findings.", "review": "Deep review", "antivirus": "Antivirus",
@@ -61,6 +81,9 @@ def text(report: Report, *, lang: str = "en", color: bool | None = None, limit: 
     if subject == "computer":
         label, sentence = (CHECKUP_KO if lang == "ko" else CHECKUP_TEXT)[verdict].split(": ", 1)
         size = ""
+    elif subject == "app":
+        label, sentence = (APP_KO if lang == "ko" else APP_TEXT)[verdict].split(": ", 1)
+        size = f"  ·  {report.stats.get('files', 0):,} files"
     else:
         label, sentence = verdict.upper(), (VERDICT_KO if lang == "ko" else VERDICT_TEXT)[verdict].split(": ", 1)[1]
         size = f"  ·  {report.stats.get('files', 0):,} files"
@@ -91,6 +114,8 @@ def text(report: Report, *, lang: str = "en", color: bool | None = None, limit: 
             lines.append(f"           {h['why']}: {meta.why}")
             if meta.fix:
                 lines.append(f"           {h['fix']}: {meta.fix}")
+        elif subject == "app" and rank(f.severity) >= rank("medium") and meta.fix:
+            lines.append(f"           {h['fix']}: {meta.fix}")
     if len(findings) > limit:
         lines.append(f"  … {len(findings) - limit} more (use --json for all)")
     if report.review:

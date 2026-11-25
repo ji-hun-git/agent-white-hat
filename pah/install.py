@@ -156,7 +156,7 @@ def plan_claude(plan: Plan, home: Path) -> None:
         hooks = data.setdefault("hooks", {})
         _append_event(hooks, "PreToolUse", {"matcher": "Bash|PowerShell|Write|Edit|MultiEdit|NotebookEdit|Read|WebFetch|mcp__.*",
                                             "hooks": [{"type": "command", "command": cmd["pre"], "timeout": 60}]})
-        _append_event(hooks, "PostToolUse", {"matcher": "Bash|PowerShell|Read|WebFetch|WebSearch|Grep|mcp__.*",
+        _append_event(hooks, "PostToolUse", {"matcher": "Bash|PowerShell|Read|WebFetch|WebSearch|Grep|Write|Edit|MultiEdit|mcp__.*",
                                              "hooks": [{"type": "command", "command": cmd["post"], "timeout": 120}]})
         _append_event(hooks, "SessionStart", {"hooks": [{"type": "command", "command": cmd["session-start"], "timeout": 60}]})
 

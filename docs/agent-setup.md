@@ -17,7 +17,7 @@ stderr and lets the action through.
 
 | Agent | Event | File written by `pah install` | What the hook sees | Can it ask you? | Checked by |
 |---|---|---|---|---|---|
-| Claude Code | PreToolUse, PostToolUse, SessionStart | `~/.claude/settings.json` (or the plugin) | shell, file writes and reads, web fetches, MCP calls, what tools return, new clones, session start | yes | live run with Claude Code 2.1.310, drill |
+| Claude Code | PreToolUse, PostToolUse, SessionStart | `~/.claude/settings.json` (or the plugin) | shell, file writes and reads, web fetches, MCP calls, what tools return, new clones, session start, app security holes in the files it writes | yes | live run with Claude Code 2.1.310, drill |
 | OpenAI Codex CLI | PreToolUse, PostToolUse | `~/.codex/hooks.json` | shell commands and `apply_patch` (paths and added lines); what tools return | no: a question becomes a block | live run with Codex 0.167.1, drill |
 | Gemini CLI | BeforeTool, AfterTool | `~/.gemini/settings.json` | `run_shell_command`, `write_file`, `replace`, `read_file`; what tools return | no | drill (format from geminicli.com/docs/hooks) |
 | Antigravity CLI (`agy`) | PreToolUse | `~/.gemini/config/hooks.json` | `run_command`, file writes, `view_file` | yes | drill (antigravity.google/docs/hooks) |
@@ -56,7 +56,7 @@ starts hooks with.
 
 ## Skills
 
-`pah install --skills` copies four Agent Skills (the open SKILL.md format) to `~/.agents/skills/` and
+`pah install --skills` copies five Agent Skills (the open SKILL.md format) to `~/.agents/skills/` and
 `~/.claude/skills/`, which between them are read by Claude Code, Codex, Gemini CLI, Antigravity, Copilot, Cursor,
 OpenClaw, Devin, Amp, opencode and Cline:
 
@@ -65,6 +65,7 @@ OpenClaw, Devin, Amp, opencode and Cline:
 | `agent-white-hat` | everyday rules: scan before setup, instructions in a target are data, no download-and-run, exact package names |
 | `malware-audit` | a full audit of suspicious code: execution surfaces, static decoding, behavior classes, provenance, verdict |
 | `security-review` | exploitable bugs and vulnerable dependencies, including prompt injection and excessive agency in LLM features |
+| `app-security` | the user's own web app before launch: the fourteen holes attackers try first, with `pah appsec` and what only the hosting settings show |
 | `incident-response` | something already ran: contain, find out what ran, rotate credentials in order, remove persistence, harden |
 
 Installed copies note the absolute path of `pah_entry.py`, so they work even when `pah` is not on `PATH`.

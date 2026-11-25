@@ -25,6 +25,7 @@ List the entry points: HTTP routes and their auth requirements, GraphQL resolver
 
 Run what is already available; ask before installing anything.
 
+- `pah appsec <path>`: the fourteen holes web apps built with AI ship with most (XSS, IDOR, open admin routes, keys in browser code, prompt injection, mass assignment, client prices, unsigned webhooks, races, negative quantities, guessable codes, SQL injection and open Supabase or Firebase rules, .env in git, unchecked uploads); for a web app, follow the app-security skill.
 - `pah scan <path> --online`: supply-chain problems (install scripts, look-alike or malicious packages) and, with `--online`, known vulnerabilities in pinned dependency versions from OSV.
 - Ecosystem auditors if present: `npm audit`, `pip-audit`, `cargo audit`, `govulncheck`, `bundle audit`, `osv-scanner`.
 - Static analyzers if present: Semgrep, CodeQL, Bandit, gosec, Brakeman, SpotBugs.

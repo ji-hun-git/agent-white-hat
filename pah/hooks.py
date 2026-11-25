@@ -43,7 +43,37 @@ def _pre(data: dict) -> dict | None:
                                    "permissionDecisionReason": decision.reason[:2000]}}
 
 
+def _app_note(data: dict) -> dict | None:
+    """After the agent writes a file: holes only that file can show (SQL from strings, keys in browser code, prices
+    from the request, ...) go back to the agent as context to fix now. It never blocks; PAH_NO_APP_HINTS=1 turns it off."""
+    if os.environ.get("PAH_NO_APP_HINTS", "").strip() not in ("", "0"):
+        return None
+    from .appsec import MAX_BYTES, note_for_write
+
+    inp = data.get("tool_input") or {}
+    path = str(inp.get("file_path") or inp.get("notebook_path") or "")
+    if not path:
+        return None
+    cwd = Path(data.get("cwd") or os.getcwd())
+    target = Path(path)
+    if not target.is_absolute():
+        target = cwd / target
+    try:
+        if not target.is_file() or target.stat().st_size > MAX_BYTES:
+            return None
+        content = target.read_text(encoding="utf-8", errors="replace")
+        rel = target.resolve().relative_to(cwd.resolve()).as_posix()  # folders above the project say nothing
+    except ValueError:
+        rel = "/".join(target.parts[-3:])
+    except OSError:
+        return None
+    note = note_for_write(rel, content)
+    return {"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": note}} if note else None
+
+
 def _post(data: dict) -> dict | None:
+    if data.get("tool_name") in WRITE_TOOLS:
+        return _app_note(data)  # the agent's own writes are not outside text, so the output check does not apply
     injected = _inspect_output(data)
     clone = _scan_clone(data) if data.get("tool_name") in SHELL_TOOLS else None
     if not injected:

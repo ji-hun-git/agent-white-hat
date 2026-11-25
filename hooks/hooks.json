@@ -15,7 +15,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash|PowerShell|Read|WebFetch|WebSearch|Grep|mcp__.*",
+        "matcher": "Bash|PowerShell|Read|WebFetch|WebSearch|Grep|Write|Edit|MultiEdit|mcp__.*",
         "hooks": [
           {
             "type": "command",
