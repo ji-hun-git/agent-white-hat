@@ -8,18 +8,18 @@ made quickly with AI, the ones on every "how I hacked a vibe-coded app" list:
 | --- | --- | --- | --- |
 | 1 | Script in your username | PAH-W001 | `dangerouslySetInnerHTML`, `innerHTML`, `v-html`, `{@html}`, `\| safe`, `<%-`, `{{{ }}}`, `Markup`/`mark_safe`/`render_template_string` built from data, request data pasted into an HTML response; nothing a sanitizer has cleaned |
 | 2 | Change the ID in the URL | PAH-W002 | A route that looks a record up (`findUnique`, `findById`, `query.get`, `objects.get`) by an ID from the request with no owner in the query and no owner check after it; Django REST Framework viewsets that serve `objects.all()` without `get_queryset` |
-| 3 | Type /admin | PAH-W003 | Admin routes, routers mounted at `/admin`, Next.js admin pages and Flask or FastAPI admin blueprints with no role check on the server (a sign-in alone is not one); a Next.js `middleware` that checks the role covers them |
+| 3 | Type /admin | PAH-W003 | Admin routes, routers mounted at `/admin`, Next.js admin pages that load data on the server and Flask or FastAPI admin blueprints with no role check on the server (a sign-in alone is not one); routes that send every user account to anyone who can call them. A role check counts wherever it lives: a Next.js `middleware`, the mounted router's own routes, or a helper in another file (`canViewUsers(auth)` that returns `user.isAdmin`) |
 | 4 | API key in the browser | PAH-W004 | Secret names behind a public prefix (`NEXT_PUBLIC_OPENAI_API_KEY`, `VITE_SUPABASE_SERVICE_ROLE_KEY`), `dangerouslyAllowBrowser: true`, AI and payment APIs called from browser code, and real keys (OpenAI, Anthropic, Stripe live, Supabase service role, ...) written into browser code |
-| 5 | Prompt-inject your AI | PAH-W005 | The model's answer passed to `eval`, `exec`, a shell, raw SQL or `innerHTML`; request text written into the system prompt |
+| 5 | Prompt-inject your AI | PAH-W005 | The model's answer passed to `eval`, `exec`, a shell, raw SQL or `innerHTML`; request text written into the system prompt; an agent given a tool that runs SQL, code or shell commands (`SQLDatabaseToolkit`, a Python REPL, a shell tool) |
 | 6 | Admin at signup | PAH-W006 | The whole request body saved into a record (`User.create(req.body)`, `data: body`, `User(**request.json)`, `setattr` over the request), `role`, `isAdmin`, `plan` or `credits` set from the request, roles read from Supabase `user_metadata`, `fields = "__all__"` |
 | 7 | Edit the price | PAH-W007 | `unit_amount`, `price`, `total` or `amount` taken from the request in payment code. Looking a price up by an ID from the request is fine |
-| 8 | Fake a payment | PAH-W008 | Webhook routes that never verify the provider's signature, success pages that mark an order paid without asking the provider, browser code that writes `is_pro` or `paid` itself |
+| 8 | Fake a payment | PAH-W008 | Webhook routes that never verify the provider's signature, success pages that mark an order paid without asking the provider, browser code that writes `is_pro`, `paid` or `payment_status` itself (a bare `status` counts only on a payments, orders or subscriptions table) |
 | 9 | Redeem it 100 times | PAH-W009 | Coupon, gift card, credit and stock code that reads, checks "used" and then updates in separate steps, with no conditional update, lock or unique constraint |
 | 10 | Order -1 items | PAH-W010 | A quantity from the request with no lower bound, especially when it is multiplied into a total; zod `quantity: z.number()` and pydantic `quantity: int` without one |
 | 11 | Guess the login code | PAH-W011 | Routes that compare a login or reset code with no attempt limit anywhere (route, file or a global rate limiter), and codes made with `Math.random()` or Python's `random` |
-| 12 | Query your database | PAH-W012 | SQL built from template literals, f-strings, `%` or `+` (`sql\`\`` tagged templates and parameters are fine); Supabase tables with no row level security, policies with `using (true)`; Firebase rules in test mode or `if true`; MongoDB `$where` built from data, and request values put into a MongoDB query as sent (`{"$ne": null}` matches any record) |
-| 13 | .env in Git | PAH-W013 | `.env` files git tracks, `.env` files in git history after they were deleted, `.env` files with secrets that `.gitignore` does not cover, real keys in `.env.example`, real keys in code |
-| 14 | Upload a non-photo | PAH-W014 | Uploads saved under the name the uploader sent (`file.originalname`, `file.name`, `f.filename` without `secure_filename`), stored with no type or size check, or with SVG allowed |
+| 12 | Query your database | PAH-W012 | SQL built from template literals, f-strings, `%` or `+` (`sql\`\`` tagged templates and parameters are fine); Supabase tables with no row level security, policies with `using (true)` and policies that open the rows with no owner (`user_id is null or ...`), judged on the database the migrations leave behind: they are replayed in order, comments ignored, so a policy a later migration drops is not reported; Firebase rules in test mode or `if true`; MongoDB `$where` built from data, and request values put into a MongoDB query as sent (`{"$ne": null}` matches any record) |
+| 13 | .env in Git | PAH-W013 | `.env` files git tracks, `.env` files in git history after they were deleted, `.env` files with secrets that `.gitignore` does not cover, real keys in `.env.example` (a provider's key format, or a third-party key that looks real; generated sample secrets and test keys are what such files are for), real keys in code |
+| 14 | Upload a non-photo | PAH-W014 | Uploads saved under the name the uploader sent (`file.originalname`, `file.name`, `f.filename` without `secure_filename`, express-fileupload's `file.mv()`), stored with no type or size check, or with SVG allowed |
 
 ```
 pah appsec                    # this folder
@@ -43,15 +43,21 @@ security depend on other files, so only `pah appsec` reports those. `PAH_NO_APP_
 
 - **It reads, never runs.** Like `pah scan`, nothing in the folder is executed. In a git repository it asks git which
   files are tracked and which `.env` files history holds, with hooks and fsmonitor switched off.
-- **It is a set of heuristics, one route handler or one file at a time.** It knows Express, Hono, Fastify, Next.js
-  (route handlers, pages, server actions, middleware), SvelteKit, Flask, FastAPI, Django and Django REST Framework,
-  Prisma, Mongoose, Sequelize, Supabase, Firebase and Stripe well, and other stacks less. It can miss a hole that spans
-  files, and it can flag code whose protection lives somewhere it did not look; each finding says what it saw.
+- **It is a set of heuristics, mostly one route handler or one file at a time.** It knows Express, Hono, Fastify,
+  Next.js (route handlers, pages, server actions, middleware), SvelteKit, Flask, FastAPI, Django and Django REST
+  Framework, Prisma, Mongoose, Sequelize, Supabase, Firebase and Stripe well, and other stacks less. Across files it
+  follows role-check helpers, mounted routers, imports (to tell which browser files run) and the order of Supabase
+  migrations, and no more: it can miss a hole that spans files, and it can flag code whose protection lives somewhere
+  it did not look; each finding says what it saw.
 - **A PASS is not a security review.** Hosting settings (is row level security on in the dashboard? is the webhook
   secret set?), dependencies (`pah audit --online`), business rules and anything decided at run time are outside it.
   [skills/app-security](../skills/app-security/SKILL.md) walks an agent through the rest, attack by attack.
-- **Test, fixture and example files** are reported as low at most; dependencies and build output (`node_modules`,
-  `dist`, `.next`, minified and hashed bundles) are skipped.
+- **Code that never runs is not judged like code that does.** Test, fixture, example and seed files are reported as
+  low at most, and so are browser files nothing in the app imports (it follows the imports from the entry points:
+  server code, framework routes and pages, `main`/`App`). Dependencies, build output (`node_modules`, `dist`, `.next`,
+  minified and hashed bundles), generated files and third-party libraries copied into a static folder (a version and
+  license banner) are skipped. A key is reported at full severity wherever it sits: it is exposed in the repository
+  whether or not its file runs.
 - **How well it works, measured on apps it had never seen** ([the held-out evaluation](appsec-eval.md)): about one
   finding in five is a real hole (52 of 236 labeled, 22%); none of 64 findings on ten well-built apps was real; and it
   catches about a third of the vulnerabilities that apps built to be attacked document (25 of 68). In apps generated
