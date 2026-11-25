@@ -17,7 +17,7 @@ made quickly with AI, the ones on every "how I hacked a vibe-coded app" list:
 | 9 | Redeem it 100 times | PAH-W009 | Coupon, gift card, credit and stock code that reads, checks "used" and then updates in separate steps, with no conditional update, lock or unique constraint |
 | 10 | Order -1 items | PAH-W010 | A quantity from the request with no lower bound, especially when it is multiplied into a total; zod `quantity: z.number()` and pydantic `quantity: int` without one |
 | 11 | Guess the login code | PAH-W011 | Routes that compare a login or reset code with no attempt limit anywhere (route, file or a global rate limiter), and codes made with `Math.random()` or Python's `random` |
-| 12 | Query your database | PAH-W012 | SQL built from template literals, f-strings, `%` or `+` (`sql\`\`` tagged templates and parameters are fine); Supabase tables with no row level security, policies with `using (true)`; Firebase rules in test mode or `if true` |
+| 12 | Query your database | PAH-W012 | SQL built from template literals, f-strings, `%` or `+` (`sql\`\`` tagged templates and parameters are fine); Supabase tables with no row level security, policies with `using (true)`; Firebase rules in test mode or `if true`; MongoDB `$where` built from data, and request values put into a MongoDB query as sent (`{"$ne": null}` matches any record) |
 | 13 | .env in Git | PAH-W013 | `.env` files git tracks, `.env` files in git history after they were deleted, `.env` files with secrets that `.gitignore` does not cover, real keys in `.env.example`, real keys in code |
 | 14 | Upload a non-photo | PAH-W014 | Uploads saved under the name the uploader sent (`file.originalname`, `file.name`, `f.filename` without `secure_filename`), stored with no type or size check, or with SVG allowed |
 
@@ -52,5 +52,12 @@ security depend on other files, so only `pah appsec` reports those. `PAH_NO_APP_
   [skills/app-security](../skills/app-security/SKILL.md) walks an agent through the rest, attack by attack.
 - **Test, fixture and example files** are reported as low at most; dependencies and build output (`node_modules`,
   `dist`, `.next`, minified and hashed bundles) are skipped.
+- **How it does on real apps.** On eight well-built public apps (Next.js SaaS Starter, Vercel's AI chatbot and
+  subscription starter, chatbot-ui, Taxonomy, the full-stack FastAPI template, the Express and Django RealWorld apps)
+  it reports one finding, a real one: any signed-in user can delete any comment in the Django RealWorld app. On four
+  apps built to be vulnerable (OWASP Juice Shop, NodeGoat, DVNA, PyGoat) it finds their SQL and NoSQL injections, basket
+  and review IDORs, the negative-quantity order, the committed private key, the SVG upload, the open admin route and
+  their XSS. It misses an admin role set through an auto-generated REST API and checks that live in another file. The
+  fixes that got it there were made on these same apps (see the changelog), so a fresh set is the real measurement.
 - **It does not change the scan.** These rules live in their own command; `pah scan`, its benchmarks and the
   held-out evaluation are untouched.

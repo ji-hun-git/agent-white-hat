@@ -317,6 +317,45 @@ def _close(text: str, i: int, py: bool = False, limit: int = 120_000) -> int:
     return end
 
 
+QUOTED = re.compile(r"'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"")
+
+
+def _code_only(s: str) -> str:
+    """The expression with the contents of quoted strings removed: words inside strings are not names."""
+    return QUOTED.sub("''", s)
+
+
+def _no_comments(s: str) -> str:
+    """JavaScript without its comments (strings kept), so a comment is never read as an argument."""
+    return re.sub(r"'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"|`(?:[^`\\]|\\.)*`|(//[^\n]*|/\*.*?\*/)",
+                  lambda m: " " if m.group(1) else m.group(0), s, flags=re.S)
+
+
+def _top_level(obj: str) -> list[str]:
+    """The entries of an object literal, split at its own commas only."""
+    inner, parts, depth, cur, i = obj.strip()[1:-1], [], 0, "", 0
+    while i < len(inner):
+        c = inner[i]
+        if c in "'\"`":
+            j = _skip_template(inner, i, len(inner)) if c == "`" else _skip_quote(inner, i, c, len(inner))
+            cur += inner[i:j]
+            i = j
+            continue
+        if c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+        if c == "," and depth == 0:
+            parts.append(cur.strip())
+            cur = ""
+        else:
+            cur += c
+        i += 1
+    if cur.strip():
+        parts.append(cur.strip())
+    return parts
+
+
 def _call_args(text: str, open_paren: int, py: bool = False) -> str:
     return text[open_paren + 1:max(open_paren + 1, _close(text, open_paren, py) - 1)]
 
@@ -561,6 +600,8 @@ USE_CLIENT = re.compile(r"^\s*(?:(?://[^\n]*|/\*.*?\*/)\s*)*['\"]use client['\"]
 USE_SERVER = re.compile(r"^\s*(?:(?://[^\n]*|/\*.*?\*/)\s*)*['\"]use server['\"]", re.S)
 JS_HANDLER_FN = re.compile(r"(?:async\s*)?(?:function\s*[\w$]*\s*)?\(\s*(?:req|request|ctx|c|context)\s*(?::[^,()]*)?"
                            r"(?:,[^()]*)?\)\s*(?::\s*[^={()]{1,80})?\s*(?:=>|\{)")
+JS_REQ_FN = re.compile(r"(?:async\s*)?(?:function\s*[\w$]*\s*)?\(\s*(?:req|request)\s*(?::[^,()]*)?(?:,[^()]*)?\)\s*"
+                       r"(?::\s*[^={()]{1,80})?\s*(?:=>|\{)")
 JS_FILE_GUARD = re.compile(r"(?<![\w$.])[\w$]+\s*\.\s*use\s*\(\s*(?!['\"`]/)([^;\n]{1,300})")
 
 
@@ -651,6 +692,15 @@ def _js_handlers(src: Src) -> list[Handler]:
         if any(a <= m.start() < b for a, b in covered):
             continue
         span = _fn_span(text, m.end())
+        if span:
+            out.append(Handler(src, span[0], span[1], "ANY", "", file_guards, "route"))
+            covered.append(span[:2])
+    # any other function that takes the request: handlers returned by factories (return (req, res) => ...),
+    # assigned to properties (this.show = (req, res) => ...) or passed to a framework
+    for m in JS_REQ_FN.finditer(text):
+        if any(a <= m.start() < b for a, b in covered):
+            continue
+        span = _fn_span(text, m.start())
         if span:
             out.append(Handler(src, span[0], span[1], "ANY", "", file_guards, "route"))
             covered.append(span[:2])
@@ -799,6 +849,7 @@ class Project:
     global_limit: bool = False
     git: dict | None = None
     ignores: list[tuple[str, list[str]]] = field(default_factory=list)
+    limited: list[str] = field(default_factory=list)  # route prefixes a rate limiter is mounted on
 
     def ignored(self, rel: str) -> bool:
         result = False
@@ -825,6 +876,9 @@ class Project:
         return result
 
 
+GLOBAL_LIMIT = re.compile(r"\.use\(\s*(?:[\w$]*(?:[lL]imit|[tT]hrottl)\w*\s*[,)]|(?:new\s+)?[\w$.]*[rR]ate_?[lL]imit\w*\s*\(|"
+                          r"slowDown\s*\()|default_limits|AXES_|DEFAULT_THROTTLE|throttle_classes")
+PATH_LIMIT = re.compile(r"\.use\(\s*(['\"`])(/[^'\"`]*)\1\s*,\s*[^;\n]{0,200}?(?:[lL]imit|[tT]hrottl)")
 SERVER_DIR = re.compile(r"(?:^|/)(?:server|servers|api|backend|functions|lambdas?|workers?|edge|lib/server|scripts|prisma|"
                         r"db|migrations|supabase|netlify|routes/api|middleware)/", re.I)
 
@@ -885,17 +939,16 @@ def _project(files: dict[str, str], git: dict | None) -> Project:
         srcs[rel] = Src(rel, text, lang, _is_client(rel, text, kinds), bool(TEST_PATH.search(rel)))
     middleware = "\n".join(s.text for r, s in srcs.items()
                            if re.search(r"(?:^|/)middleware\.[cm]?[jt]s$", r) and "node_modules" not in r)
-    limit_rx = re.compile(r"\.use\(\s*[\w$]*[lL]imit\w*|rateLimit\s*\(|@upstash/ratelimit|default_limits|AXES_|"
-                          r"DEFAULT_THROTTLE|throttle_classes|express-rate-limit|express-slow-down|rate-limiter-flexible")
-    global_limit = bool(limit_rx.search(middleware)) or any(
-        limit_rx.search(s.text) and re.search(r"\.use\(|default_limits|AXES_|DEFAULT_THROTTLE", s.text)
-        for s in srcs.values() if s.lang in ("js", "py") and not s.test)
+    global_limit = bool(re.search(r"(?i)ratelimit|rate_limit|limiter|throttl", middleware)) or any(
+        GLOBAL_LIMIT.search(s.text) for s in srcs.values() if s.lang in ("js", "py") and not s.test)
+    limited = sorted({m.group(2) for s in srcs.values() if s.lang == "js" and not s.test
+                      for m in PATH_LIMIT.finditer(s.text)})
     ignores = []
     for rel, text in sorted(files.items()):
         if posixpath.basename(rel) == ".gitignore":
             base = posixpath.dirname(rel)
             ignores.append((base, [ln.strip() for ln in text.splitlines() if ln.strip() and not ln.startswith("#")]))
-    return Project(srcs, deps, kinds, middleware, global_limit, git, ignores)
+    return Project(srcs, deps, kinds, middleware, global_limit, git, ignores, limited)
 
 
 # ------------------------------------------------------------------------------------------------ 1. XSS
@@ -905,13 +958,39 @@ USERISH = re.compile(r"(?i)\b(?:user(?:name)?|display_?name|bio|comment|message|
 LITERAL = re.compile(r"""^\s*(?:(['"])[^'"\n]*\1|`[^`$]*`)\s*;?\s*$""")
 
 
+SAFE_HTML = re.compile(r"renderToString|renderToStaticMarkup|sanitiz|purif|escape")
+DOM_SOURCE = re.compile(r"location\.(?:hash|search|href)|document\.(?:URL|referrer|cookie)|URLSearchParams|"
+                        r"\.searchParams\b|window\.name")
+
+
+def _safe_html(value: str, text: str) -> bool:
+    """A value that cannot carry a visitor's markup: a literal, a constant, a ternary of literals, or a name that holds
+    React-rendered or sanitized HTML."""
+    v = value.strip().rstrip(";,").strip()
+    if not v or LITERAL.match(v) or SANITIZED.search(v) or v in ("''", '""', "``"):
+        return True
+    if re.fullmatch(r"[A-Z][A-Z0-9_]*", v):
+        return True
+    if re.fullmatch(r"[^?]{1,200}\?\s*(['\"`])[^'\"`$]*\1\s*:\s*(['\"`])[^'\"`$]*\2", v):
+        return True
+    if re.fullmatch(r"[\w$]+", v):
+        d = re.search(rf"(?:const|let|var)\s+{re.escape(v)}\s*(?::[^=\n]{{1,60}})?=\s*([^;\n]{{0,200}})", text)
+        if d and (SAFE_HTML.search(d.group(1)) or LITERAL.match(d.group(1))):
+            return True
+    return False
+
+
 def _xss(src: Src, out: Out) -> None:
     text = src.text
+    if src.lang in ("js", "py"):
+        for m in re.finditer(r"\bautoescape\s*[:=]\s*(?:false|False)\b|\bnoEscape\s*:\s*true\b", text):
+            out.add(R_XSS, "medium", src, m.start(), "the template engine's escaping is switched off, so every value "
+                                                     "a template prints is raw HTML")
     if src.lang == "js" or src.lang == "tmpl":
         for m in re.finditer(r"dangerouslySetInnerHTML\s*=\s*\{", text):
             value = text[m.end():_close(text, m.end() - 1) - 1]
-            value = re.sub(r"^\s*\{\s*__html\s*:\s*", "", value).rstrip(" }")
-            if not value or LITERAL.match(value) or SANITIZED.search(value):
+            value = re.sub(r"^\s*\{\s*__html\s*:\s*", "", value).rstrip(" }\n\t,")
+            if _safe_html(value, text):
                 continue
             sev = "high" if JS_SOURCE.search(value) or USERISH.search(value) or re.search(r"\.(?:bio|comment)", value) \
                 else "medium"
@@ -919,9 +998,9 @@ def _xss(src: Src, out: Out) -> None:
         for m in re.finditer(r"\.(?:innerHTML|outerHTML)\s*\+?=(?!=)\s*|\binsertAdjacentHTML\s*\(\s*['\"]\w+['\"]\s*,\s*|"
                              r"\bdocument\.write(?:ln)?\s*\(\s*|\$\([^)\n]{1,80}\)\.html\s*\(\s*", text):
             value = _value_after(text, m.end())
-            if not value.strip() or LITERAL.match(value) or SANITIZED.search(value) or value.strip() in ("''", '""'):
+            if _safe_html(value, text):
                 continue
-            sev = "high" if JS_SOURCE.search(value) or re.search(r"location\.|URLSearchParams", value) else "medium"
+            sev = "high" if JS_SOURCE.search(value) or DOM_SOURCE.search(value) else "medium"
             out.add(R_XSS, sev, src, m.start(), "data inserted into the page as HTML")
         for m in re.finditer(r"\bv-html\s*=\s*\"([^\"]+)\"|\{@html\s+([^}]+)\}|bypassSecurityTrust(?:Html|Script|Url|"
                              r"ResourceUrl)\s*\(", text):
@@ -931,9 +1010,11 @@ def _xss(src: Src, out: Out) -> None:
             out.add(R_XSS, "high" if USERISH.search(value) else "medium", src, m.start(), "raw HTML rendering")
     if src.lang == "tmpl":
         for m in re.finditer(r"\{\{[^{}\n]{1,200}\|\s*safe\b[^{}\n]*\}\}|\{%-?\s*autoescape\s+(?:false|off)\s*-?%\}|"
-                             r"<%-\s*(?!include\b)[^%]{1,200}%>|\{\{\{[^}\n]{1,200}\}\}\}|\{!![^!\n]{1,200}!!\}|"
+                             r"<%-(?!\s*include\b)[^%]{1,200}%>|\{\{\{[^}\n]{1,200}\}\}\}|\{!![^!\n]{1,200}!!\}|"
                              r"<\?=?\s*(?:echo\s+)?\$_(?:GET|POST|REQUEST|COOKIE)\b", text):
             token = m.group(0)
+            if re.match(r"\{\{\s*form\.\w+\s*\|\s*safe\s*\}\}", token):
+                continue  # a Django form field renders its widget, escaping the value itself
             sev = "high" if USERISH.search(token) or "$_" in token else "medium"
             out.add(R_XSS, sev, src, m.start(), "template prints a value without escaping it")
     if src.lang == "py":
@@ -970,14 +1051,16 @@ def _xss_handler(h: Handler, out: Out) -> None:
 PRIVATE = re.compile(r"(?i)order|invoice|payment|message|document|\bdocs?\b|file|note|profile|account|\busers?\b|address|"
                      r"ticket|chat|conversation|booking|reservation|transaction|subscription|receipt|attachment|upload|"
                      r"appointment|patient|contact|card|wallet|secret|statement|record|submission|draft|journal|diary|"
-                     r"medical|health|private|inbox")
+                     r"medical|health|private|inbox|basket|cart|allocation|benefit|salary|payroll|memo")
 JS_LOOKUP = re.compile(r"\.\s*(findUnique(?:OrThrow)?|findFirst(?:OrThrow)?|findById(?:AndUpdate|AndDelete|AndRemove)?|"
-                       r"findOne(?:AndUpdate|AndDelete|AndRemove)?|findByPk|findOneBy|update|delete|destroy|deleteOne|"
-                       r"updateOne|remove)\s*\(")
+                       r"findOne(?:AndUpdate|AndDelete|AndRemove)?|findByPk|findOneBy|find|update|delete|destroy|"
+                       r"deleteOne|updateOne|remove|(?:get|find|fetch|load)\w*By\w*)\s*\(")
 ID_KEY = re.compile(r"\b(?:id|_id|uuid|pk|slug)\b|[a-z]Id\b|_id\b")
-OWNER_ARG = re.compile(r"\b(?:user_?[iI]d|owner(?:_?[iI]d)?|author(?:_?[iI]d)?|created_?[bB]y|tenant_?[iI]d|"
-                       r"org(?:anization)?_?[iI]d|team_?[iI]d|account_?[iI]d|workspace_?[iI]d|customer_?[iI]d|"
-                       r"member(?:_?[iI]d|s)?|uid|user)\s*:")
+OWNER_ARG = re.compile(r"(?i)\b(?:user_?id|owner(?:_?id)?|author(?:_?id)?|created_?by|tenant_?id|org(?:anization)?_?id|"
+                       r"team_?id|account_?id|workspace_?id|customer_?id|member(?:_?id|s)?|uid|user)\s*:")
+ACCESS_HELPER = re.compile(r"(?i)\b(?:verify|check|assert|ensure|require|can|has|is|user)\w*(?:access|owner|ownership|"
+                           r"permission|authori[sz]ed|allowed|owns)\w*\s*\(")
+ADMIN_GUARD = re.compile(r"(?i)admin|superuser|staff|accounting|\brole|permission")
 OWNER_CHECK = re.compile(
     r"\.(?:user_?[iI]d|owner(?:_?[iI]d)?|author_?[iI]d|created_?[bB]y|tenant_?[iI]d|org_?[iI]d|organization_?[iI]d|"
     r"team_?[iI]d|account_?[iI]d|workspace_?[iI]d|customer_?[iI]d|uid)\s*(?:!==?|===?)|(?:!==?|===?)\s*[\w$.?]*\."
@@ -1007,18 +1090,37 @@ DRF_VIEW = re.compile(r"^class\s+\w+\s*\(([^)]*(?:ModelViewSet|ReadOnlyModelView
 def _idor(h: Handler, out: Out) -> None:
     text, body, t = h.src.text, h.body, h.taint
     context = body + "\n" + h.guards
+    if ADMIN_GUARD.search(h.guards) or ACCESS_HELPER.search(body):
+        return  # admins may reach any record; an access helper is the owner check
     if h.src.lang == "js":
         if OWNER_CHECK.search(context):
             return
         for m in JS_LOOKUP.finditer(body):
-            args = _call_args(text, h.start + m.end() - 1)
-            if not ID_KEY.search(args) or not t.touches(args) or OWNER_ARG.search(args):
+            name = m.group(1)
+            args = _no_comments(_call_args(text, h.start + m.end() - 1)).strip()
+            where = re.search(r"\bwhere\s*:\s*\{", args)
+            if where:
+                selector = args[where.end() - 1:_close(args, where.end() - 1)]
+            else:
+                selector = _value_after(args, 0)
+                receiver = re.search(r"([\w$.]+)\s*$", body[:m.start()])
+                last = receiver.group(1).split(".")[-1] if receiver else ""
+                if name == "find" and not selector.startswith("{"):
+                    continue  # Array.prototype.find
+                if MUTATION.fullmatch(name) or name in ("deleteOne", "updateOne", "find"):
+                    model = last[:1].isupper() or re.search(r"(?i)collection|model|dao|repo|table|store", last) or \
+                        (receiver and receiver.group(1).startswith(("db.", "prisma.", "this.prisma", "ctx.db")))
+                    if not model:
+                        continue  # an instance's own update: record.update({...})
+            code = _code_only(selector)
+            if not (ID_KEY.search(code) or ID_KEY.search(name)) or not t.touches(code) or OWNER_ARG.search(code):
                 continue
             window = body[max(0, m.start() - 60):m.start()]
-            mutation = bool(MUTATION.search(m.group(1))) or h.method in ("DELETE", "PUT", "PATCH")
-            if mutation:
+            mutation = bool(MUTATION.search(name)) or h.method in ("DELETE", "PUT", "PATCH")
+            private = bool(PRIVATE.search(window) or PRIVATE.search(h.path) or PRIVATE.search(name))
+            if mutation and (private or re.search(r"(?i)delete|destroy|remove", name) or h.method == "DELETE"):
                 sev = "high"
-            elif PRIVATE.search(window) or PRIVATE.search(h.path):
+            elif mutation or private:
                 sev = "medium"
             else:
                 continue
@@ -1155,13 +1257,19 @@ def _real(value: str) -> bool:
     return not PLACEHOLDER.search(value) and _entropy(core) >= 3.5
 
 
-def _jwt_role(token_body: str) -> str:
+def _jwt_claims(token_body: str) -> dict:
     try:
         pad = "=" * (-len(token_body) % 4)
         data = json.loads(base64.urlsafe_b64decode(token_body + pad))
     except (ValueError, TypeError):
-        return ""
-    return str(data.get("role", "")) if isinstance(data, dict) else ""
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _service_role(token_body: str) -> bool:
+    """A Supabase service-role key, except the published one every local Supabase uses (issuer supabase-demo)."""
+    claims = _jwt_claims(token_body)
+    return claims.get("role") == "service_role" and claims.get("iss") != "supabase-demo"
 
 
 def _secrets(text: str) -> list[tuple[int, str, str]]:
@@ -1172,7 +1280,7 @@ def _secrets(text: str) -> list[tuple[int, str, str]]:
             if _real(m.group(0)):
                 found.append((m.start(), f"{kind} key", m.group(0)[:4]))
     for m in JWT.finditer(text):
-        if _jwt_role(m.group(1)) == "service_role":
+        if _service_role(m.group(1)):
             found.append((m.start(), "Supabase service-role key", m.group(0)[:4]))
     for m in PRIVATE_KEY.finditer(text):
         found.append((m.start(), "private key", "----"))
@@ -1188,8 +1296,8 @@ def _browser_keys(src: Src, out: Out) -> None:
                 out.add(R_BROWSER_KEY, "high", src, m.start(), f"{name} is a secret, but its prefix puts it in the "
                                                                "browser bundle", evidence=name)
         if src.lang == "env":
-            for m in re.finditer(r"^\s*(?:export\s+)?((?:NEXT_PUBLIC|VITE|REACT_APP|EXPO_PUBLIC|NUXT_PUBLIC|PUBLIC|"
-                                 r"GATSBY)_\w+)\s*=\s*['\"]?([^'\"\s#]+)", text, re.M):
+            for m in re.finditer(r"^[ \t]*(?:export[ \t]+)?((?:NEXT_PUBLIC|VITE|REACT_APP|EXPO_PUBLIC|NUXT_PUBLIC|PUBLIC|"
+                                 r"GATSBY)_\w+)[ \t]*=[ \t]*['\"]?([^'\"\s#]+)", text, re.M):
                 if not SECRET_NAME.search(m.group(1)) and _secrets(m.group(2)) and not PUBLIC_OK.search(m.group(1)):
                     out.add(R_BROWSER_KEY, "high", src, m.start(), f"{m.group(1)} holds a secret key and is shipped to "
                                                                    "the browser", evidence=m.group(1))
@@ -1209,7 +1317,7 @@ def _browser_keys(src: Src, out: Out) -> None:
                     evidence=f"{kind} starting {head}…")
 
 
-ENV_LINE = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][\w.]*)\s*=\s*(.*)$", re.M)
+ENV_LINE = re.compile(r"^[ \t]*(?:export[ \t]+)?([A-Za-z_][\w.]*)[ \t]*=[ \t]*(.*)$", re.M)  # a value never spans lines
 SECRETISH = re.compile(r"(?i)key|secret|token|password|passwd|pwd|database_url|db_url|dsn|private|credential")
 
 
@@ -1217,6 +1325,11 @@ def _env_secret(name: str, value: str) -> str:
     value = value.strip().strip("'\"")
     if not value or "${" in value or value.startswith("$"):
         return ""
+    if PUBLIC_ENV.match(name) or PUBLIC_OK.search(name):
+        return ""  # meant for the browser: PAH-W004 judges what a public variable holds
+    jwt = JWT.fullmatch(value)
+    if jwt:
+        return "Supabase service-role key" if _service_role(jwt.group(1)) else ""
     found = _secrets(value)
     if found:
         return found[0][1]
@@ -1362,6 +1475,11 @@ USER_MODEL = re.compile(r"(?i)user|account|profile|member|customer|admin|sign_?u
 PRIV_FIELD = re.compile(r"\b(role|roles|is_?admin|isAdmin|admin|is_staff|is_superuser|isSuperuser|permissions?|plan|tier|"
                         r"credits|balance|is_?verified|isVerified|email_?verified|emailVerified|is_?pro|isPro|"
                         r"is_?premium|isPremium|subscription_?status|subscriptionStatus)\s*[:=](?![=>])\s*")
+NOT_MODEL = re.compile(r"^(?:Response|NextResponse|Request|Headers|URL|URLSearchParams|Date|Map|Set|WeakMap|WeakSet|Promise|"
+                       r"Blob|File|FormData|TextEncoder|TextDecoder|Buffer|RegExp|Array|Object|Image|Audio|Worker|"
+                       r"WebSocket|EventSource|AbortController|OpenAI|Anthropic|Stripe|Resend|Redis|Pool|Client|"
+                       r"PrismaClient|Hono|Router|Proxy|Function)$|(?:Error|Exception|Response|Stream|Event|Client|"
+                       r"Controller|Encoder|Decoder|Array|Observer|Builder|Parser|Formatter)$")
 ADMIN_CHECK = re.compile(r"\b(?:isAdmin|is_admin|requireAdmin|admin_required|IsAdminUser|is_staff|is_superuser|hasRole|"
                          r"requireRole|checkRole)\b|role\s*(?:!==?|===?|==|!=)\s*['\"]admin|['\"]admin['\"]\s*(?:!==?|"
                          r"===?|==|!=)|roles?\.includes\(\s*['\"]admin")
@@ -1375,7 +1493,9 @@ def _mass_handler(h: Handler, out: Out) -> None:
         whole = [r"(?:req|request|ctx\.request)\.body"] + [re.escape(n) for n in t.raw]
         whole_rx = re.compile(r"(?<![\w$.])(?:" + "|".join(whole) + r")(?![\w$]|\s*[.\[(?])")
         for m in CREATE_JS.finditer(body):
-            args = _call_args(text, h.start + m.end() - 1)
+            if m.group(2) and NOT_MODEL.search(m.group(2)):
+                continue
+            args = _code_only(_call_args(text, h.start + m.end() - 1))
             if whole_rx.search(args):
                 window = body[max(0, m.start() - 60):m.start() + 20] + " " + h.path + " " + h.src.rel
                 sev = "high" if USER_MODEL.search(window) else "medium"
@@ -1537,8 +1657,10 @@ def _race(h: Handler, out: Out) -> None:
 # ------------------------------------------------------------------------------------------------ 10. quantity
 
 QTY = re.compile(r"\b(quantity|qty|units|seats|tickets|nights)\b")
-BOUND = re.compile(r"(?i)\b(?:quantity|qty|units|seats|tickets|nights)\w*['\"\]]*\s*(?:<=?|>=?)\s*-?\d|(?:<=?|>=?)\s*"
-                   r"[\w$.\[\]'\"]*\b(?:quantity|qty)\b|\.positive\(\)|\.min\(\s*[1-9]|\.gte?\(\s*[0-9]|"
+# A lower bound only: "stock >= quantity" caps an order but lets -1 through.
+BOUND = re.compile(r"(?i)\b(?:quantity|qty|units|seats|tickets|nights)\w*['\"\]]*\s*(?:<\s*[01]\b|<=\s*0\b|>\s*0\b|>=\s*1\b)|"
+                   r"\b[01]\s*(?:<=?|>=?)\s*[\w$.\[\]'\"]*\b(?:quantity|qty|units|seats|tickets|nights)\b|"
+                   r"\.positive\(\)|\.min\(\s*[1-9]|\.gte?\(\s*[0-9]|"
                    r"nonnegative\(\)|isInt\(\s*\{\s*min|Math\.max\(\s*1|Math\.abs\(|PositiveInteger|"
                    r"PositiveSmallInteger|MinValueValidator|\bgt\s*=\s*0|\bge\s*=\s*1|conint\(|PositiveInt|@Min\(|"
                    r"@Positive|\bmin\s*:\s*1|minimum\s*:\s*1|\bclamp\s*\(")
@@ -1564,6 +1686,8 @@ def _quantity(h: Handler, out: Out) -> None:
 
 def _quantity_schema(src: Src, out: Out) -> None:
     text = src.text
+    if re.search(r"(?i)config|settings", posixpath.basename(src.rel)):
+        return  # the app's own configuration, not what a customer sends
     for m in re.finditer(r"\b(quantity|qty)\s*:\s*z\.(?:coerce\.)?number\(\)((?:\s*\.\s*\w+\([^()]*\))*)", text):
         if not re.search(r"positive|min|gte?\(|nonnegative", m.group(2)):
             out.add(R_QUANTITY, "medium", src, m.start(), f"the schema accepts any number for {m.group(1)}, "
@@ -1604,6 +1728,8 @@ def _code_handler(h: Handler, project: Project, out: Out) -> None:
     if not m:
         return
     if project.global_limit or LIMIT.search(h.body + h.guards) or LIMIT.search(h.src.text) or MANAGED.search(h.src.text):
+        return
+    if h.path and any(h.path.startswith(p) for p in project.limited):
         return
     out.add(R_CODE, "high", h.src, h.start + m.start(), f"{h.where} checks a code with no limit on wrong attempts; a "
                                                         "script can try every value")
@@ -1664,10 +1790,45 @@ def _string_at(text: str, pos: int, py: bool) -> tuple[str, int] | None:
     return text[pos:end], end
 
 
+MONGO = re.compile(r"mongoose|mongodb|MongoClient|pymongo|motor\.|\.collection\(")
+MONGO_QUERY = re.compile(r"\.(?:find|findOne|findOneAndUpdate|findOneAndDelete|updateOne|updateMany|deleteOne|"
+                         r"deleteMany|countDocuments|exists|find_one|update_one|delete_one)\s*\(")
+SECRET_FIELD = re.compile(r"(?i)pass(?:word)?|pwd|token|code|otp|secret|hash|pin")
+
+
+def _nosql(h: Handler, project: Project, out: Out) -> None:
+    """A request value placed in a MongoDB query as it came: JSON and query strings can carry {"$ne": null}."""
+    if h.src.lang != "js" or not (MONGO.search(h.src.text) or project.deps & {"mongoose", "mongodb"}):
+        return
+    t = h.taint
+    for m in MONGO_QUERY.finditer(h.body):
+        first = _value_after(_no_comments(_call_args(h.src.text, h.start + m.end() - 1)).strip(), 0)
+        if not first.startswith("{") or re.search(r"\bwhere\s*:", first):
+            continue  # where: is Sequelize or Prisma, which do not read operators from plain values
+        raw = []
+        for entry in _top_level(first):
+            kv = re.fullmatch(r"([\w$]+)\s*:\s*(req\.(?:body|query)\.[\w$.]+)", entry)
+            if kv:
+                raw.append(kv.group(1))
+            elif re.fullmatch(r"[\w$]+", entry) and entry in t.names and not re.search(
+                    rf"\b(?:String|Number|parseInt|ObjectId)\s*\(\s*{re.escape(entry)}\b", h.body):
+                raw.append(entry)
+        if raw:
+            sev = "high" if any(SECRET_FIELD.search(k) for k in raw) else "medium"
+            out.add(R_DB, sev, h.src, h.start + m.start(), f"{', '.join(raw)} goes into the MongoDB query as the "
+                                                           "client sent it: {\"$ne\": null} would match any record")
+            return
+
+
 def _sql(src: Src, out: Out) -> None:
     text, py = src.text, src.lang == "py"
     if src.lang not in ("js", "py"):
         return
+    for m in re.finditer(r"['\"]?\$where['\"]?\s*:\s*", text):
+        value = _value_after(text, m.end(), py)
+        if "${" in value or re.search(r"[rR]?[fF]['\"]", value[:3]) or re.search(r"['\"`]\s*\+", value):
+            out.add(R_DB, "high", src, m.start(), "a MongoDB $where runs JavaScript built from data: the data can "
+                                                  "rewrite the query")
     variables = set()
     decl = re.compile(r"^[ \t]*(\w+)\s*=\s*(?=[rRbBfF]{0,2}['\"])", re.M) if py else \
         re.compile(r"(?:const|let|var)\s+([\w$]+)\s*=\s*(?=['\"`])")
@@ -1765,7 +1926,8 @@ def _uploads(src: Src, out: Out) -> None:
         for m in re.finditer(r"\bdiskStorage\s*\(", text):
             args = _call_args(text, m.end() - 1)
             fn = re.search(r"\bfilename\s*[:(]", args)
-            if fn and "originalname" in args[fn.start():]:
+            sanitized = re.search(r"(?:sanitiz\w*|basename|slugify|filenamify)\s*\(\s*\w+\.originalname", args)
+            if fn and "originalname" in args[fn.start():] and not sanitized:
                 part = args[fn.start():]
                 only_ext = re.search(r"extname\(\s*\w+\.originalname\s*\)", part) and \
                     not re.search(r"(?<!extname\()\b\w+\.originalname\b(?!\s*\))", part.replace("extname(", "extname("))
@@ -1845,6 +2007,7 @@ def analyze(project: Project, out: Out, local: bool = False) -> None:
             _mass_handler(h, out)
             _price(h, out)
             _payment_handler(h, out)
+            _nosql(h, project, out)
             if not local:
                 _idor(h, out)
                 _admin_handler(h, project, out)

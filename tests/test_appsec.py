@@ -948,6 +948,245 @@ class UploadTest(Case):  # 14. Upload a non-photo
         """})
 
 
+def demo_jwt(role: str, iss: str = "supabase-demo") -> str:
+    return f"{b64url({'alg': 'HS256', 'typ': 'JWT'})}.{b64url({'iss': iss, 'role': role, 'exp': 1983812996})}." \
+           f"{fake_key('', 43, seed=5)}"
+
+
+class RealAppFalseAlarmTest(Case):
+    """Shapes from twelve public apps (eight well-built, four deliberately vulnerable) that the first version flagged
+    wrongly. Each input is written for the test, not copied from those apps."""
+
+    def test_empty_example_values_are_not_secrets(self):
+        self.clean("PAH-W013", {".env.local.example": "OPENAI_API_KEY=\nANTHROPIC_API_KEY=\nSUPABASE_SERVICE_ROLE_KEY=\n\n"
+                                                      "# Get these from the Stripe dashboard\nSTRIPE_SECRET_KEY=\n"})
+
+    def test_supabase_local_demo_keys(self):
+        self.clean("PAH-W013", {
+            "supabase/migrations/0001_storage.sql": f"declare service_role_key text := '{demo_jwt('service_role')}';\n",
+            ".env.local.example": f'NEXT_PUBLIC_SUPABASE_ANON_KEY="{demo_jwt("anon")}"\n'})
+        self.clean("PAH-W004", {".env.local.example": f'NEXT_PUBLIC_SUPABASE_ANON_KEY="{demo_jwt("anon")}"\n'})
+
+    def test_real_service_role_key_still_found(self):
+        self.hit("PAH-W013", {"supabase/seed.sql": f"select '{service_role_jwt()}';\n"}, "high")
+
+    def test_words_inside_strings_are_not_the_body(self):
+        self.clean("PAH-W006", {"app/api/chat/route.ts": """
+            export async function POST(request: Request) {
+              const json = await request.json();
+              const answer = await ask(json.messages);
+              return new Response(answer, { headers: { "Content-Type": "application/json" } });
+            }
+        """})
+
+    def test_access_helper_counts_as_owner_check(self):
+        self.clean("PAH-W002", {"app/api/posts/[postId]/route.ts": """
+            export async function DELETE(req: Request, context) {
+              const { params } = schema.parse(context);
+              if (!(await verifyCurrentUserHasAccessToPost(params.postId))) return new Response(null, { status: 403 });
+              await db.post.delete({ where: { id: params.postId } });
+              return new Response(null, { status: 204 });
+            }
+        """})
+
+    def test_superuser_dependency_counts(self):
+        self.clean("PAH-W002", {"app/api/routes/users.py": """
+            @router.patch("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
+            def update_user(*, session: SessionDep, user_id: uuid.UUID, user_in: UserUpdate):
+                db_user = session.get(User, user_id)
+                session.delete(db_user)
+                return db_user
+        """})
+
+    def test_capitalised_owner_key(self):
+        self.clean("PAH-W002", {"routes/payment.ts": """
+            export function getCard () {
+              return async (req, res) => {
+                const card = await CardModel.findOne({ where: { id: req.params.id, UserId: req.body.UserId } });
+                res.json(card);
+              };
+            }
+        """})
+
+    def test_instance_update_is_not_a_lookup(self):
+        self.clean("PAH-W002", {"routes/avatar.ts": """
+            export function uploadAvatar () {
+              return async (req, res) => {
+                const user = await UserModel.findByPk(res.locals.userId);
+                const ext = detect(req.file.buffer);
+                await user.update({ avatar: `/uploads/${user.id}.${ext}` });
+                res.sendStatus(204);
+              };
+            }
+        """})
+
+    def test_session_id_is_not_from_the_request(self):
+        self.clean("PAH-W002", {"app/routes/contributions.js": """
+            this.handleUpdate = (req, res, next) => {
+              const { preTax, roth } = req.body;
+              const userId = req.session.userId;
+              contributionsDAO.update(userId, preTax, roth, (err, saved) => res.render("contributions", saved));
+            };
+        """})
+
+    def test_constant_script(self):
+        self.clean("PAH-W001", {"app/layout.tsx": """
+            const THEME_SCRIPT = `(function () { document.documentElement.dataset.theme = "dark"; })();`;
+            export default function Layout({ children }) {
+              return <html><head><script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} /></head>{children}</html>;
+            }
+        """})
+
+    def test_react_rendered_markup(self):
+        self.clean("PAH-W001", {"lib/editor.tsx": """
+            export function toDoc(content: string) {
+              const markup = renderToString(<Markdown>{content}</Markdown>);
+              const box = document.createElement("div");
+              box.innerHTML = markup;
+              return parse(box);
+            }
+        """})
+
+    def test_ternary_of_literals(self):
+        self.clean("PAH-W001", {"templates/base.html": "<script>toggle.innerHTML = dark ? 'moon' : 'sun';</script>\n"})
+
+    def test_django_form_field(self):
+        self.clean("PAH-W001", {"templates/login.html": "{{ form.username|safe }}\n"})
+
+    def test_page_host_is_not_attacker_input(self):
+        got = found({"config/dev.js": "module.exports = { snippet: () => document.write(\"<script src='//\" + "
+                                      "location.host + \"/reload.js'></\" + \"script>\") };\n"}, at_least="high")
+        self.assertNotIn("PAH-W001", got)
+
+    def test_ejs_include(self):
+        self.clean("PAH-W001", {"views/layout.ejs": "<main><%- include(partial) %></main>\n"})
+
+    def test_multer_sanitised_name(self):
+        self.clean("PAH-W014", {"server.js": """
+            const upload = multer({
+              storage: multer.diskStorage({
+                destination: (req, file, cb) => cb(TYPES[file.mimetype] ? null : new Error("type"), "uploads"),
+                filename: (req, file, cb) => cb(null, sanitizeFilename(file.originalname).toLowerCase()),
+              }),
+            });
+        """})
+
+    def test_config_schema_quantity(self):
+        # a stock level in the app's own configuration is not something a customer sends
+        self.clean("PAH-W010", {"lib/config.schema.ts": "export const Product = z.object({ name: z.string(), "
+                                                         "quantity: z.number().optional() });\n"})
+
+    def test_rate_limit_on_another_path(self):
+        self.hit("PAH-W011", {
+            "server.js": 'app.use("/rest/user/reset-password", rateLimit({ windowMs: 300000, max: 100 }));\n',
+            "routes/verify.js": """
+                router.post("/verify-code", async (req, res) => {
+                  const row = await Codes.findOne({ where: { email: req.body.email } });
+                  if (!row || row.code !== req.body.code) return res.status(401).end();
+                  res.json(await login(row.email));
+                });
+            """}, "high")
+
+
+class RealAppMissTest(Case):
+    """Holes the deliberately vulnerable apps have that the first version missed. Inputs written for the test."""
+
+    def test_handler_returned_by_a_factory(self):
+        self.hit("PAH-W002", {"routes/basket.ts": """
+            export function retrieveBasket () {
+              return (req, res, next) => {
+                const id = req.params.id;
+                BasketModel.findOne({ where: { id } }).then((basket) => res.json(basket)).catch(next);
+              };
+            }
+        """})
+
+    def test_dao_lookup_by_user_id_from_url(self):
+        self.hit("PAH-W002", {"app/routes/allocations.js": """
+            this.displayAllocations = (req, res, next) => {
+              const userId = req.params.userId;
+              allocationsDAO.getByUserId(userId, (err, docs) => res.render("allocations", docs));
+            };
+        """})
+
+    def test_template_engine_escaping_off(self):
+        self.hit("PAH-W001", {"server.js": 'swig.setDefaults({ autoescape: false });\n'})
+        self.hit("PAH-W001", {"app.js": 'nunjucks.configure("views", { autoescape: false, express: app });\n'})
+
+    def test_upper_bound_is_not_a_lower_bound(self):
+        self.hit("PAH-W010", {"routes/basketItems.ts": """
+            export function addItem () {
+              return async (req, res) => {
+                const product = await ProductModel.findByPk(req.body.ProductId);
+                if (product.stock >= req.body.quantity) {
+                  await BasketItemModel.create({ ProductId: product.id, quantity: req.body.quantity });
+                  return res.sendStatus(201);
+                }
+                res.status(400).json({ error: "not enough stock" });
+              };
+            }
+        """})
+
+    def test_mongo_where_with_input(self):
+        self.hit("PAH-W012", {"app/data/allocations-dao.js": """
+            this.getByUserIdAndThreshold = (userId, threshold, callback) => {
+              allocations.find({ $where: `this.userId == ${userId} && this.stocks > '${threshold}'` }).toArray(callback);
+            };
+        """}, "high")
+
+    def test_mongo_operator_injection_in_login(self):
+        self.hit("PAH-W012", {"routes/auth.js": """
+            const mongoose = require("mongoose");
+            router.post("/login", async (req, res) => {
+              const user = await User.findOne({ email: req.body.email, password: req.body.password });
+              if (!user) return res.status(401).end();
+              res.json({ token: sign(user) });
+            });
+        """}, "high")
+
+    def test_mongo_cast_values_are_fine(self):
+        self.clean("PAH-W012", {"routes/auth.js": """
+            const mongoose = require("mongoose");
+            router.post("/login", async (req, res) => {
+              const user = await User.findOne({ email: String(req.body.email) });
+              if (!user || !(await bcrypt.compare(String(req.body.password), user.hash))) return res.status(401).end();
+              res.json({ token: sign(user) });
+            });
+        """})
+
+    def test_comment_before_the_selector(self):
+        self.hit("PAH-W002", {"routes/reviews.ts": """
+            export function updateReview () {
+              return (req, res, next) => {
+                db.reviewsCollection.update( // the review to change
+                  { _id: req.body.id }, // chosen by the client
+                  { $set: { message: req.body.message } }
+                ).then((result) => res.json(result), next);
+              };
+            }
+        """})
+
+    def test_sequelize_where_is_not_a_mongo_query(self):
+        self.clean("PAH-W012", {"routes/order.ts": """
+            import * as db from "../data/mongodb";
+            export function placeOrder () {
+              return (req, res, next) => {
+                const id = req.params.id;
+                BasketModel.findOne({ where: { id }, include: [{ model: ProductModel }] }).then((b) => res.json(b));
+              };
+            }
+        """})
+
+    def test_sequelize_find_by_body_id(self):
+        self.hit("PAH-W002", {"core/appHandler.js": """
+            module.exports.userEditSubmit = function (req, res) {
+              db.User.find({ where: { id: req.body.id } }).then((user) => {
+                user.update({ email: req.body.email, name: req.body.name }).then(() => res.redirect("/app/useredit"));
+              });
+            };
+        """})
+
+
 class GeneralTest(Case):
     def test_every_rule_has_metadata(self):
         for n in range(1, 15):

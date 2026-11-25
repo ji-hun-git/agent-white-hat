@@ -27,9 +27,28 @@ output, the same CI options as `pah scan`, an MCP tool (`check_app`), a `/appsec
 and `MultiEdit`: after the agent writes a file, the holes that file shows on its own come back to the agent with the
 fix, as context, never as a block (`PAH_NO_APP_HINTS=1` turns it off; existing installs pick it up with
 `pah install --yes` or a plugin update); the tool-output check still leaves the agent's own writes alone. Every
-rule has a vulnerable case and its fixed twin in `tests/test_appsec.py` (124 tests); on the installed FastAPI,
+rule has a vulnerable case and its fixed twin in `tests/test_appsec.py` (152 tests); on the installed FastAPI,
 Starlette, Streamlit, OpenAI, Anthropic, SQLAlchemy and Jinja packages it raises nothing at medium or above except
 one SQL string formatted in SQLAlchemy's MSSQL dialect. `pah scan` and its rules are untouched.
+
+**`pah appsec` on twelve public apps.** Eight well-built ones (Next.js SaaS Starter, Vercel's AI chatbot and
+subscription starter, chatbot-ui, Taxonomy, the full-stack FastAPI template, the Express and Django RealWorld apps)
+and four built to be vulnerable (OWASP Juice Shop, NodeGoat, DVNA, PyGoat). The first version raised 21 findings at
+medium or above on the well-built apps, one of them real: the Django RealWorld app lets any signed-in user delete any
+comment. The other 20 had seven causes, now fixed: an empty `KEY=` line in a `.env.example` read the next line as its
+value; the published Supabase local-development keys counted as secrets; "application/json" inside a string was read
+as the request body; access helpers such as `verifyCurrentUserHasAccessToPost`, superuser-only dependencies and
+`UserId` owner keys were not recognized; and a constant theme script and React `renderToString` output were taken
+for user HTML. It also missed holes the vulnerable apps document, now caught: handlers returned by factories
+(`return (req, res) => ...`) and DAO lookups such as `getByUserId`, a comment between a call and its query, MongoDB
+`$where` built from data and request values placed in MongoDB queries as sent, template engines with `autoescape`
+off, and quantities checked only against stock (an upper bound lets -1 through). A rate limiter mounted on one path
+no longer counts for the whole app. Afterwards the eight well-built apps raise only the real Django bug; the
+vulnerable apps raise their SQL and NoSQL injections, basket and review IDORs, the negative-quantity order, the
+committed private key, the SVG upload, the open admin route and their stored and DOM XSS. Still missed: an admin
+role set through an auto-generated REST API, upload checks kept in another middleware, and guards mounted in another
+file (a few false alarms remain for that reason). These numbers are from the same apps the fixes were made on, so
+they are tuning results, not a measurement; a fresh set of apps is the next test.
 
 **Shields for an incident happening now, and a protection log.** After Shirudo (OpenAI and Cisco, November 2026),
 which shields a running service from one exploit path until its patch ships, `pah shield` adds narrow guard rules for
