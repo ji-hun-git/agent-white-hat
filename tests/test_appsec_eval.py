@@ -1,6 +1,7 @@
 """The scoring of bench/appsec_eval.py: labels joined to findings, precision with Wilson intervals, recall."""
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -60,6 +61,38 @@ class ScoreTest(unittest.TestCase):
         self.assertAlmostEqual(lo, 0.596, places=3)
         self.assertAlmostEqual(hi, 0.982, places=3)
         self.assertEqual(appsec_eval.wilson(0, 0), (0.0, 1.0))
+
+    def test_wilson_never_goes_below_zero(self):
+        lo, hi = appsec_eval.wilson(0, 5)
+        self.assertEqual(lo, 0.0)
+        self.assertGreater(hi, 0.4)
+
+    def test_publish_hides_where_real_apps_are_vulnerable(self):
+        results = {"apps": RESULTS["apps"] + [
+            {"repo": "someone/their-app", "stratum": "ai_built", "commit": "c", "seconds": 1, "files": 3,
+             "verdict": "block", "incomplete": [], "findings": [finding("PAH-W012", "high", "supabase/m.sql", 17)]}]}
+        labels = {"labels": LABELS["labels"] + [
+            {"app": "someone/their-app", "rule": "PAH-W012", "path": "supabase/m.sql", "line": 17, "label": "true",
+             "why": "anyone can overwrite every row"}], "caught": LABELS["caught"]}
+        pub_results, pub_labels = appsec_eval.publish(results, labels)
+        text = json.dumps([pub_results, pub_labels])
+        for secret in ("someone/their-app", "supabase/m.sql", "overwrite every row"):
+            self.assertNotIn(secret, text)
+        self.assertIn("a/vuln", text)  # apps built to be attacked stay named
+        # and the published files score exactly like the private ones
+        self.assertEqual(appsec_eval.score(pub_results, pub_labels, FIXTURE)["precision"],
+                         appsec_eval.score(results, labels, FIXTURE)["precision"])
+
+    def test_publish_masks_keys_quoted_in_notes(self):
+        import random
+        import string
+        rnd = random.Random(3)
+        key = "sk_" + "test_" + "".join(rnd.choice(string.ascii_letters + string.digits) for _ in range(40))
+        labels = {"labels": [dict(LABELS["labels"][2], why=f"the sample file holds {key}, Stripe's documented key")],
+                  "caught": {}}
+        _, pub_labels = appsec_eval.publish(RESULTS, labels)
+        self.assertNotIn(key[8:], json.dumps(pub_labels))
+        self.assertIn("documented key", json.dumps(pub_labels))
 
     def test_seeded_draw_is_reproducible_and_skips_the_development_set(self):
         frame = [f"u{i}/app" for i in range(40)]

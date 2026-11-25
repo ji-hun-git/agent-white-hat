@@ -1,0 +1,2559 @@
+{
+ "name": "appsec-heldout-round1",
+ "date": "2026-11-25",
+ "platform": "win32",
+ "code": "6973d10cd5db",
+ "commit": "2a76249805675ced36ae788a18d749c88fd8ccf7",
+ "apps": [
+  {
+   "stratum": "vulnerable",
+   "repo": "erev0s/VAmPI",
+   "commit": "f16052dce83f05847133ec98f01c5193a41de7d8",
+   "verdict": "block",
+   "files": 22,
+   "seconds": 0.3,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "models/user_model.py",
+     "line": 73,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "snoopysecurity/dvws-node",
+   "commit": "4221c04f132960a0ccca4bf5aa5f3a9f53172778",
+   "verdict": "block",
+   "files": 133,
+   "seconds": 1.67,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env",
+     "line": 10,
+     "message": ".env is committed to git with 1 secret(s) in it"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "high",
+     "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+     "line": 104,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/controllers/integrations.js",
+     "line": 185,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "high",
+     "path": "src/controllers/notes.js",
+     "line": 133,
+     "message": "src/controllers/notes.js changes or deletes a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "high",
+     "path": "src/controllers/notes.js",
+     "line": 143,
+     "message": "src/controllers/notes.js changes or deletes a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/controllers/notes.js",
+     "line": 164,
+     "message": "a MongoDB $where runs JavaScript built from data: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/controllers/notes.js",
+     "line": 189,
+     "message": "a MongoDB $where runs JavaScript built from data: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/controllers/passphrase.js",
+     "line": 45,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/controllers/passphrase.js",
+     "line": 58,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/controllers/users.js",
+     "line": 90,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/controllers/users.js",
+     "line": 353,
+     "message": "admin is set from the request"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/controllers/users.js",
+     "line": 633,
+     "message": "admin is set from the request"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/graphql/schema.js",
+     "line": 106,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W010",
+     "severity": "high",
+     "path": "src/routes/resource-store.js",
+     "line": 135,
+     "message": "quantity comes from the request and is never checked for 0, negative or huge values"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/routes/resource-store.js",
+     "line": 149,
+     "message": "balance is set from the request"
+    },
+    {
+     "rule": "PAH-W007",
+     "severity": "high",
+     "path": "src/routes/resource-store.js",
+     "line": 154,
+     "message": "unitPrice comes from the request: the client sets what it pays"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/lib/components/vulnerable/UnsafeHTML.svelte",
+     "line": 14,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/admin/+page.svelte",
+     "line": 105,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/admin/users/create/+page.svelte",
+     "line": 71,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+     "line": 105,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+     "line": 106,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/notes/+page.svelte",
+     "line": 147,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/search/+page.svelte",
+     "line": 94,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/(app)/search/+page.svelte",
+     "line": 128,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/+page.svelte",
+     "line": 118,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "frontend/src/routes/+page.svelte",
+     "line": 124,
+     "message": "raw HTML rendering"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "medium",
+     "path": "src/controllers/notes.js",
+     "line": 109,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/controllers/notes.js",
+     "line": 123,
+     "message": "src/controllers/notes.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "medium",
+     "path": "src/controllers/notes.js",
+     "line": 133,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/controllers/support-tickets.js",
+     "line": 27,
+     "message": "src/controllers/support-tickets.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 80,
+     "message": "username goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 163,
+     "message": "username goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 238,
+     "message": "username goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 446,
+     "message": "src/controllers/users.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 471,
+     "message": "email goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/controllers/users.js",
+     "line": 489,
+     "message": "src/controllers/users.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/services/soap/user-service.js",
+     "line": 49,
+     "message": "username goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "cr0hn/vulnerable-node",
+   "commit": "d68f2a3c9277ece2c2feb9976052033bdecd7fbe",
+   "verdict": "block",
+   "files": 136,
+   "seconds": 5.89,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "model/db.js",
+     "line": 14,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "model/db.js",
+     "line": 26,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "model/db.js",
+     "line": 101,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "sast/seeds/sqli-concat.js",
+     "line": 6,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "sast/seeds/sqli-concat.js",
+     "line": 10,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "high",
+     "path": "sast/seeds/xss-raw-echo.js",
+     "line": 7,
+     "message": "request data written into an HTML response"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "high",
+     "path": "views/products.ejs",
+     "line": 14,
+     "message": "template prints a value without escaping it"
+    },
+    {
+     "rule": "PAH-W007",
+     "severity": "medium",
+     "path": "routes/orders.js",
+     "line": 28,
+     "message": "amount comes from the request: the client sets what it pays"
+    },
+    {
+     "rule": "PAH-W010",
+     "severity": "medium",
+     "path": "routes/orders.js",
+     "line": 32,
+     "message": "quantity comes from the request and is never checked for 0, negative or huge values"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "views/layout.ejs",
+     "line": 36,
+     "message": "template prints a value without escaping it"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "views/product_detail.ejs",
+     "line": 71,
+     "message": "template prints a value without escaping it"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "we45/Vulnerable-Flask-App",
+   "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+   "verdict": "block",
+   "files": 19,
+   "seconds": 0.52,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "app/app.py",
+     "line": 265,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "anxolerd/dvpwa",
+   "commit": "4a8f4a43fafcc1b304f1b97d0f0a8dea755a7756",
+   "verdict": "warn",
+   "files": 58,
+   "seconds": 1.31,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "sqli/app.py",
+     "line": 35,
+     "message": "the template engine's escaping is switched off, so every value a template prints is raw HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "sqli/static/js/materialize.js",
+     "line": 396,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "sqli/static/js/materialize.js",
+     "line": 2850,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "sqli/static/js/materialize.js",
+     "line": 3444,
+     "message": "data inserted into the page as HTML"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "payatu/Tiredful-API",
+   "commit": "0134124496b3c4f1b969e51a24fd8a059104fb98",
+   "verdict": "block",
+   "files": 130,
+   "seconds": 19.42,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "Tiredful-API/health/views.py",
+     "line": 46,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "Tiredful-API/health/views.py",
+     "line": 57,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "Tiredful-API/templates/elements/javascript-content.html",
+     "line": 14,
+     "message": "data inserted into the page as HTML"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "stamparm/DSVW",
+   "commit": "9ca3c9acf3defa0a6148d40e5f5cebeb5dcbb908",
+   "verdict": "block",
+   "files": 12,
+   "seconds": 0.31,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "dsvw.py",
+     "line": 22,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "dsvw.py",
+     "line": 42,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "dsvw.py",
+     "line": 61,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "commit": "a961308c02d1fb462b192681c336b0739e432da7",
+   "verdict": "warn",
+   "files": 129,
+   "seconds": 2.22,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.js",
+     "line": 1328,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.js",
+     "line": 1385,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.js",
+     "line": 2932,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.js",
+     "line": 5032,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.js",
+     "line": 6347,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.slim.js",
+     "line": 1328,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.slim.js",
+     "line": 1385,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.slim.js",
+     "line": 2932,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.slim.js",
+     "line": 5032,
+     "message": "data inserted into the page as HTML"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "static/jquery/jquery.slim.js",
+     "line": 6347,
+     "message": "data inserted into the page as HTML"
+    }
+   ]
+  },
+  {
+   "stratum": "vulnerable",
+   "repo": "OWASP/crAPI",
+   "commit": "b5fc307f3e5f875809b095b771108ef342a33724",
+   "verdict": "block",
+   "files": 539,
+   "seconds": 2.34,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": "services/chatbot/.env",
+     "line": 7,
+     "message": "services/chatbot/.env is committed to git with 2 secret(s) in it"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": "services/identity/.env",
+     "line": 1,
+     "message": "services/identity/.env is committed to git with 2 secret(s) in it"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": "services/workshop/.env",
+     "line": 3,
+     "message": "services/workshop/.env is committed to git with 2 secret(s) in it"
+    },
+    {
+     "rule": "PAH-W010",
+     "severity": "high",
+     "path": "services/workshop/crapi/shop/views.py",
+     "line": 174,
+     "message": "quantity comes from the request and is never checked for 0, negative or huge values"
+    },
+    {
+     "rule": "PAH-W010",
+     "severity": "high",
+     "path": "services/workshop/crapi/shop/views.py",
+     "line": 241,
+     "message": "quantity comes from the request and is never checked for 0, negative or huge values"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "services/workshop/crapi/shop/views.py",
+     "line": 388,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W010",
+     "severity": "medium",
+     "path": "services/workshop/crapi/shop/models.py",
+     "line": 57,
+     "message": "quantity is stored with no lower bound"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": "deploy/docker/.env",
+     "line": 0,
+     "message": "deploy/docker/.env is committed to git; keep .env files out of it"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": "services/web/public/.env",
+     "line": 0,
+     "message": "services/web/public/.env is committed to git; keep .env files out of it"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "umami-software/umami",
+   "commit": "dbb8d606fbd4e99220fb83bcb4abad3e0f97f42a",
+   "verdict": "block",
+   "files": 2156,
+   "seconds": 15.45,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 89,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 116,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 118,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 160,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 171,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 174,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 186,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "high",
+     "path": "src/queries/sql/errors/query.ts",
+     "line": 194,
+     "message": "SQL is built from strings with data pasted in: the data can rewrite the query"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/security/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/security gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/teams/[teamId]/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/teams/[teamId] gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/teams/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/teams gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/users/[userId]/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/users/[userId] gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/users/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/users gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/websites/[websiteId]/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/websites/[websiteId] gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/(main)/admin/websites/page.tsx",
+     "line": 0,
+     "message": "anyone who types /admin/websites gets the admin page: no role check on the server"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/2fa/global/contract.generated.ts",
+     "line": 1,
+     "message": "ANY /api/admin/2fa/global/contract.generated needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/2fa/global/route.ts",
+     "line": 8,
+     "message": "POST /api/admin/2fa/global needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/teams/[teamId]/2fa/contract.generated.ts",
+     "line": 1,
+     "message": "ANY /api/admin/teams/[teamId]/2fa/contract.generated needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/teams/[teamId]/2fa/route.ts",
+     "line": 8,
+     "message": "POST /api/admin/teams/[teamId]/2fa needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/app/api/admin/teams/[teamId]/2fa/route.ts",
+     "line": 32,
+     "message": "POST /api/admin/teams/[teamId]/2fa changes or deletes a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/teams/contract.generated.ts",
+     "line": 1,
+     "message": "ANY /api/admin/teams/contract.generated needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/teams/route.ts",
+     "line": 8,
+     "message": "GET /api/admin/teams needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/[userId]/2fa/contract.generated.ts",
+     "line": 1,
+     "message": "ANY /api/admin/users/[userId]/2fa/contract.generated needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+     "line": 9,
+     "message": "GET /api/admin/users/[userId]/2fa needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+     "line": 26,
+     "message": "GET /api/admin/users/[userId]/2fa returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+     "line": 31,
+     "message": "POST /api/admin/users/[userId]/2fa needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+     "line": 60,
+     "message": "DELETE /api/admin/users/[userId]/2fa needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/users/route.ts",
+     "line": 8,
+     "message": "GET /api/admin/users needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "path": "src/app/api/admin/websites/route.ts",
+     "line": 9,
+     "message": "GET /api/admin/websites needs a sign-in but no admin role: any user gets in"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "low",
+     "path": "src/components/hooks/useReducedMotion.test.tsx",
+     "line": 50,
+     "message": "data inserted into the page as HTML (in a test or example file)"
+    },
+    {
+     "rule": "PAH-W011",
+     "severity": "low",
+     "path": "tests/api/helpers/totp.ts",
+     "line": 34,
+     "message": "ANY /tests/api/helpers/totp checks a code with no limit on wrong attempts; a script can try every value (in a test or example file)"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "boxyhq/saas-starter-kit",
+   "commit": "abc9b686823cbfb4973c79bc36fea37a3244be6c",
+   "verdict": "block",
+   "files": 327,
+   "seconds": 2.31,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 4,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W011",
+     "severity": "high",
+     "path": "prisma/seed.ts",
+     "line": 132,
+     "message": "invitedBy is made with Math.random(), which can be predicted"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "medium",
+     "path": "pages/api/webhooks/dsync.ts",
+     "line": 45,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W008",
+     "severity": "medium",
+     "path": "pages/teams/[slug]/webhooks.tsx",
+     "line": 1,
+     "message": "GET /teams/[slug]/webhooks acts on webhook events without checking the provider's signature: anyone can post a fake \"paid\""
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "ixartz/SaaS-Boilerplate",
+   "commit": "e3952a7ed5b0ef172ac4363c4644b8c334d1094b",
+   "verdict": "pass",
+   "files": 155,
+   "seconds": 0.73,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": ".env",
+     "line": 0,
+     "message": ".env is committed to git; keep .env files out of it"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": ".env.production",
+     "line": 0,
+     "message": ".env.production is committed to git; keep .env files out of it"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "sahat/hackathon-starter",
+   "commit": "42fb2beaa517e15f888c50eeedcead9eeb08afcd",
+   "verdict": "block",
+   "files": 160,
+   "seconds": 4.23,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 23,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 26,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 29,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 33,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 38,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 46,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 48,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 62,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 63,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 66,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 69,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 71,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 73,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 78,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 83,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 85,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 86,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 88,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 89,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 92,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 98,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 99,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "controllers/webauthn.js",
+     "line": 62,
+     "message": "controllers/webauthn.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    },
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": "test/.env.test",
+     "line": 15,
+     "message": "test/.env.test is committed to git with 5 secret(s) in it (in a test or example file)"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "hagopj13/node-express-boilerplate",
+   "commit": "179ae84efec61b14206d0305d941daed6c6d07f9",
+   "verdict": "block",
+   "files": 78,
+   "seconds": 0.58,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 24,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W002",
+     "severity": "medium",
+     "path": "src/controllers/user.controller.js",
+     "line": 20,
+     "message": "src/controllers/user.controller.js returns a record by the ID it is sent, with no check that it belongs to the signed-in user"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "danielfsousa/express-rest-boilerplate",
+   "commit": "b8bed6d7cfce3cf2ef89ec1b5e47b52dfc50e874",
+   "verdict": "block",
+   "files": 56,
+   "seconds": 0.58,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": ".env.example",
+     "line": 3,
+     "message": ".env.example is meant to be shared, but holds a real secret"
+    },
+    {
+     "rule": "PAH-W006",
+     "severity": "high",
+     "path": "src/api/controllers/user.controller.js",
+     "line": 37,
+     "message": "the whole request body is saved, so the client chooses every field, role and plan included"
+    },
+    {
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "path": "src/api/controllers/auth.controller.js",
+     "line": 98,
+     "message": "email goes into the MongoDB query as the client sent it: {\"$ne\": null} would match any record"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "miguelgrinberg/microblog",
+   "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+   "verdict": "warn",
+   "files": 73,
+   "seconds": 0.48,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "app/templates/base.html",
+     "line": 99,
+     "message": "data inserted into the page as HTML"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "nsidnev/fastapi-realworld-example-app",
+   "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c",
+   "verdict": "pass",
+   "files": 125,
+   "seconds": 0.55,
+   "incomplete": [],
+   "findings": []
+  },
+  {
+   "stratum": "well_built",
+   "repo": "HackSoftware/Django-Styleguide-Example",
+   "commit": "a70ef43d7df03706c1211d4fcfd70b4b0120ba1e",
+   "verdict": "block",
+   "files": 215,
+   "seconds": 0.67,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "high",
+     "path": "styleguide_example/integrations/aws/client.py",
+     "line": 76,
+     "message": "AWS key written into the code"
+    },
+    {
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "path": "styleguide_example/blog_examples/templates/admin_2fa/setup_2fa.html",
+     "line": 11,
+     "message": "template prints a value without escaping it"
+    }
+   ]
+  },
+  {
+   "stratum": "well_built",
+   "repo": "Razikus/supabase-nextjs-template",
+   "commit": "d519bf18d747bc0956346910414db68adb5a45bf",
+   "verdict": "pass",
+   "files": 136,
+   "seconds": 1.0,
+   "incomplete": [],
+   "findings": [
+    {
+     "rule": "PAH-W013",
+     "severity": "low",
+     "path": "supabase-expo-template/.env",
+     "line": 0,
+     "message": "supabase-expo-template/.env is committed to git; keep .env files out of it"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-11",
+   "verdict": "block",
+   "files": 139,
+   "seconds": 1.22,
+   "findings": [
+    {
+     "id": "ai-11-001",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-11-002",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-11-003",
+     "rule": "PAH-W013",
+     "severity": "low"
+    },
+    {
+     "id": "ai-11-004",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-01",
+   "verdict": "warn",
+   "files": 93,
+   "seconds": 0.73,
+   "findings": [
+    {
+     "id": "ai-01-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-01-002",
+     "rule": "PAH-W013",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-06",
+   "verdict": "block",
+   "files": 190,
+   "seconds": 1.88,
+   "findings": [
+    {
+     "id": "ai-06-001",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-002",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-003",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-004",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-005",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-006",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-007",
+     "rule": "PAH-W011",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-008",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-009",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-06-010",
+     "rule": "PAH-W003",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-15",
+   "verdict": "warn",
+   "files": 87,
+   "seconds": 0.75,
+   "findings": [
+    {
+     "id": "ai-15-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-04",
+   "verdict": "block",
+   "files": 326,
+   "seconds": 3.88,
+   "findings": [
+    {
+     "id": "ai-04-001",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-002",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-003",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-004",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-04-005",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-006",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "true"
+    },
+    {
+     "id": "ai-04-007",
+     "rule": "PAH-W007",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-008",
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-04-009",
+     "rule": "PAH-W013",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-010",
+     "rule": "PAH-W003",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-011",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-012",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-013",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-014",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-015",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-016",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-017",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-018",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-019",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-020",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-021",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-022",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-023",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-024",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-025",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-026",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-027",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-028",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-029",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-030",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-031",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-032",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-033",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-034",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-035",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-036",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-037",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-038",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-039",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-040",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-041",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-04-042",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-10",
+   "verdict": "warn",
+   "files": 98,
+   "seconds": 0.75,
+   "findings": [
+    {
+     "id": "ai-10-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-05",
+   "verdict": "block",
+   "files": 285,
+   "seconds": 1.69,
+   "findings": [
+    {
+     "id": "ai-05-001",
+     "rule": "PAH-W006",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-05-002",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-05-003",
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-05-004",
+     "rule": "PAH-W013",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-005",
+     "rule": "PAH-W003",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-006",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-007",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-008",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-009",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-010",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-011",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-05-012",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-07",
+   "verdict": "block",
+   "files": 106,
+   "seconds": 1.11,
+   "findings": [
+    {
+     "id": "ai-07-001",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-07-002",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-07-003",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-07-004",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-07-005",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-07-006",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-03",
+   "verdict": "block",
+   "files": 933,
+   "seconds": 12.73,
+   "findings": [
+    {
+     "id": "ai-03-001",
+     "rule": "PAH-W013",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-002",
+     "rule": "PAH-W013",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-003",
+     "rule": "PAH-W013",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-004",
+     "rule": "PAH-W003",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-005",
+     "rule": "PAH-W006",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-006",
+     "rule": "PAH-W011",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-007",
+     "rule": "PAH-W011",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-008",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-009",
+     "rule": "PAH-W006",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-010",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-011",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-012",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-013",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-014",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-015",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-016",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-017",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-018",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-019",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-020",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-021",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-022",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-023",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-024",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-025",
+     "rule": "PAH-W007",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-026",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-027",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-028",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-029",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-030",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-031",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-032",
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-033",
+     "rule": "PAH-W007",
+     "severity": "medium",
+     "label": "true"
+    },
+    {
+     "id": "ai-03-034",
+     "rule": "PAH-W007",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-035",
+     "rule": "PAH-W012",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-03-036",
+     "rule": "PAH-W013",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-037",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-038",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-039",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-040",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-041",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-042",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-043",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-044",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-045",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-046",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-047",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-048",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-049",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-050",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-051",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-052",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-053",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-054",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-055",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-056",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-057",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-058",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-059",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-060",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-061",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-062",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-063",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-064",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-065",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-066",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-067",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-068",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-069",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-03-070",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-08",
+   "verdict": "block",
+   "files": 406,
+   "seconds": 2.34,
+   "findings": [
+    {
+     "id": "ai-08-001",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-002",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-08-003",
+     "rule": "PAH-W011",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-004",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-08-005",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-006",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-007",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-008",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-009",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-08-010",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-011",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-012",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-013",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-014",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-015",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-016",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-017",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-018",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-019",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-020",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-021",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-022",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-023",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-024",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-025",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-026",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-027",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-028",
+     "rule": "PAH-W012",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-029",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-08-030",
+     "rule": "PAH-W013",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-031",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-032",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-033",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-034",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-035",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-036",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-037",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-038",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-039",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-040",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-041",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-042",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-043",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-044",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-045",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-046",
+     "rule": "PAH-W012",
+     "severity": "low"
+    },
+    {
+     "id": "ai-08-047",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-12",
+   "verdict": "block",
+   "files": 107,
+   "seconds": 0.89,
+   "findings": [
+    {
+     "id": "ai-12-001",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-002",
+     "rule": "PAH-W008",
+     "severity": "high",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-003",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-004",
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-005",
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-006",
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-007",
+     "rule": "PAH-W003",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-12-008",
+     "rule": "PAH-W013",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-13",
+   "verdict": "warn",
+   "files": 104,
+   "seconds": 0.8,
+   "findings": [
+    {
+     "id": "ai-13-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-13-002",
+     "rule": "PAH-W013",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-09",
+   "verdict": "warn",
+   "files": 100,
+   "seconds": 0.77,
+   "findings": [
+    {
+     "id": "ai-09-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-09-002",
+     "rule": "PAH-W012",
+     "severity": "low"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-02",
+   "verdict": "warn",
+   "files": 87,
+   "seconds": 0.8,
+   "findings": [
+    {
+     "id": "ai-02-001",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    }
+   ]
+  },
+  {
+   "stratum": "ai_built",
+   "repo": "ai-14",
+   "verdict": "block",
+   "files": 125,
+   "seconds": 1.81,
+   "findings": [
+    {
+     "id": "ai-14-001",
+     "rule": "PAH-W001",
+     "severity": "high",
+     "label": "true"
+    },
+    {
+     "id": "ai-14-002",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    },
+    {
+     "id": "ai-14-003",
+     "rule": "PAH-W001",
+     "severity": "medium",
+     "label": "false"
+    }
+   ]
+  }
+ ],
+ "published": "apps built with AI appear under pseudonyms, with rule, severity and label only; the full results are kept locally"
+}

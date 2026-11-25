@@ -12,3 +12,6 @@ bench/results/dev-*.json
 bench/results/ci*.json
 bench/results/test-*.json
 bench/results/dev.json
+
+# held-out evaluation data that names where real apps can be attacked (see docs/appsec-eval.md)
+bench/private/

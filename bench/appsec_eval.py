@@ -213,11 +213,45 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     d = 1 + z * z / n
     c = p + z * z / (2 * n)
     r = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return ((c - r) / d, (c + r) / d)
+    return (max(0.0, (c - r) / d), min(1.0, (c + r) / d))
 
 
 def _key(app: str, f: dict) -> tuple:
     return (app, f["rule"], f["path"], f["line"])
+
+
+def publish(results: dict, labels: dict) -> tuple[dict, dict]:
+    """The files safe to publish. Apps built with AI are real people's projects, and a true label says where one can be
+    attacked: they are published under pseudonyms (in an order that is not kept), with each finding's rule, severity
+    and label only. Apps built to be attacked and the well-built apps stay as they are."""
+    marks = {(x["app"], x["rule"], x["path"], x["line"]): x for x in labels["labels"]}
+    ai = [a["repo"] for a in results["apps"] if a["stratum"] == "ai_built"]
+    random.SystemRandom().shuffle(ai)
+    alias = {repo: f"ai-{i:02d}" for i, repo in enumerate(ai, 1)}
+    apps = []
+    for app in results["apps"]:
+        if app["repo"] not in alias:
+            apps.append(app)
+            continue
+        name = alias[app["repo"]]
+        found = []
+        for i, f in enumerate(app["findings"], 1):
+            mark = marks.get(_key(app["repo"], f))
+            row = {"id": f"{name}-{i:03d}", "rule": f["rule"], "severity": f["severity"]}
+            if f["severity"] in ("medium", "high", "critical"):
+                row["label"] = mark["label"] if mark else "unlabeled"
+            found.append(row)
+        apps.append({"stratum": app["stratum"], "repo": name, "verdict": app["verdict"], "files": app["files"],
+                     "seconds": app["seconds"], "findings": found})
+    pub_results = {k: v for k, v in results.items() if k != "apps"}
+    pub_results["apps"] = apps
+    pub_results["published"] = ("apps built with AI appear under pseudonyms, with rule, severity and label only; the "
+                                "full results are kept locally")
+    from pah.appsec import _mask  # a reviewer's note can quote a key it read: cut every key-shaped value
+
+    pub_labels = {k: v for k, v in labels.items() if k != "labels"}
+    pub_labels["labels"] = [dict(x, why=_mask(x.get("why", ""))) for x in labels["labels"] if x["app"] not in alias]
+    return pub_results, pub_labels
 
 
 def score(results: dict, labels: dict, fixture: dict) -> dict:
@@ -232,10 +266,13 @@ def score(results: dict, labels: dict, fixture: dict) -> dict:
         for f in app["findings"]:
             if f["severity"] not in ("medium", "high", "critical"):
                 continue
-            mark = marks.get(_key(app["repo"], f))
-            label = mark["label"] if mark else "unlabeled"
-            if not mark:
-                unlabeled.append(_key(app["repo"], f))
+            if "label" in f:  # a published file carries the label inline
+                label = f["label"]
+            else:
+                mark = marks.get(_key(app["repo"], f))
+                label = mark["label"] if mark else "unlabeled"
+            if label == "unlabeled":
+                unlabeled.append((app["repo"], f["rule"], f.get("path", f.get("id")), f.get("line", 0)))
             sev = "high" if f["severity"] in ("high", "critical") else "medium"
             for g in (("all",), ("stratum", app["stratum"]), ("stratum-severity", app["stratum"], sev),
                       ("rule", f["rule"]), ("severity", sev)):
@@ -275,9 +312,19 @@ def score(results: dict, labels: dict, fixture: dict) -> dict:
             "per_app": per_app, "unlabeled": unlabeled}
 
 
+def cmd_publish(args) -> int:
+    results = json.loads(Path(args.results).read_text(encoding="utf-8"))
+    labels = json.loads(Path(args.labels).read_text(encoding="utf-8"))
+    pub_results, pub_labels = publish(results, labels)
+    Path(args.out_results).write_text(json.dumps(pub_results, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    LABELS.write_text(json.dumps(pub_labels, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"-> {args.out_results}\n-> {LABELS}")
+    return 0
+
+
 def cmd_score(args) -> int:
     results = json.loads(Path(args.results).read_text(encoding="utf-8"))
-    labels = json.loads(LABELS.read_text(encoding="utf-8"))
+    labels = json.loads(Path(args.labels).read_text(encoding="utf-8"))
     fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
     out = score(results, labels, fixture)
     if args.json:
@@ -309,8 +356,14 @@ def main(argv=None) -> int:
     p = sub.add_parser("run", help="pah appsec on each app, once")
     p.add_argument("--cache", required=True)
     p.set_defaults(func=cmd_run)
+    p = sub.add_parser("publish", help="write the results and labels safe to publish (AI-built apps pseudonymized)")
+    p.add_argument("results", help="the full results (kept outside git)")
+    p.add_argument("labels", help="the full labels (kept outside git)")
+    p.add_argument("out_results", help="where the published results go")
+    p.set_defaults(func=cmd_publish)
     p = sub.add_parser("score", help="precision and recall from the labels")
     p.add_argument("results")
+    p.add_argument("--labels", default=str(LABELS))
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_score)
     args = ap.parse_args(argv)

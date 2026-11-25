@@ -52,12 +52,12 @@ security depend on other files, so only `pah appsec` reports those. `PAH_NO_APP_
   [skills/app-security](../skills/app-security/SKILL.md) walks an agent through the rest, attack by attack.
 - **Test, fixture and example files** are reported as low at most; dependencies and build output (`node_modules`,
   `dist`, `.next`, minified and hashed bundles) are skipped.
-- **How it does on real apps.** On eight well-built public apps (Next.js SaaS Starter, Vercel's AI chatbot and
-  subscription starter, chatbot-ui, Taxonomy, the full-stack FastAPI template, the Express and Django RealWorld apps)
-  it reports one finding, a real one: any signed-in user can delete any comment in the Django RealWorld app. On four
-  apps built to be vulnerable (OWASP Juice Shop, NodeGoat, DVNA, PyGoat) it finds their SQL and NoSQL injections, basket
-  and review IDORs, the negative-quantity order, the committed private key, the SVG upload, the open admin route and
-  their XSS. It misses an admin role set through an auto-generated REST API and checks that live in another file. The
-  fixes that got it there were made on these same apps (see the changelog), so a fresh set is the real measurement.
+- **How well it works, measured on apps it had never seen** ([the held-out evaluation](appsec-eval.md)): about one
+  finding in five is a real hole (52 of 236 labeled, 22%); none of 64 findings on ten well-built apps was real; and it
+  catches about a third of the vulnerabilities that apps built to be attacked document (25 of 68). In apps generated
+  with AI it found real holes in four of fifteen (open Supabase policies, stored XSS, a client-set payout, a browser
+  that marks itself paid), at 11% precision. Treat every finding as a lead to confirm by reading the code, which is
+  how the agent-facing skill uses it. On the twelve apps it was tuned on it looked far better; that difference is the
+  reason the measurement exists.
 - **It does not change the scan.** These rules live in their own command; `pah scan`, its benchmarks and the
   held-out evaluation are untouched.

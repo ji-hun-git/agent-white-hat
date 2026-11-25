@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+**`pah appsec`, measured on apps it had never seen: not yet precise enough to trust alone.** Round one of a held-out
+evaluation (bench/appsec_eval.py, docs/appsec-eval.md), pre-registered at 2a76249 before the run: 34 apps pinned at
+their commits (9 built to be vulnerable, 10 well-built open-source apps, and 15 Lovable-generated Supabase apps drawn
+in a seeded order from a GitHub code search), an answer key of 68 documented vulnerabilities written from the
+vulnerable apps' own documentation by a reviewer that did not write the rules, one run, and every one of the 249
+findings at medium or above labeled by four reviewers that did not write the rules. Precision 22% (52 of 236, 95%
+interval 17–28%); 0 of 51 on the well-built apps (13 more uncertain); 11% on the apps built with AI, where four of
+fifteen apps had real holes (open Supabase policies, stored XSS, a client-set payout, a browser that marks itself
+paid); 52% on the vulnerable apps. Recall 25 of 68 (37%, 26–49%): database injection 11 of 17, XSS 4 of 15, IDOR 4 of
+13, admin routes 0 of 5, prompt injection 0 of 3, uploads 0 of 3. On the twelve tuning apps the same code looked far
+better; the gap is what tuning on the measured apps hides. The main causes of false alarms: Supabase migrations read
+statement by statement (dropped policies still reported, table names taken from comments), role checks kept in
+another file, code that never runs in production (unused vendored libraries, unrouted pages), values the attacker
+does not control (the stock shadcn chart component in every Lovable app), status words that are not payments, and
+sample values in `.env.example`. These are round two's work, measured on a fresh draw; the 34 apps join the
+development set. The apps built with AI are real people's projects, so their results are published under
+pseudonyms with rule, severity and label only; the full results stay outside git (`bench/private/`). Also: evidence
+lines no longer print key-shaped values.
+
 **`pah appsec`: the holes in the app your agent built.** A new command reads the user's own web app for the fourteen
 holes attackers try first in apps built fast with AI (PAH-W001 to W014): a script in a username (raw HTML from data,
 templates marked safe, request data in HTML responses), another user's ID in the URL (lookups by a request ID with no

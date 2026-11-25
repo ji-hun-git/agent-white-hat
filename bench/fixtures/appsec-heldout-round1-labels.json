@@ -1,0 +1,1460 @@
+{
+ "round": "appsec-heldout-round1",
+ "labeled": "2026-11-25",
+ "by": "four reviewers that did not write the rules, reading the fetched code (never running it); A the vulnerable apps, B the well-built apps, C and D the AI-built apps",
+ "caught": {
+  "erev0s/VAmPI": [
+   "vampi-sqli-get-user"
+  ],
+  "snoopysecurity/dvws-node": [
+   "dvws-sqli-passphrase-get",
+   "dvws-sqli-passphrase-save",
+   "dvws-nosqli-notesearch",
+   "dvws-mass-assign-register",
+   "dvws-mass-assign-notification-prefs",
+   "dvws-idor-notes",
+   "dvws-fe-xss-notes",
+   "dvws-profile-details-authz",
+   "dvws-account-recovery-idor",
+   "dvws-support-ticket-idor",
+   "dvws-negative-quantity"
+  ],
+  "cr0hn/vulnerable-node": [
+   "vn-sqli-login",
+   "vn-sqli-search",
+   "vn-sqli-orders-sort",
+   "vn-stored-xss-reviews",
+   "vn-price-tamper-checkout"
+  ],
+  "we45/Vulnerable-Flask-App": [],
+  "anxolerd/dvpwa": [
+   "dvpwa-stored-xss-review",
+   "dvpwa-stored-xss-other-fields"
+  ],
+  "payatu/Tiredful-API": [
+   "tiredful-sqli-activities"
+  ],
+  "stamparm/DSVW": [
+   "dsvw-sqli-id",
+   "dsvw-sqli-login-bypass"
+  ],
+  "dolevf/Damn-Vulnerable-GraphQL-Application": [],
+  "OWASP/crAPI": [
+   "crapi-order-mass-assignment",
+   "crapi-negative-quantity",
+   "crapi-sqli-apply-coupon"
+  ]
+ },
+ "labels": [
+  {
+   "app": "erev0s/VAmPI",
+   "rule": "PAH-W012",
+   "path": "models/user_model.py",
+   "line": 73,
+   "label": "true",
+   "why": "User.get_user f-string-formats the username from GET /users/v1/{username} into raw SQL run through text(); the vuln flag defaults to 1 (app.py).",
+   "expected": "vampi-sqli-get-user",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W013",
+   "path": ".env",
+   "line": 10,
+   "label": "true",
+   "why": "The .env is in the git index (despite .gitignore), copied into the Docker image and loaded by dotenv. The counted secret, the MySQL root password on line 10, is not published by docker-compose, but the same file holds JWT_SECRET=access, which signs every auth token, so anyone with the repo can forge admin tokens.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+   "line": 104,
+   "label": "false",
+   "why": "{@html userStatus.username} shows the SOAP echo of the username the viewing admin typed into this form. Nothing lets another party supply that value (no URL or stored input), so it is self-XSS only.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/integrations.js",
+   "line": 185,
+   "label": "true",
+   "why": "updateNotificationPreferences does Object.assign(user, req.body) and saves, so any signed-in user can send admin:true.",
+   "expected": "dvws-mass-assign-notification-prefs",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/notes.js",
+   "line": 133,
+   "label": "true",
+   "why": "update_a_note runs findOneAndUpdate({name: noteId}, req.body) with no user filter, so any token holder can change any user's note.",
+   "expected": "dvws-idor-notes",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/notes.js",
+   "line": 143,
+   "label": "true",
+   "why": "delete_a_note deletes by name with no owner filter.",
+   "expected": "dvws-idor-notes",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/notes.js",
+   "line": 164,
+   "label": "true",
+   "why": "search_note puts req.body.search into a $where JavaScript string, so a quote can rewrite the predicate (e.g. return all notes, not only public ones).",
+   "expected": "dvws-nosqli-notesearch",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/notes.js",
+   "line": 189,
+   "label": "false",
+   "why": "display_all builds $where only from the constant type = 'public'; no request data reaches it.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/passphrase.js",
+   "line": 45,
+   "label": "true",
+   "why": "save concatenates req.body.passphrase and reminder into a raw INSERT run by sequelize.query.",
+   "expected": "dvws-sqli-passphrase-save",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/passphrase.js",
+   "line": 58,
+   "label": "true",
+   "why": "get concatenates req.params.username into a raw SELECT, and the route has no authentication at all.",
+   "expected": "dvws-sqli-passphrase-get",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/users.js",
+   "line": 90,
+   "label": "true",
+   "why": "POST /api/v2/users (no auth) does new User(req.body), and the schema has admin, so admin:true creates an admin.",
+   "expected": "dvws-mass-assign-register",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/users.js",
+   "line": 353,
+   "label": "true",
+   "why": "restoreProfileXml sets admin from the last <admin> element of client-submitted XML. The signature check is no barrier because exportProfileXml writes bio unescaped, so a bio of </bio><admin>true</admin><bio> yields a validly signed export that makes the caller admin. This is the export/restore challenge, not the import endpoint the answer key names.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/users.js",
+   "line": 633,
+   "label": "false",
+   "why": "adminCreateUser reaches this line only after it confirms the caller is an admin (line 618), and admins creating admins is the endpoint's purpose. The documented hole here is CSRF (cookie auth plus a text/plain JSON body, no origin or token check), which this finding does not describe.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/graphql/schema.js",
+   "line": 106,
+   "label": "false",
+   "why": "getPassphrase passes args.reminder through sequelize.escape, which quotes and escapes the string for MySQL, so the concatenation is not injectable.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W010",
+   "path": "src/routes/resource-store.js",
+   "line": 135,
+   "label": "true",
+   "why": "POST /resource-store/orders accepts quantities down to -1000, and creditChange = -(price x quantity) then credits the wallet.",
+   "expected": "dvws-negative-quantity",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/routes/resource-store.js",
+   "line": 149,
+   "label": "true",
+   "why": "The balance is not assigned from the body, but its change is -(price x client quantity) with negatives allowed. It is the negative-quantity hole reported under the mass-assignment rule.",
+   "expected": "dvws-negative-quantity",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W007",
+   "path": "src/routes/resource-store.js",
+   "line": 154,
+   "label": "false",
+   "why": "unitPrice is item.price from the server-side catalogue, looked up by itemId; the client does not set it.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/lib/components/vulnerable/UnsafeHTML.svelte",
+   "line": 14,
+   "label": "false",
+   "why": "UnsafeHTML.svelte is not imported anywhere in the frontend, so the {@html} never renders.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/admin/+page.svelte",
+   "line": 105,
+   "label": "false",
+   "why": "errorMessage only holds error bodies from /users/checkadmin and /sysinfo/uname, called with the viewer's own token. Those are fixed strings (validateToken constants, Express's escaped default error page), so no attacker input reaches the {@html}.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/admin/users/create/+page.svelte",
+   "line": 71,
+   "label": "false",
+   "why": "responseMessage is either the username the admin just typed or fixed error strings from /admin/create-user. At most self-XSS; no other party controls it.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+   "line": 105,
+   "label": "false",
+   "why": "role is the server constant 'admin'/'user'. Only the viewing admin's own typed username could inject markup into the SOAP reply, so it is self-XSS.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/admin/users/status/+page.svelte",
+   "line": 106,
+   "label": "false",
+   "why": "status is the server constant 'active'. Only the viewer's own typed username could inject markup into the SOAP reply (self-XSS).",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/notes/+page.svelte",
+   "line": 147,
+   "label": "false",
+   "why": "responseMessage holds fixed success strings or extractErrorMessage of the viewer's own note create/update calls. The server sends Mongoose errors with status 200 and fixed or escaped error bodies otherwise, so no attacker-controlled HTML reaches the {@html}.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/search/+page.svelte",
+   "line": 94,
+   "label": "true",
+   "why": "Search results from /notesearch (other users' public notes) render note.body with {@html}; any user can store a script in a note body (stored XSS).",
+   "expected": "dvws-fe-xss-notes",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/(app)/search/+page.svelte",
+   "line": 128,
+   "label": "true",
+   "why": "/notesearch/all returns every user's public notes and the page renders note.body with {@html} (stored XSS).",
+   "expected": "dvws-fe-xss-notes",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/+page.svelte",
+   "line": 118,
+   "label": "false",
+   "why": "errorMessage echoes the username the visitor typed into this form (login 404 or register 409). The page reads no URL or stored input, so only self-XSS is possible. The answer key's dvws-fe-xss-error-messages names this, but no other party can supply the value.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W001",
+   "path": "frontend/src/routes/+page.svelte",
+   "line": 124,
+   "label": "false",
+   "why": "successMessage echoes data.user, the username the visitor just registered in this form: self-XSS only.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/notes.js",
+   "line": 109,
+   "label": "false",
+   "why": "create_a_note copies only name, body and type from the body and takes user from the verified token; there is no privileged field to set.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/notes.js",
+   "line": 123,
+   "label": "true",
+   "why": "read_a_note does findById(parseInt(noteId)) on sequential ids with no owner check, so any token holder reads any note.",
+   "expected": "dvws-idor-notes",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W006",
+   "path": "src/controllers/notes.js",
+   "line": 133,
+   "label": "true",
+   "why": "update_a_note hands req.body straight to findOneAndUpdate, so the client can rewrite the note's owner field 'user' (and its type). Note has no role or plan, but its ownership field is client-writable.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/support-tickets.js",
+   "line": 27,
+   "label": "true",
+   "why": "read does findById(ticket id) with no username in the query. The UUIDv1 node and clock sequence are fixed per process and visible in the caller's own ticket, so other ids can be guessed from timestamps.",
+   "expected": "dvws-support-ticket-idor",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/users.js",
+   "line": 80,
+   "label": "true",
+   "why": "POST /api/v2/users (JSON or extended urlencoded, no auth) passes a username object into findOne. {\"$ne\":null} or $regex matches an existing user, and the 409 reply echoes that username, so an anonymous attacker can enumerate accounts. Real but low impact.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/users.js",
+   "line": 163,
+   "label": "true",
+   "why": "Login passes username objects from the body or query into findOne. The password is still bcrypt-checked, so there is no bypass, but $regex gives a 401/404 oracle that enumerates usernames. Real but low impact.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/users.js",
+   "line": 238,
+   "label": "false",
+   "why": "loginLegacy rejects any username that is not a string (line 233) before findOne, so operator objects never reach the query.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/users.js",
+   "line": 446,
+   "label": "true",
+   "why": "getUserProfileDetails does findById(req.params.id) and checks the target's admin flag, not the caller's, so any user reads the admin's email and home address.",
+   "expected": "dvws-profile-details-authz",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/controllers/users.js",
+   "line": 471,
+   "label": "true",
+   "why": "lookupRecoveryAccount passes req.body.email as sent, so {\"$ne\":null} or $regex returns the userId and username of accounts whose email the attacker does not know. That userId is all the reset endpoint needs.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W002",
+   "path": "src/controllers/users.js",
+   "line": 489,
+   "label": "true",
+   "why": "resetAccountPassword does findById(userId) from the body and sets a new password with no ownership or recovery proof.",
+   "expected": "dvws-account-recovery-idor",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "snoopysecurity/dvws-node",
+   "rule": "PAH-W012",
+   "path": "src/services/soap/user-service.js",
+   "line": 49,
+   "label": "false",
+   "why": "username is xmlchild.textContent, which is always a string, so no operator object can reach findOne.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W012",
+   "path": "model/db.js",
+   "line": 14,
+   "label": "true",
+   "why": "login concatenates username and password into SQL; called from POST /login/auth with the raw body fields.",
+   "expected": "vn-sqli-login",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W012",
+   "path": "model/db.js",
+   "line": 26,
+   "label": "true",
+   "why": "searchProducts concatenates q from GET /search?q= into the ILIKE query.",
+   "expected": "vn-sqli-search",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W012",
+   "path": "model/db.js",
+   "line": 101,
+   "label": "true",
+   "why": "ordersForUserSorted interpolates req.query.sort into ORDER BY with no whitelist (routes/orders.js).",
+   "expected": "vn-sqli-orders-sort",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W012",
+   "path": "sast/seeds/sqli-concat.js",
+   "line": 6,
+   "label": "false",
+   "why": "sast/seeds is SAST benchmark bait. sast/README says nothing in seeds/ is meant to run, and the shop never imports it, so no attacker can reach it. The answer key lists it as vn-sast-sqli-concat, but it is not reachable code.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W012",
+   "path": "sast/seeds/sqli-concat.js",
+   "line": 10,
+   "label": "false",
+   "why": "Same never-run SAST seed file (queryOrder); not imported or served by the app.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W001",
+   "path": "sast/seeds/xss-raw-echo.js",
+   "line": 7,
+   "label": "false",
+   "why": "Standalone SAST seed app that the shop never starts or imports (scanner bait per sast/README). The answer key lists it as vn-sast-xss-raw-echo, but nothing serves it.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W001",
+   "path": "views/products.ejs",
+   "line": 14,
+   "label": "true",
+   "why": "<%- q %> echoes the ?q= search term unescaped on /search: reflected XSS. It is real but not among the documented answer-key items.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W007",
+   "path": "routes/orders.js",
+   "line": 28,
+   "label": "true",
+   "why": "POST /checkout stores the client's amount_cents as the charged amount (createOrder); any product costs what the client says.",
+   "expected": "vn-price-tamper-checkout",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W010",
+   "path": "routes/orders.js",
+   "line": 32,
+   "label": "false",
+   "why": "quantity is only stored and displayed. The charge comes separately from amount_cents (finding at line 28), and nothing multiplies, refunds or decrements stock by quantity, so a negative value gains nothing.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W001",
+   "path": "views/layout.ejs",
+   "line": 36,
+   "label": "false",
+   "why": "<%- body %> is the layout slot for the already-rendered view HTML (the render wrapper in server.js), not request data.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "cr0hn/vulnerable-node",
+   "rule": "PAH-W001",
+   "path": "views/product_detail.ejs",
+   "line": 71,
+   "label": "true",
+   "why": "Review bodies stored from POST /products/:id/reviews render with <%- r.body %> (stored XSS).",
+   "expected": "vn-stored-xss-reviews",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "we45/Vulnerable-Flask-App",
+   "rule": "PAH-W012",
+   "path": "app/app.py",
+   "line": 265,
+   "label": "true",
+   "why": "/search %-formats content['search'] into raw SQL run by db.engine.execute; any customer's valid token is enough.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "anxolerd/dvpwa",
+   "rule": "PAH-W001",
+   "path": "sqli/app.py",
+   "line": 35,
+   "label": "true",
+   "why": "setup_jinja(..., autoescape=False) makes every {{ }} raw. Review text, student names and course fields are stored and rendered unescaped. This single setting also covers dvpwa-stored-xss-other-fields.",
+   "expected": "dvpwa-stored-xss-review",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "anxolerd/dvpwa",
+   "rule": "PAH-W001",
+   "path": "sqli/static/js/materialize.js",
+   "line": 396,
+   "label": "false",
+   "why": "Vendored Materialize library internals: an IE conditional-comment probe with a constant string. The templates load materialize.min.js, and no app code feeds it data.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "anxolerd/dvpwa",
+   "rule": "PAH-W001",
+   "path": "sqli/static/js/materialize.js",
+   "line": 2850,
+   "label": "false",
+   "why": "Materialize tooltip helper (allowHtml branch) inside the vendored library. No template defines tooltips from user data, and the app loads materialize.min.js, not this file.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "anxolerd/dvpwa",
+   "rule": "PAH-W001",
+   "path": "sqli/static/js/materialize.js",
+   "line": 3444,
+   "label": "false",
+   "why": "Materialize toast helper inside the vendored library. The app never calls Materialize.toast with user data (its toasts are static server-rendered divs), and it loads materialize.min.js.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "payatu/Tiredful-API",
+   "rule": "PAH-W012",
+   "path": "Tiredful-API/health/views.py",
+   "line": 46,
+   "label": "true",
+   "why": "get_activity %-formats request.data['month'] into Tracker.objects.raw; AllowAny permissions.",
+   "expected": "tiredful-sqli-activities",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "payatu/Tiredful-API",
+   "rule": "PAH-W012",
+   "path": "Tiredful-API/health/views.py",
+   "line": 57,
+   "label": "true",
+   "why": "The ValueError fallback runs the same %-formatted query through cursor.execute.",
+   "expected": "tiredful-sqli-activities",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "payatu/Tiredful-API",
+   "rule": "PAH-W001",
+   "path": "Tiredful-API/templates/elements/javascript-content.html",
+   "line": 14,
+   "label": "false",
+   "why": "document.write writes a script tag built from {{ STATIC_URL }}, a server setting, not user data.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "stamparm/DSVW",
+   "rule": "PAH-W012",
+   "path": "dsvw.py",
+   "line": 22,
+   "label": "true",
+   "why": "The ?id= parameter is concatenated into the users SELECT.",
+   "expected": "dsvw-sqli-id",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "stamparm/DSVW",
+   "rule": "PAH-W012",
+   "path": "dsvw.py",
+   "line": 42,
+   "label": "true",
+   "why": "The ?comment= value is %-formatted into the comments INSERT. A quote plus a concatenated subquery can store other tables' data (e.g. passwords) in a comment and read it back. This is a real SQLi; the answer key's comment item is the stored XSS.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "stamparm/DSVW",
+   "rule": "PAH-W012",
+   "path": "dsvw.py",
+   "line": 61,
+   "label": "true",
+   "why": "/login concatenates the unfiltered password parameter into SQL (only username is stripped), so ' OR '1'='1 logs in.",
+   "expected": "dsvw-sqli-login-bypass",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.js",
+   "line": 1328,
+   "label": "false",
+   "why": "Vendored jQuery 3.5.1 Sizzle feature-detection with a constant string. base.html loads jquery.min.js, not this file.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.js",
+   "line": 1385,
+   "label": "false",
+   "why": "Vendored jQuery Sizzle feature-detection with a constant string; this copy is not loaded by the app.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.js",
+   "line": 2932,
+   "label": "false",
+   "why": "Vendored jQuery support test with a constant string; this copy is not loaded by the app.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.js",
+   "line": 5032,
+   "label": "false",
+   "why": "Generic jQuery buildFragment internals in an unloaded copy (the app loads jquery.min.js). The real paste XSS sink is the .append() string concatenation in templates/paste.html, which this finding does not point at.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.js",
+   "line": 6347,
+   "label": "false",
+   "why": "Generic jQuery .html() internals in an unloaded copy. The app's actual sink is in templates/paste.html.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.slim.js",
+   "line": 1328,
+   "label": "false",
+   "why": "jquery.slim.js is not loaded by any template; Sizzle feature-detection with a constant string.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.slim.js",
+   "line": 1385,
+   "label": "false",
+   "why": "jquery.slim.js is not loaded; Sizzle feature-detection with a constant string.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.slim.js",
+   "line": 2932,
+   "label": "false",
+   "why": "jquery.slim.js is not loaded; support test with a constant string.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.slim.js",
+   "line": 5032,
+   "label": "false",
+   "why": "jquery.slim.js is not loaded; generic buildFragment internals, not an app sink.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "dolevf/Damn-Vulnerable-GraphQL-Application",
+   "rule": "PAH-W001",
+   "path": "static/jquery/jquery.slim.js",
+   "line": 6347,
+   "label": "false",
+   "why": "jquery.slim.js is not loaded; generic .html() internals, not an app sink.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W013",
+   "path": "services/chatbot/.env",
+   "line": 7,
+   "label": "true",
+   "why": "The tracked file's counted secrets are Postgres and Mongo passwords for databases no shipped deployment publishes. But the same file holds API_USER/API_PASSWORD for admin@example.com, the ROLE_ADMIN account TestUsers.java seeds with that password on every install, so anyone with the repo can sign in as admin on a default deployment.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W013",
+   "path": "services/identity/.env",
+   "line": 1,
+   "label": "false",
+   "why": "Local-dev env (127.0.0.1 hosts). Its Postgres password guards a database that docker-compose, k8s and helm do not expose, JWT_SECRET is unused (identity signs with JWKS), and the TLS keystore passwords apply to a TLS-off default. The real committed signing key is services/identity/jwks.json, which this finding does not point at.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W013",
+   "path": "services/workshop/.env",
+   "line": 3,
+   "label": "false",
+   "why": "Local-dev env. The DB passwords guard databases that no shipped deployment exposes. SECRET_KEY=crapi is Django's key, but sessions are DB-backed and crapi code signs nothing with it, so no forgery path exists.",
+   "expected": null,
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W010",
+   "path": "services/workshop/crapi/shop/views.py",
+   "line": 174,
+   "label": "true",
+   "why": "OrderControlView.post accepts a bare IntegerField quantity and subtracts price x quantity from available_credit, so a negative quantity adds credit.",
+   "expected": "crapi-negative-quantity",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W010",
+   "path": "services/workshop/crapi/shop/views.py",
+   "line": 241,
+   "label": "true",
+   "why": "OrderControlView.put lets the owner set any quantity, then status=returned refunds quantity x price. That is the documented order-edit refund hole (the owner check exists, but the user only needs their own order).",
+   "expected": "crapi-order-mass-assignment",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W012",
+   "path": "services/workshop/crapi/shop/views.py",
+   "line": 388,
+   "label": "true",
+   "why": "ApplyCouponView concatenates coupon_code into the applied_coupon SELECT, so injection hides an earlier claim and lets the coupon be applied again.",
+   "expected": "crapi-sqli-apply-coupon",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "OWASP/crAPI",
+   "rule": "PAH-W010",
+   "path": "services/workshop/crapi/shop/models.py",
+   "line": 57,
+   "label": "true",
+   "why": "Order.quantity has no lower bound, and the serializer is a bare IntegerField, so negative quantities are stored and multiplied into credit. It is the model side of the same negative-quantity flaw as the view finding.",
+   "expected": "crapi-negative-quantity",
+   "reviewer": "reviewer A"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 89,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 116,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 118,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 160,
+   "label": "false",
+   "why": "Line 160 interpolates `column` = VALUE_COLUMNS[type], where type is a zod enum (release|environment|browser|urlPath) from errorValuesQuerySchema; the search value and all filters are bound parameters. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 171,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 174,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 186,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W012",
+   "path": "src/queries/sql/errors/query.ts",
+   "line": 194,
+   "label": "false",
+   "why": "Every value in the query is a bound parameter: queryContext turns {{name}}/{name:Type} placeholders into $n parameters (executeRawQuery in src/lib/prisma.ts) or ClickHouse query params; the only interpolations are fixed column/expression strings, and page/pageSize are zod-coerced ints (1-100) from errorQuerySchema. No injection.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/security/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/teams/[teamId]/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/teams/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/users/[userId]/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/users/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/websites/[websiteId]/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/(main)/admin/websites/page.tsx",
+   "line": 0,
+   "label": "false",
+   "why": "The page is a client-side shell with no server data; AdminLayout hides it for non-admins and every API it calls (/api/admin/*, /api/users/*, etc.) checks user.isAdmin (derived from the DB role) server-side, so a non-admin who types the URL gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/2fa/global/contract.generated.ts",
+   "line": 1,
+   "label": "false",
+   "why": "contract.generated.ts is generated OpenAPI metadata (defineOperation), not a route handler; the real route.ts next to it checks isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/2fa/global/route.ts",
+   "line": 8,
+   "label": "false",
+   "why": "POST handler calls canE…(auth), which returns user.isAdmin, and returns 401 otherwise.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/teams/[teamId]/2fa/contract.generated.ts",
+   "line": 1,
+   "label": "false",
+   "why": "contract.generated.ts is generated OpenAPI metadata (defineOperation), not a route handler; the real route.ts next to it checks isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/teams/[teamId]/2fa/route.ts",
+   "line": 8,
+   "label": "false",
+   "why": "POST handler calls canEnforceTwoFactorAuthForTeam(auth, teamId), which returns user.isAdmin, before updating the team.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W002",
+   "path": "src/app/api/admin/teams/[teamId]/2fa/route.ts",
+   "line": 32,
+   "label": "false",
+   "why": "Admin-only endpoint (canEnforceTwoFactorAuthForTeam requires user.isAdmin); an administrator is meant to set 2FA on any team, so no ownership check is needed.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/teams/contract.generated.ts",
+   "line": 1,
+   "label": "false",
+   "why": "contract.generated.ts is generated OpenAPI metadata (defineOperation), not a route handler; the real route.ts next to it checks isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/teams/route.ts",
+   "line": 8,
+   "label": "false",
+   "why": "GET handler checks canViewAllTeams(auth), which returns user.isAdmin, and returns 401 otherwise.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/users/[userId]/2fa/contract.generated.ts",
+   "line": 1,
+   "label": "false",
+   "why": "contract.generated.ts is generated OpenAPI metadata (defineOperation), not a route handler; the real route.ts next to it checks isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+   "line": 9,
+   "label": "false",
+   "why": "GET handler checks canEnforceTwoFactorAuthForUser(auth) = user.isAdmin before reading.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W002",
+   "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+   "line": 26,
+   "label": "false",
+   "why": "Admin-only endpoint (canEnforceTwoFactorAuthForUser = user.isAdmin); admins are meant to see any user's 2FA status, and it only returns isEnabled.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+   "line": 31,
+   "label": "false",
+   "why": "POST handler checks canEnforceTwoFactorAuthForUser(auth) = user.isAdmin before updating.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/users/[userId]/2fa/route.ts",
+   "line": 60,
+   "label": "false",
+   "why": "DELETE handler checks canEnforceTwoFactorAuthForUser(auth) = user.isAdmin before resetting 2FA.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/users/route.ts",
+   "line": 8,
+   "label": "false",
+   "why": "GET handler checks canViewUsers(auth), which returns user.isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "umami-software/umami",
+   "rule": "PAH-W003",
+   "path": "src/app/api/admin/websites/route.ts",
+   "line": 9,
+   "label": "false",
+   "why": "GET handler checks canViewAllWebsites(auth), which returns user.isAdmin.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "boxyhq/saas-starter-kit",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 4,
+   "label": "false",
+   "why": "NEXTAUTH_SECRET is a sample value generated for the example (comment says to generate your own with openssl; README, app.json and the DigitalOcean template all make the deployer supply one). It grants access to nothing unless an operator reuses it, which nothing in the repo does.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "boxyhq/saas-starter-kit",
+   "rule": "PAH-W011",
+   "path": "prisma/seed.ts",
+   "line": 132,
+   "label": "false",
+   "why": "prisma/seed.ts is a seed script, and Math.random() only picks which seeded user is invitedBy; the invitation token uses crypto randomUUID().",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "boxyhq/saas-starter-kit",
+   "rule": "PAH-W006",
+   "path": "pages/api/webhooks/dsync.ts",
+   "line": 45,
+   "label": "false",
+   "why": "Line 45 is the HMAC check; handleEvents runs only after the boxyhq-signature HMAC check, and it saves only email/name and adds members as Role.MEMBER. The body is never saved whole.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "boxyhq/saas-starter-kit",
+   "rule": "PAH-W008",
+   "path": "pages/teams/[slug]/webhooks.tsx",
+   "line": 1,
+   "label": "false",
+   "why": "pages/teams/[slug]/webhooks.tsx is the UI page for managing a team's outgoing Svix webhooks, not a payment webhook receiver; it handles no events.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 23,
+   "label": "false",
+   "why": "ALPH…: Obvious placeholder text, not a credential (the file header and README say the values are placeholders).",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 26,
+   "label": "false",
+   "why": "DISC…: Obvious placeholder text, not a credential (the file header and README say the values are placeholders).",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 29,
+   "label": "uncertain",
+   "why": "Realistic-looking Facebook app secret (paired with app id 754220301289665) that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 33,
+   "label": "false",
+   "why": "FOUR…: Obvious placeholder text, not a credential (the file header and README say the values are placeholders).",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 38,
+   "label": "uncertain",
+   "why": "Realistic-looking GitHub OAuth client secret (40 hex) that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 46,
+   "label": "uncertain",
+   "why": "Realistic-looking Google OAuth client secret (its paired client id is in an old, truncated format) that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 48,
+   "label": "false",
+   "why": "GOOG…: Obvious placeholder text, not a credential (the file header and README say the values are placeholders).",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 62,
+   "label": "uncertain",
+   "why": "Realistic-looking Last.fm API key that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 63,
+   "label": "uncertain",
+   "why": "Realistic-looking Last.fm secret (stored with a stray 'is ' prefix) that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 66,
+   "label": "uncertain",
+   "why": "Realistic-looking LinkedIn client secret that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 69,
+   "label": "false",
+   "why": "The paired MICROSOFT_CLIENT_ID (a533430d-...-d1b123456780) is visibly made up, so the secret can't be used against any real app registration; it is example data.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 71,
+   "label": "false",
+   "why": "LOB_KEY is a test_ key; Lob test keys never print or mail anything or bill anyone (README says so), so it is not a usable real secret.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 73,
+   "label": "uncertain",
+   "why": "Realistic-looking NYT API key (legacy key format) that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 78,
+   "label": "false",
+   "why": "The app only calls PayPal's sandbox endpoint (api.sandbox.paypal.com in controllers/api.js), so this is at most a sandbox credential that moves no real money.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 83,
+   "label": "uncertain",
+   "why": "Realistic-looking Steam Web API key that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 85,
+   "label": "false",
+   "why": "sk_t… is Stripe's widely published documentation test key; test mode only, no real charges or data.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 86,
+   "label": "false",
+   "why": "STRIPE_PKEY is a Stripe publishable key (pk_test_), which is public by design and meant to be shipped to browsers.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 88,
+   "label": "uncertain",
+   "why": "Realistic-looking Tumblr consumer key that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 89,
+   "label": "uncertain",
+   "why": "Realistic-looking Tumblr consumer secret that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 92,
+   "label": "uncertain",
+   "why": "Twilio auth token paired with the Twilio magic test number +15005550006, which suggests test credentials that can't send real SMS. Whether the SID/token pair is live or test can't be checked from the repo.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 98,
+   "label": "uncertain",
+   "why": "Realistic-looking X/Twitter consumer key that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 99,
+   "label": "uncertain",
+   "why": "Realistic-looking X/Twitter consumer secret that has shipped in the public .env.example for years and is called a placeholder in the README/file header; whether the provider still accepts it can't be determined from the repository.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "sahat/hackathon-starter",
+   "rule": "PAH-W002",
+   "path": "controllers/webauthn.js",
+   "line": 62,
+   "label": "false",
+   "why": "Looking the user up by the credential ID is the WebAuthn login itself: verifyAuthenticationResponse checks the signature against that credential's stored public key and the session challenge before login, so a guessed ID gets nothing.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "hagopj13/node-express-boilerplate",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 24,
+   "label": "false",
+   "why": "SMTP… is placeholder text, not a credential.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "hagopj13/node-express-boilerplate",
+   "rule": "PAH-W002",
+   "path": "src/controllers/user.controller.js",
+   "line": 20,
+   "label": "false",
+   "why": "Route GET /users/:userId uses auth('getUsers'); the auth middleware rejects unless the user has the admin-only getUsers right or req.params.userId equals the caller's own id.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "danielfsousa/express-rest-boilerplate",
+   "rule": "PAH-W013",
+   "path": ".env.example",
+   "line": 3,
+   "label": "false",
+   "why": "JWT_SECRET is a sample signing secret for the example (dotenv-safe reads .env.example only for the list of required names; values come from .env). It is not a credential to any external system and only matters if an operator reuses it.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "danielfsousa/express-rest-boilerplate",
+   "rule": "PAH-W006",
+   "path": "src/api/controllers/user.controller.js",
+   "line": 37,
+   "label": "false",
+   "why": "POST /v1/users (create) is behind authorize(ADMIN) and Joi createUser validation; setting role there is the intended admin user-creation feature. Public signup (auth.register) omits role.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "danielfsousa/express-rest-boilerplate",
+   "rule": "PAH-W012",
+   "path": "src/api/controllers/auth.controller.js",
+   "line": 98,
+   "label": "false",
+   "why": "POST /v1/auth/send-password-reset is validated with Joi.string().email().required() (express-validation 1.0.3 / Joi 10), so an object such as {\"$ne\": null} is rejected before the query runs.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "miguelgrinberg/microblog",
+   "rule": "PAH-W001",
+   "path": "app/templates/base.html",
+   "line": 99,
+   "label": "false",
+   "why": "innerHTML at line 99 gets a fixed <img> tag with a server-generated url_for static path; the translated text is written with innerText.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "HackSoftware/Django-Styleguide-Example",
+   "rule": "PAH-W013",
+   "path": "styleguide_example/integrations/aws/client.py",
+   "line": 76,
+   "label": "false",
+   "why": "Line 76 is inside a docstring showing an example presigned POST response; it contains only an AWS access key ID inside x-amz-credential, not a secret access key, and real credentials are read from settings.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  },
+  {
+   "app": "HackSoftware/Django-Styleguide-Example",
+   "rule": "PAH-W001",
+   "path": "styleguide_example/blog_examples/templates/admin_2fa/setup_2fa.html",
+   "line": 11,
+   "label": "false",
+   "why": "qr_code is SVG markup that the qrcode library's SvgPathImage generates from the TOTP provisioning URI; user data is encoded only as QR module geometry, so no attacker HTML can get into the |safe output.",
+   "expected": null,
+   "reviewer": "reviewer B"
+  }
+ ]
+}
