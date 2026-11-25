@@ -1,0 +1,1384 @@
+{
+ "kind": "appsec-heldout-round2",
+ "drawn": "2026-11-25",
+ "seed": "pah-appsec-heldout-round2-2026-11-25",
+ "code_at_draw": "d41b0f2f16007f592cbe67ed02b26d39ad0de4d7",
+ "code_hash_at_draw": "f34af971e581",
+ "development_set": [
+  "Aftab48/verified-learning",
+  "Anyagit19/valyo-ai",
+  "HackSoftware/Django-Styleguide-Example",
+  "Maksudur7/Approve-nexus",
+  "OWASP/NodeGoat",
+  "OWASP/crAPI",
+  "Razikus/supabase-nextjs-template",
+  "ThomasPolesel/App-de-Controle-Financeiro",
+  "Vharika31/agriconnect-nextjs",
+  "aarjjun/EventSync-test",
+  "adeyosemanputra/pygoat",
+  "anxolerd/dvpwa",
+  "appsecco/dvna",
+  "axelrada8/baseball-stats-central",
+  "boxyhq/saas-starter-kit",
+  "cr0hn/vulnerable-node",
+  "danielfsousa/express-rest-boilerplate",
+  "dolevf/Damn-Vulnerable-GraphQL-Application",
+  "erev0s/VAmPI",
+  "ewuket/khrate-app",
+  "fastapi/full-stack-fastapi-template",
+  "forsureclub/forsureclub",
+  "gothinkster/django-realworld-example-app",
+  "gothinkster/node-express-realworld-example-app",
+  "hagopj13/node-express-boilerplate",
+  "ixartz/SaaS-Boilerplate",
+  "juice-shop/juice-shop",
+  "kartik7raturi/ketopia",
+  "lgpecin/PecinDesign-Website",
+  "lulubun/devlog-hub",
+  "mckaywrigley/chatbot-ui",
+  "miguelgrinberg/microblog",
+  "msacks2692-sudo/unmute-every-voice",
+  "nextjs/saas-starter",
+  "nsidnev/fastapi-realworld-example-app",
+  "pankajsir914/games-website",
+  "patel239-bit/repo-ai-44",
+  "payatu/Tiredful-API",
+  "sahat/hackathon-starter",
+  "shadcn-ui/taxonomy",
+  "snoopysecurity/dvws-node",
+  "stamparm/DSVW",
+  "umami-software/umami",
+  "vercel/ai-chatbot",
+  "vercel/nextjs-subscription-payments",
+  "we45/Vulnerable-Flask-App"
+ ],
+ "strata": {
+  "vulnerable": [
+   {
+    "repo": "snyk-labs/nodejs-goof",
+    "commit": "add14ba59e98240d9e00a235dd7d42cd61ae9912"
+   },
+   {
+    "repo": "fportantier/vulpy",
+    "commit": "5249cc8b05a1c37f6b2f757b1cf16a509c327122"
+   },
+   {
+    "repo": "payatu/vuln-nodejs-app",
+    "commit": "bc3c90920ba4e1c668d954e5027d9ca814d2d5c6"
+   },
+   {
+    "repo": "WithSecureLabs/damn-vulnerable-llm-agent",
+    "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971"
+   },
+   {
+    "repo": "SirAppSec/vuln-node.js-express.js-app",
+    "commit": "b977c7407f328da929577745ad509639e26c428a"
+   },
+   {
+    "repo": "nVisium/django.nV",
+    "commit": "a48901f106da4888417339b7b44b8ed56b64c63f"
+   },
+   {
+    "repo": "OWASP/DVSA",
+    "commit": "c04e0a536ac54db8f732144be92b5f208169f8c4"
+   },
+   {
+    "repo": "carvesystems/vulnerable-graphql-api",
+    "commit": "aeee29720645399e926ea92ccb0b6eb5ad5402c8"
+   },
+   {
+    "repo": "harishsg993010/DamnVulnerableLLMProject",
+    "commit": "fb95f4afa72512c9fa2924d4e2889084771c69a0"
+   }
+  ],
+  "well_built": [
+   {
+    "repo": "lukevella/rallly",
+    "commit": "33fed0f6350c82ea8771d8decaa30735a359e654"
+   },
+   {
+    "repo": "documenso/documenso",
+    "commit": "e745c9ec339f1b16d2f8d181b6457323fb33ebe5"
+   },
+   {
+    "repo": "mfts/papermark",
+    "commit": "ed19717ec02a1ac79aecf5569159aa9d2d869312"
+   },
+   {
+    "repo": "linkwarden/linkwarden",
+    "commit": "24adcc146ba356632859a1e8adb4bffae2874d11"
+   },
+   {
+    "repo": "elie222/inbox-zero",
+    "commit": "fdba79972508e5dc3d5be7484b0a18db15160c20"
+   },
+   {
+    "repo": "healthchecks/healthchecks",
+    "commit": "c1039ad23395162c5e2f17d324d8ccdaa60a1d14"
+   },
+   {
+    "repo": "wger-project/wger",
+    "commit": "f903c66d3c0ced052050482d276bab2570fb61f7"
+   },
+   {
+    "repo": "dubinc/dub",
+    "commit": "6b463b4bdd9ed2fd9aa416f67b5b77d317b1471e"
+   },
+   {
+    "repo": "openstatusHQ/openstatus",
+    "commit": "8f5a7054e4b73d3d6c26e710ba905696c4c01972"
+   },
+   {
+    "repo": "outline/outline",
+    "commit": "7fab397ec6dc63b3106b06176f245f5c84cf25c1"
+   }
+  ],
+  "ai_built": [
+   {
+    "repo": "CristianoLongoDev/pluggy_front",
+    "commit": "6ed9810ce2f2a86b3fb683a6f615827305d3324d"
+   },
+   {
+    "repo": "shahzaib-191/tool-blog-nexus",
+    "commit": "e32b2e36165e649cd39a76fe13afe030d3382e0b"
+   },
+   {
+    "repo": "adriano2891/gestaorhgrupoativa",
+    "commit": "cbf4643434738182cb29a2d7468b700052378fc8"
+   },
+   {
+    "repo": "hiagoragazini/voxemy-ui-reimagined",
+    "commit": "89dff8e7919231ffe1962c96f3efd6f342087cae"
+   },
+   {
+    "repo": "oaklandunited/VSD-SHRA",
+    "commit": "31f195e5a681412af910051a7932da43f3f3a2d8"
+   },
+   {
+    "repo": "jana839/bridge-builder",
+    "commit": "ba761617ea1cc115ae8396fc7191b1a303861241"
+   },
+   {
+    "repo": "SuperMindTeam/vapi-analytics-beacon",
+    "commit": "e7ff43d9ae65c8924ce0f7a6027a1a0bee336cd1"
+   },
+   {
+    "repo": "theonlyvinan/cheqIn",
+    "commit": "dd2835763dc94b8a60226537c943e26ad6619105"
+   },
+   {
+    "repo": "MALTECH2025/tune-delivery-system",
+    "commit": "3c689a8fb36707550ce1f92fd869235c2475e710"
+   },
+   {
+    "repo": "mnjtds59-afk/office-orbit-app",
+    "commit": "bc0c8a8970eea435e736ab3e30d95b99b5a0e879"
+   },
+   {
+    "repo": "Tour-Der-Wang-Dev/wanderlust-hero-launch",
+    "commit": "40c17efcce5d97cf329b4ff52d933a20aa0efc5a"
+   },
+   {
+    "repo": "kirukatogit/bizhive-refactor-hub",
+    "commit": "da88bbb7cc63351fb9517237ccfc15bde4c2e3a1"
+   },
+   {
+    "repo": "anirban2k22/bitey-witey-bites",
+    "commit": "23de0ab676b0e7bac47a50dfc749aa86fec6cdfa"
+   },
+   {
+    "repo": "mrjamesweb/taleem-pathway-revamp-project",
+    "commit": "e5684b8ed479485ff874f90a10fcf8b06ae461eb"
+   },
+   {
+    "repo": "ImDrewDiggs/c2c",
+    "commit": "88ed965d608720ccc7c3466e32d7807734c648c3"
+   }
+  ]
+ },
+ "candidates": {
+  "vulnerable": [
+   {
+    "repo": "snyk-labs/nodejs-goof",
+    "used": true
+   },
+   {
+    "repo": "fportantier/vulpy",
+    "used": true
+   },
+   {
+    "repo": "Checkmarx/capital",
+    "used": false,
+    "why": "written in CSS"
+   },
+   {
+    "repo": "payatu/vuln-nodejs-app",
+    "used": true
+   },
+   {
+    "repo": "WithSecureLabs/damn-vulnerable-llm-agent",
+    "used": true
+   },
+   {
+    "repo": "SirAppSec/vuln-node.js-express.js-app",
+    "used": true
+   },
+   {
+    "repo": "nVisium/django.nV",
+    "used": true
+   },
+   {
+    "repo": "OWASP/DVSA",
+    "used": true
+   },
+   {
+    "repo": "trottomv/python-insecure-app",
+    "used": false,
+    "why": "written in Just"
+   },
+   {
+    "repo": "jorritfolmer/vulnerable-api",
+    "used": false,
+    "why": "fork"
+   },
+   {
+    "repo": "carvesystems/vulnerable-graphql-api",
+    "used": true
+   },
+   {
+    "repo": "harishsg993010/DamnVulnerableLLMProject",
+    "used": true
+   }
+  ],
+  "well_built": [
+   {
+    "repo": "lukevella/rallly",
+    "used": true
+   },
+   {
+    "repo": "documenso/documenso",
+    "used": true
+   },
+   {
+    "repo": "mfts/papermark",
+    "used": true
+   },
+   {
+    "repo": "linkwarden/linkwarden",
+    "used": true
+   },
+   {
+    "repo": "elie222/inbox-zero",
+    "used": true
+   },
+   {
+    "repo": "mealie-recipes/mealie",
+    "used": false,
+    "why": "larger than 400 MB"
+   },
+   {
+    "repo": "healthchecks/healthchecks",
+    "used": true
+   },
+   {
+    "repo": "wger-project/wger",
+    "used": true
+   },
+   {
+    "repo": "formbricks/formbricks",
+    "used": false,
+    "why": "larger than 400 MB"
+   },
+   {
+    "repo": "dubinc/dub",
+    "used": true
+   },
+   {
+    "repo": "openstatusHQ/openstatus",
+    "used": true
+   },
+   {
+    "repo": "outline/outline",
+    "used": true
+   }
+  ]
+ },
+ "frame": {
+  "ai_built": {
+   "query": "\"Welcome to your Lovable project\" filename:README.md",
+   "from": "round one's saved search results, without every repository round one examined",
+   "results": [
+    "1U22CS102-SASIKUMAR/sasikumar",
+    "1raghubirkumar/eveee",
+    "7yas/labournet",
+    "988673251/farm-field-friend",
+    "ASLRadek/easy-build-belgium",
+    "Aashish788/zunopayroll",
+    "AbhiXO7/inlighn-tech-spark",
+    "Adarsh1019/neon-legal-core",
+    "Adityacse22/Eveee",
+    "Alessandro1022/sheiktest12",
+    "Ananta-Paul/S.K.DEVELOPERS",
+    "AndresSantosSotec/migra-asm-hub",
+    "Anshuman77777/OdooHackathon25",
+    "AyushD95/location-risk-alert",
+    "BBMPRODUCCIONES/Plataforma-BBM",
+    "BRobertsonRed/profit-plunder-insight",
+    "Bayebaradiop/medibook_web",
+    "CACO1972/predict-care-guide",
+    "CACO1972/predict-care-report",
+    "ChMubasharAli/transcription-application",
+    "ChristianMuuo/apex-marketplace",
+    "Christine-code-crypto/kind-deeds-united",
+    "CristianoLongoDev/pluggy_front",
+    "Cubenft2/xray-alpha-hub",
+    "CyberMindX-AI/smartdataanalyst",
+    "DEV6210/doctorezy-indian-health-hub",
+    "Davidfestus20/vibraze-youth-vibe",
+    "Davieschikelu/We-Vote",
+    "DenisDanov/talknest-design",
+    "DevJadhwani1/alpha-lens-nexus",
+    "Dhanasri-Parisam/box-office-hub-main",
+    "Dhaniskasri/Gemini-ai",
+    "Dheerajhacks/styled-image-blog",
+    "Dineshraja03/my-portfolio",
+    "DiveshSutar/pulse-writer",
+    "ERPICADEV/Frontend-cleanlink",
+    "ElavazhaganS/harmony-hub-43",
+    "ElmiraMirzabeigi/personal_web",
+    "Emberate/code-spark-forge-verse",
+    "FacelessLee/fulfillit-edu",
+    "FahmyAlmaliki/cattlecare_ngantang",
+    "Gauranshgoel123/Vendor-Empanelment-Portal",
+    "Gautam5514/WhiteByte_React",
+    "Gev1401/veyalab-website",
+    "HarishRM24/portfolio",
+    "HenryB08/syntrexio",
+    "ImDrewDiggs/c2c",
+    "Jugucan/kynetik",
+    "KirranKumar18/Quorum",
+    "KrystalDeFi/vault-leaderboard",
+    "Kushal7-collab/email-safe-sentinel",
+    "Legalparihar/shreegopaljibhoginternal",
+    "LeoSemAcento/lurdinha-chic-hiver-collection",
+    "LexnaDesigns/sarac-auto-elite",
+    "Linushaddai99/happy_birthday",
+    "MALTECH2025/tune-delivery-system",
+    "MDharunPrasad/giglabs-intern-venture",
+    "MMA560/my_landing-page",
+    "Mangaverse2025/manga-verse-ts",
+    "MatheusFelipeDuarte/podo_pes-react-app",
+    "MattiaArcellaschi/zeus-launchpad",
+    "Mayank06711/blogs_ads_phonix",
+    "MerilinMartinson/merilinmartinson",
+    "Moksh-Digital/Livique",
+    "MrAnujBabu/Certificate-Portfolio",
+    "Muskan16-web/pathfinder-palette-12",
+    "MykeShale/Tuzotap",
+    "NANDHINI7390/cricket-fantasy-flare",
+    "NIRAV-DON/ask-ai-shop",
+    "NandeeshSN/devant-insight",
+    "Nareshkumarbalamurugan/responsive-react-web",
+    "Narutomithun/Quorum",
+    "PavanDurgaSaiGupta/remarket-notion-ads",
+    "Pavankalyan2006/stylish-prediction-pal",
+    "PedroLages/exact-widget-magic",
+    "PetrmMichal/Petrm.github.io",
+    "PicaPika22/paper-hub-central",
+    "Pupper0n1/personal-portfolio",
+    "RadheshyamDhakarwal/ipl-match-tracker-view-main",
+    "Raj9229/india-cab-voyager-web",
+    "Reggy501/abode-harmony-fe",
+    "Ritamattos/bebase",
+    "Rohitbanala/bomma-buddy-greetings-hub",
+    "Roustammmmm/Rr",
+    "SDSamarasinghe/dash-cal-pro-frame",
+    "Saahiti402/browse-boost-store-30586",
+    "Samreen272/future-pathfinder-script",
+    "SergeySmolkinGrodt/ChatRoulett",
+    "Shashikala-G14/AgriShield",
+    "Simpopapp/barberio-portal",
+    "Sneha-2045/insight-spark",
+    "Sri-Amirdha-Sudha/portfolio",
+    "Stanlywayne/coilquote-auth-pro",
+    "Stxanskiy/super_frontend_message-",
+    "SuperMindTeam/vapi-analytics-beacon",
+    "Tanmay1906/cybernetic-guardian-suite",
+    "TatianaFlorentino/kart-track-pulse-36",
+    "TejusKhadri/Eduplay",
+    "Tour-Der-Wang-Dev/baan-wang-delivery-khrap",
+    "Tour-Der-Wang-Dev/wanderlust-hero-launch",
+    "UNAI-TECH/my-vidyon-static",
+    "UditJain2622004/bot-battleground-game",
+    "Vanshjais1777/Hire-Flow-frontend",
+    "Vijay-Hozo/zionarch",
+    "Vkc134/ehs-final",
+    "Wizdevi/tweet-insight-explorer-ai",
+    "WonbinShin/wonbin-korean-tutoring",
+    "Wondergasper/connectifyfrontend",
+    "YVMAi/verdo-site-hub",
+    "Yojanamani/Calculator",
+    "Yongrui-Su/migraine-virtual-ai-assistant",
+    "Yugpatel009/New-System",
+    "aasif-vip-dev/aasifvip-craft-code",
+    "access-plus/eventpro-site",
+    "aditya023kiet/the-aditya-showcase",
+    "aditya0249/Medisynn",
+    "adriano2891/gestaorhgrupoativa",
+    "alameen-furniture/alameen-furniture.github.io",
+    "allaboutrohit/academic-insights-system",
+    "alnutile/lovable-auth-template",
+    "amalvarghese-30/StillWorks-portfolio",
+    "amitshob/spinesupport",
+    "amohanty66GT/resume-next",
+    "amrutha-ponduri/lovely-lilac-store",
+    "anirban2k22/bitey-witey-bites",
+    "aofphy/CSEA_web",
+    "arianXdev/smart-constitution-client",
+    "asadsirazi/asadsirazi.github.io",
+    "asher-letti/gabrielportfolio",
+    "ashi1207/harsh-code-without-3d",
+    "athrvchvn/TLMMS",
+    "austinle99/alpha-spin-win",
+    "ayaan9618/edventurepark-networkmap-p-74",
+    "ayelletm-work/trendline-playbook-forge",
+    "beast955/tasty-talk-tracker",
+    "bharathy2302/finverse-finance",
+    "bhaskar601/bharat-gaming-legacy",
+    "bilal280/almehdi",
+    "bilal280/tariq-bin-ziyad-institute",
+    "bonnyoswald/trip-sensei-ai-planner",
+    "cbussalleu/teleperformance-insight-hub",
+    "chbhavanishankar539/resume",
+    "chiquanluu/listen-guard-app",
+    "chiragnahata/WEATHER-DASHBOARD",
+    "chumankum/gasfee",
+    "codepog/nexus",
+    "davmoha/veteran-finance-sense",
+    "dewanshrawat15/kundli-dating-spark",
+    "dineshbuilds/portfolio",
+    "dived253/fleet-club-prompt",
+    "divyanshjadon/shaenx-learn-earn",
+    "elwardi777/GestionStagaire",
+    "emirirr/OrderTracking",
+    "engineer915/the-site",
+    "euleozed/contratos-controle",
+    "evshvarov/credit-app-maker",
+    "ezabhishek1/CodeFolio-Camp",
+    "gd03champ-swg/prompt-library",
+    "gongaakshay/cloud-health-insights",
+    "guitrein/smart-finance-forecast-system",
+    "hamagold/coffcekrd",
+    "hany-UPS/code-camp-academy-app",
+    "harrybarnes/encode-mail-canvas",
+    "hiagoragazini/voxemy-ui-reimagined",
+    "hkirat/solana-connect-chat",
+    "hkirat/solana-connect-chat-1",
+    "hybriddemo/ksrtc-bus-track",
+    "ifaaz-builder/bcl-wicket-register",
+    "ihagodaniel2010-blip/site-do-site",
+    "iles-git/profilo",
+    "jana839/bridge-builder",
+    "janespotted/spottedsocial",
+    "japatraderdev99/lp-reboot-studio",
+    "jatinchaurasiya/mindful-wellbeing-clinic-site",
+    "jeremyrdavis/daily-wisdom-shadowbox",
+    "jjsmith118118-design/baggies-wicket-web",
+    "johnlar455/utilify-web-hub",
+    "jtk16/zygraph",
+    "kirukatogit/Trabajo_Especialidad",
+    "kirukatogit/bizhive-honeycomb-front",
+    "kirukatogit/bizhive-refactor-hub",
+    "koreyfunding-oss/neon21_bjfinal-14",
+    "kristal2012/nexus-crypto-bot",
+    "kritsanan1/wang-sam-mho-report-0f16147b",
+    "leotansingapore/aia-product-compass-hub",
+    "lindo315/wits-runner-go",
+    "lokcodes7/trade-scribe-chronicles-91",
+    "lprnmns/lokaSkor",
+    "lucasmateuslid/k-tag-tracker-hub",
+    "m-aryan-ali/stock-savvy",
+    "marcbue/serpent-social",
+    "mattcho/mattcho.github.io",
+    "mc3ccc/GrowKids-Mentorship",
+    "mk-505/the_apex_accelerator",
+    "mnjtds59-afk/office-orbit-app",
+    "mohammedzaamin123/chatbot-management",
+    "mr-rohit-7903/DebAI",
+    "mrjamesweb/taleem-pathway-revamp-project",
+    "mypennytree2/pennytree-website",
+    "naitik99045/ethical-hacker-quest-mobile",
+    "nuurhasan/quick-hire-uk-connect",
+    "oaklandunited/VSD-SHRA",
+    "omarramy11/Ibtaker_Platform",
+    "omsingh10/Rail-Pravha",
+    "pepealps/doce-magia-instantanea-landing",
+    "praveeenyalla/influence-flow-analytics-suite",
+    "princejabez1/circuitstocode-jabez-portfolio",
+    "rahmabens/prototype-creative-spark",
+    "rahulkuma55587/bnbfee-dapp",
+    "resortsoffers-hub/resortsoffers",
+    "ricci-alessandro-ENERGENT/veggiefinder",
+    "ringojuice03/ShrinkMCP-Web",
+    "rizzikhan/All-Social-Media-Downloader",
+    "sagar2018/wealth-wellbeing-ui",
+    "sahilkadam11/eco-wares-hub",
+    "sanodiyaatul/atul-codes-beyond",
+    "satyajeet-rout/fill-and-sign-studio-09882-26225",
+    "shahzaib-191/tool-blog-nexus",
+    "sholoksell/Sholok",
+    "shreyaskommuri/Miraqua",
+    "shriyamalik-mb/Meobyr-tsx",
+    "stuidoanom/purple-grid-design",
+    "t-y-p-i-n-g/abhi-Codefolio",
+    "technthspace-create/Swiftora-Frontend",
+    "templatesflexi/tools-old-bolt",
+    "theonlyvinan/cheqIn",
+    "thomasbourque/thomas-bourque-planipret-juin2025",
+    "tiago-cenci/vital-trainer-suite",
+    "toddpress/modular-dashboard-sphere",
+    "toufikze77/b2bnest.app",
+    "uausmani/pakmobility1",
+    "uday68/teamColab",
+    "vanessatrizah/crime-watch-network-hub",
+    "vibin-alt/YAS",
+    "vinitguptaother/angel-totp-buddy",
+    "vissatt1/main-copy",
+    "wilcorrea/wilcorrea.github.io",
+    "yantze/tinyread-landing",
+    "yassine-mlk/mbgold",
+    "zahzouh2004/designo-pack-it-up",
+    "zerovacancy/zerovacancy-96"
+   ],
+   "skipped_in_order": [
+    {
+     "repo": "technthspace-create/Swiftora-Frontend",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "UditJain2622004/bot-battleground-game",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "uausmani/pakmobility1",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "chiquanluu/listen-guard-app",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "asher-letti/gabrielportfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Jugucan/kynetik",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Reggy501/abode-harmony-fe",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Ananta-Paul/S.K.DEVELOPERS",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Ritamattos/bebase",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "praveeenyalla/influence-flow-analytics-suite",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Pupper0n1/personal-portfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "athrvchvn/TLMMS",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "AbhiXO7/inlighn-tech-spark",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "vanessatrizah/crime-watch-network-hub",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "japatraderdev99/lp-reboot-studio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "chiragnahata/WEATHER-DASHBOARD",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "ashi1207/harsh-code-without-3d",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "AndresSantosSotec/migra-asm-hub",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "amalvarghese-30/StillWorks-portfolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "bhaskar601/bharat-gaming-legacy",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Pavankalyan2006/stylish-prediction-pal",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "zahzouh2004/designo-pack-it-up",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "rizzikhan/All-Social-Media-Downloader",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "t-y-p-i-n-g/abhi-Codefolio",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "TatianaFlorentino/kart-track-pulse-36",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "mattcho/mattcho.github.io",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Gauranshgoel123/Vendor-Empanelment-Portal",
+     "why": "no supabase/ folder"
+    },
+    {
+     "repo": "Samreen272/future-pathfinder-script",
+     "why": "no supabase/ folder"
+    }
+   ]
+  }
+ },
+ "expected": {
+  "snyk-labs/nodejs-goof": [
+   {
+    "id": "goof-login-nosql-injection",
+    "class": "PAH-W012",
+    "what": "POST /login: loginHandler in routes/index.js passes the JSON username/password as-is to User.find(), so {\"password\": {\"$gt\": \"\"}} (or both fields) logs in as admin (MongoDB operator injection).",
+    "source": "README.md (NoSQL injection); exploits/nosql-exploits.sh"
+   },
+   {
+    "id": "goof-admin-redirectpage-xss",
+    "class": "PAH-W001",
+    "what": "views/admin.ejs renders the redirectPage query value raw with <%- redirectPage %> in a hidden input, giving reflected XSS via /login?redirectPage=\"><script>alert(1)</script>.",
+    "source": "README.md (Open redirect section)"
+   },
+   {
+    "id": "goof-hardcoded-session-secret",
+    "class": "PAH-W013",
+    "what": "app.js (~line 40) initializes express-session with the hard-coded secret 'keyboard cat'.",
+    "source": "README.md (Hardcoded values - session information)"
+   }
+  ],
+  "fportantier/vulpy": [
+   {
+    "id": "vulpy-bad-xss",
+    "class": "PAH-W001",
+    "what": "Cross-Site Scripting in the BAD version (bad/); the docs name no route, file or XSS type.",
+    "source": "README.rst (Vulnerabilities)"
+   },
+   {
+    "id": "vulpy-bad-sqli",
+    "class": "PAH-W012",
+    "what": "SQL injection in the BAD version (bad/); the docs name no route or file.",
+    "source": "README.rst (Vulnerabilities)"
+   },
+   {
+    "id": "vulpy-bad-auth-bruteforce",
+    "class": "PAH-W011",
+    "what": "Authentication brute force (no attempt limit) in the BAD version's login; the docs give no further detail (password login vs MFA code not stated).",
+    "source": "README.rst (Vulnerabilities)"
+   }
+  ],
+  "payatu/vuln-nodejs-app": [
+   {
+    "id": "payatu-env-committed-jwt-secret",
+    "class": "PAH-W013",
+    "what": "The committed /.env holds JWT_SECRET=secret (and DB_PASS=passw0rd per the README sample); the solutions show it as the vulnerable code for the 'JWT weak secret' exercise.",
+    "source": "solutions/solutions.md (3. JWT weak secret); README.md (Manual install, step 3)"
+   },
+   {
+    "id": "payatu-notes-idor",
+    "class": "PAH-W002",
+    "what": "GET /notes/user/:userid: userNotes_get in controllers/vuln_controller.js loads Notes by the userid from the URL instead of req.user.id, exposing other users' notes.",
+    "source": "solutions/solutions.md (4. IDOR)"
+   },
+   {
+    "id": "payatu-xss-raw-xss1",
+    "class": "PAH-W001",
+    "what": "GET /xss: views/xss.ejs renders query param xss1 with raw <%- xss1 %> (case 1).",
+    "source": "solutions/solutions.md (5. XSS, case 1)"
+   },
+   {
+    "id": "payatu-xss-script-xss2",
+    "class": "PAH-W001",
+    "what": "GET /xss: views/xss.ejs puts query param xss2 inside a <script> block (var number = <%= xss2 %>), so escaping does not prevent script injection (case 2).",
+    "source": "solutions/solutions.md (5. XSS, case 2)"
+   },
+   {
+    "id": "payatu-xss-json-xss3",
+    "class": "PAH-W001",
+    "what": "GET /xss: views/xss.ejs emits <%- JSON.stringify({\"username\": xss3}) %> raw inside <script>, breakable with </script><script>... (case 3).",
+    "source": "solutions/solutions.md (5. XSS, case 3)"
+   },
+   {
+    "id": "payatu-sqli-trains",
+    "class": "PAH-W012",
+    "what": "GET /sqli/:from-:to: sqli_check_train_get in controllers/vuln_controller.js concatenates the from/to path params into a SELECT on trains.",
+    "source": "solutions/solutions.md (7. SQL Injection)"
+   },
+   {
+    "id": "payatu-postmessage-dom-xss",
+    "class": "PAH-W001",
+    "what": "views/user-edit.ejs: a window 'message' listener writes event.data into displayMessage.innerHTML without checking the origin (DOM XSS via postMessage).",
+    "source": "solutions/solutions.md (10. postMessage XSS)"
+   },
+   {
+    "id": "payatu-websocket-xss",
+    "class": "PAH-W001",
+    "what": "views/websocket-xss.ejs appends data.message and data.username from socket.io 'new_message' events to message_box.innerHTML; server.js rebroadcasts the message unsanitized (only client-side sanitization).",
+    "source": "solutions/solutions.md (17. WebSocket XSS)"
+   },
+   {
+    "id": "payatu-react-href-xss",
+    "class": "PAH-W001",
+    "what": "vuln_react_app/src/MyComponents/React_href_xss.js renders the user-supplied website as <a href={this.state.website}>, allowing javascript: URLs (/react-href-xss, data from POST /react-xss).",
+    "source": "solutions/solutions.md (18. ReactJS XSS)"
+   },
+   {
+    "id": "payatu-react-ref-innerhtml-xss",
+    "class": "PAH-W001",
+    "what": "React exercise that writes name/email/website via a ref's innerHTML (POST /react-xss echoes them back); the docs name no view file, the tree has vuln_react_app/src/MyComponents/React_ref_innerHTML_xss.js.",
+    "source": "solutions/solutions.md (19. React ref-innerHTML XSS); README.md (exercise list)"
+   },
+   {
+    "id": "payatu-mongodb-notes-nosqli",
+    "class": "PAH-W012",
+    "what": "POST /mongodb-notes/show-notes: mongodb_show_notes_post passes req.body.username straight into find({username: ...}), so {\"$ne\": \"\"} returns every note.",
+    "source": "solutions/solutions.md (20. NoSQL Injection)"
+   },
+   {
+    "id": "payatu-graphql-listusers-no-authz",
+    "class": "PAH-W003",
+    "what": "/graphql listUsers query (graphql_AllUsers) returns all users' usernames and emails to any authenticated caller; docs call it a lack of authorization check on a sensitive endpoint.",
+    "source": "solutions/solutions.md (21. GraphQL Information Disclosure, point 2)"
+   },
+   {
+    "id": "payatu-graphql-user-sqli",
+    "class": "PAH-W012",
+    "what": "/graphql user query: graphql_GetUser concatenates the username argument into SELECT * FROM users where username='...'.",
+    "source": "solutions/solutions.md (22. GraphQL SQLi)"
+   },
+   {
+    "id": "payatu-graphql-showprofile-idor",
+    "class": "PAH-W002",
+    "what": "/graphql showProfile query: graphql_ShowProfile returns the profile for any userid argument without an authorization check (userid 1 = vulnlabAdmin).",
+    "source": "solutions/solutions.md (24. GraphQL IDOR)"
+   },
+   {
+    "id": "payatu-svg-upload-xss",
+    "class": "PAH-W014",
+    "what": "POST /svg-xss: svg_xss_fileupload_post accepts .svg profile pictures (allow-list includes .svg) and serves them, giving stored XSS.",
+    "source": "solutions/solutions.md (25. XSS using SVG file upload)"
+   },
+   {
+    "id": "payatu-nosql-where-injection",
+    "class": "PAH-W012",
+    "what": "POST /unlock-secret: secret_post builds a MongoDB $where string from req.body.password (\"this.password =='\" + password + \"'\"), injectable with '; return ''=='.",
+    "source": "solutions/solutions.md (27. NoSQL JavaScript Injection)"
+   }
+  ],
+  "WithSecureLabs/damn-vulnerable-llm-agent": [
+   {
+    "id": "dvla-agent-fetches-other-user-transactions",
+    "class": "PAH-W005",
+    "what": "Prompt injection or Thought/Action/Observation injection makes the ReAct agent call its GetUserTransactions tool with userId 2 instead of the current user's id (flag 1); the tool trusts whatever userId the model passes. Docs name the tools, not the file.",
+    "source": "README.md (Possible Payload Solutions, first flag)"
+   },
+   {
+    "id": "dvla-get-user-transactions-sqli",
+    "class": "PAH-W012",
+    "what": "The userId the model passes to the GetUserTransactions tool reaches a SQL query, allowing a UNION-based SQL injection that dumps Users passwords (flag 2), driven by an injected Observation/Thought. Docs name the tool, not the file.",
+    "source": "README.md (Possible Payload Solutions, second flag)"
+   }
+  ],
+  "SirAppSec/vuln-node.js-express.js-app": [
+   {
+    "id": "sirappsec-sqli",
+    "class": "PAH-W012",
+    "what": "SQL injection; README list only, no route or file named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-hardcoded-secrets",
+    "class": "PAH-W013",
+    "what": "Hard-coded secrets; README list only, no file named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-insufficient-randomness",
+    "class": "PAH-W011",
+    "what": "Insufficient randomness; README list only, no location named. Mapped to W011 (weak randomness); it may sit in the OTP/token code of the next entry.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-insecure-otp",
+    "class": "PAH-W011",
+    "what": "Insecure OTP/2FA/MFA; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-privileged-interface-exposure",
+    "class": "PAH-W003",
+    "what": "Privileged interface exposure; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-broken-function-level-authz",
+    "class": "PAH-W003",
+    "what": "Broken function level authorization; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-vertical-privesc",
+    "class": "PAH-W003",
+    "what": "Vertical privilege escalation; README list only. Mapped to W003; the mechanism is not stated and could be the mass-assignment or JWT items.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-horizontal-privesc",
+    "class": "PAH-W002",
+    "what": "Horizontal privilege escalation; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-bola",
+    "class": "PAH-W002",
+    "what": "BOLA - Broken Object Level Authorization; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-idor",
+    "class": "PAH-W002",
+    "what": "IDOR - Insecure Direct Object References; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-mass-assignment",
+    "class": "PAH-W006",
+    "what": "Mass assignment; README list only, no route named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-reflected-xss",
+    "class": "PAH-W001",
+    "what": "Reflected XSS (from 'Reflected+ Stored XSS'); no route or template named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   },
+   {
+    "id": "sirappsec-stored-xss",
+    "class": "PAH-W001",
+    "what": "Stored XSS (from 'Reflected+ Stored XSS'); no route or template named.",
+    "source": "README.md (Vulnerabilities/Weaknesses)"
+   }
+  ],
+  "nVisium/django.nV": [
+   {
+    "id": "djnv-xss-username-safe-backend-base",
+    "class": "PAH-W001",
+    "what": "Stored XSS: the username is rendered with {{ user.username|safe }} in the header dropdown; docs name 'backend/base.html' (the tree has taskManager/templates/taskManager/base_backend.html).",
+    "source": "taskManager/templates/taskManager/tutorials/partials/xss.html and partials/base.html (in-app tutorials)"
+   },
+   {
+    "id": "djnv-xss-username-safe-tutorials-base",
+    "class": "PAH-W001",
+    "what": "Same {{ user.username|safe }} pattern in taskManager/templates/taskManager/tutorials/base.html.",
+    "source": "taskManager/templates/taskManager/tutorials/partials/xss.html and partials/base.html (in-app tutorials)"
+   },
+   {
+    "id": "djnv-upload-sqli",
+    "class": "PAH-W012",
+    "what": "Project file upload view upload(request, project_id) runs curs.execute(\"insert into taskManager_file ... values ('%s','%s',%s)\" % (name, upload_path, project_id)) with the user-supplied file name.",
+    "source": "taskManager/templates/taskManager/tutorials/partials/injection.html (in-app tutorial)"
+   },
+   {
+    "id": "djnv-upload-user-chosen-filename",
+    "class": "PAH-W014",
+    "what": "store_uploaded_file(name, file) stores project uploads under the user-supplied name/title; the tutorial says on-disk names should be random and users should not choose them (the same function's os.system shell injection is out of scope).",
+    "source": "taskManager/templates/taskManager/tutorials/partials/injection.html (in-app tutorial)"
+   },
+   {
+    "id": "djnv-register-mass-assignment",
+    "class": "PAH-W006",
+    "what": "Registration page: UserForm in taskManager/forms.py uses an 'exclude' blacklist that omits is_superuser, so a posted is_superuser field makes the new user a superuser.",
+    "source": "taskManager/templates/taskManager/tutorials/partials/brokenauth.html (in-app tutorial)"
+   },
+   {
+    "id": "djnv-manage-groups-missing-role-check",
+    "class": "PAH-W003",
+    "what": "manage_groups() checks only that the user is logged in on POST (the has_perm('can_change_group') check is on GET only), so any user can add any user to admin_g/project_managers groups.",
+    "source": "taskManager/templates/taskManager/tutorials/partials/access.html (in-app tutorial)"
+   },
+   {
+    "id": "djnv-idor-task-delete",
+    "class": "PAH-W002",
+    "what": "task_delete(request, project_id, task_id) deletes any task in any project by ID with no check that the user is authorized for the project.",
+    "source": "taskManager/templates/taskManager/tutorials/partials/idor.html (in-app tutorial)"
+   },
+   {
+    "id": "djnv-idor-other-views",
+    "class": "PAH-W002",
+    "what": "Docs say IDOR is in 'most view functions that create, edit, or delete notes/tasks/projects' (and project update calls do not check assignment); no further functions are named, count unknown (at least one besides task_delete).",
+    "source": "taskManager/templates/taskManager/tutorials/partials/idor.html (in-app tutorial)"
+   }
+  ],
+  "OWASP/DVSA": [
+   {
+    "id": "dvsa-admin-tweet-hardcoded-tokens",
+    "class": "PAH-W013",
+    "what": "backend/functions/admin/admin_tweet.py 'holds the account tokens' for the @DVSAowasp Twitter account, so they can be used to tweet directly.",
+    "source": "backend/README.md (/admin)"
+   },
+   {
+    "id": "dvsa-billing-update-race",
+    "class": "PAH-W009",
+    "what": "TOCTOU race in the order flow: sending an 'update' request right after the 'billing' request changes the cart after the total is charged (pay $25, receive 5 items). Backend README places these in backend/functions/order/order_billing.py and update_order.py.",
+    "source": "CONTENT/AWS/LESSONS/LESSON_08.md (8.1 Race Condition); backend/README.md"
+   }
+  ],
+  "carvesystems/vulnerable-graphql-api": [],
+  "harishsg993010/DamnVulnerableLLMProject": [
+   {
+    "id": "dvllmp-prompt-injection-secret-leak",
+    "class": "PAH-W005",
+    "what": "Prompt injection: the CTF goal is to make the bot spill flags and secrets planted in the training/facts documents (also the 'AI Safety Bypass' CTF mode). No file or function named.",
+    "source": "README.md (CTF Instructions; AI Safety Bypass CTF; OWASP list item 1)"
+   },
+   {
+    "id": "dvllmp-unauthorised-code-injection",
+    "class": "PAH-W005",
+    "what": "'Unauthorised code injection on LLM' (model output leading to code execution); no route, file or mechanism named.",
+    "source": "README.md (OWASP list item 3)"
+   },
+   {
+    "id": "dvllmp-llm-api-access-control",
+    "class": "PAH-W003",
+    "what": "'Improper access control on LLM APIs': the JSON API (protected by a made-up API_KEY per setup) has broken access control; no route or file named. W003 vs W002 not determinable from the docs.",
+    "source": "README.md (OWASP list item 4; Set Up step 2)"
+   }
+  ]
+ },
+ "out_of_scope": {
+  "snyk-labs/nodejs-goof": [
+   {
+    "what": "/account_details passes req.body as-is to the Handlebars view, so an added 'layout' field (\"./../package.json\") gives local file inclusion (README's 'Code injection').",
+    "why": "class not covered (path traversal / template option injection)"
+   },
+   {
+    "what": "validator email regex and rtrim() ReDoS on POST /account_details.",
+    "why": "class not covered (ReDoS / vulnerable dependency)"
+   },
+   {
+    "what": "Open redirect via redirectPage, index.js:72 does not enforce local URLs.",
+    "why": "class not covered (open redirect)"
+   },
+   {
+    "what": "Passwords stored in plaintext (NoSQL injection section).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Session cookie lacks httpOnly flag.",
+    "why": "class not covered (misconfiguration)"
+   },
+   {
+    "what": "Security misconfiguration exposes server information.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure protocol (HTTP) communication.",
+    "why": "class not covered"
+   },
+   {
+    "what": "Hard-coded secret in tests/authentication.component.spec.js.",
+    "why": "docs say it is a test fixture and 'isn't actually a case of information exposure'"
+   },
+   {
+    "what": "mongoose Buffer memory exposure via POST /create with numeric content.",
+    "why": "vulnerable dependency"
+   },
+   {
+    "what": "st directory traversal under /public.",
+    "why": "vulnerable dependency"
+   },
+   {
+    "what": "ms ReDoS via todo content on /create.",
+    "why": "vulnerable dependency / ReDoS"
+   },
+   {
+    "what": "marked XSS via javascript&#58this; links in todo markdown.",
+    "why": "vulnerable dependency"
+   },
+   {
+    "what": "dustjs code injection / RCE via /about_new?device[]=...",
+    "why": "vulnerable dependency / code injection"
+   },
+   {
+    "what": "Shell command injection via image URL in todo markdown, plus ImageTragick image (exploits/shell-injection.md).",
+    "why": "class not covered (command injection / vulnerable dependency)"
+   },
+   {
+    "what": "Prototype pollution in TypeORM via POST /users address.__proto__.where lets GET /users return another user's profile.",
+    "why": "vulnerable dependency / prototype pollution"
+   },
+   {
+    "what": "Prototype pollution on PUT /chat (message.__proto__.canDelete=true) lets a user delete messages; exploit script only, no prose.",
+    "why": "class not covered (prototype pollution)"
+   },
+   {
+    "what": "CSV import on /import with moment-todo-bad.csv (exploit script only, presumably moment ReDoS).",
+    "why": "vulnerable dependency; intent not described"
+   },
+   {
+    "what": "Dockerfile base image node:6-stretch with vulnerable system libraries.",
+    "why": "infrastructure"
+   }
+  ],
+  "fportantier/vulpy": [
+   {
+    "what": "Cross Site Request Forgery (BAD version).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Session impersonation (BAD version).",
+    "why": "class not covered (session management); no detail in docs"
+   },
+   {
+    "what": "Insecure deserialization (BAD version).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Authentication bypass (BAD version).",
+    "why": "class not determinable from docs (mechanism not stated; may coincide with the SQL injection entry)"
+   }
+  ],
+  "payatu/vuln-nodejs-app": [
+   {
+    "what": "Command injection: POST /ping, ping_post runs exec('ping -c 3 ' + req.body.ping).",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure deserialization: POST /save-preference, node-serialize unserialize of the preference cookie.",
+    "why": "class not covered"
+   },
+   {
+    "what": "JWT weak secret: HS256 tokens signed with a crackable secret, letting you forge vulnlabAdmin's token (the committed .env is keyed separately as W013).",
+    "why": "class not covered (JWT)"
+   },
+   {
+    "what": "SSTI: GET /ssti?path= concatenated into an ejs.render template string.",
+    "why": "class not covered (template/code injection)"
+   },
+   {
+    "what": "XXE: POST /comment, libxmljs parseXmlString with noent: true.",
+    "why": "class not covered"
+   },
+   {
+    "what": "SSRF via PDF generator: GET /ticket/booking, html-pdf-node renders passenger_name HTML.",
+    "why": "class not covered"
+   },
+   {
+    "what": "postMessage CSRF: views/organization.ejs adds any username received via postMessage without origin check.",
+    "why": "class not covered (CSRF)"
+   },
+   {
+    "what": "Information disclosure: views/webmessage-api-token-popup.ejs posts the API token to window.opener with target '*'.",
+    "why": "class not covered"
+   },
+   {
+    "what": "CORS information disclosure: GET /cors-api-token reflects Origin with credentials.",
+    "why": "class not covered"
+   },
+   {
+    "what": "CORS CSRF: /cors-csrf-edit-password reflects Origin with credentials on OPTIONS/POST.",
+    "why": "class not covered (CSRF/CORS)"
+   },
+   {
+    "what": "Insecure 2FA: the 2FA page after login can be skipped by forced browsing (no code location given).",
+    "why": "class not covered (auth flow bypass)"
+   },
+   {
+    "what": "Cross-site WebSocket hijacking: socket.io 2.3.0 allows cross-origin connections to crypto_usd_value.",
+    "why": "vulnerable dependency / CORS"
+   },
+   {
+    "what": "GraphQL introspection enabled on /graphql.",
+    "why": "class not covered"
+   },
+   {
+    "what": "GraphQL CSRF: express-graphql accepts form-encoded/GET updateProfile mutations.",
+    "why": "class not covered (CSRF)"
+   },
+   {
+    "what": "JSONP injection: GET /jsonp-injection/wallet-usd-balance?callback= leaks wallet data cross-site.",
+    "why": "class not covered"
+   },
+   {
+    "what": "POST /react-xss lacks authenticateToken and reflects Origin, so React XSS can be delivered by CSRF.",
+    "why": "class not covered (CSRF/CORS)"
+   }
+  ],
+  "WithSecureLabs/damn-vulnerable-llm-agent": [],
+  "SirAppSec/vuln-node.js-express.js-app": [
+   {
+    "what": "Business logic",
+    "why": "class not determinable from docs"
+   },
+   {
+    "what": "XXE - XML External Entity",
+    "why": "class not covered"
+   },
+   {
+    "what": "RCE - Remote Code Execution",
+    "why": "class not covered"
+   },
+   {
+    "what": "Session fixation",
+    "why": "class not covered"
+   },
+   {
+    "what": "Improper password strength controls",
+    "why": "class not covered"
+   },
+   {
+    "what": "Path traversal",
+    "why": "class not covered (not stated to be an upload path)"
+   },
+   {
+    "what": "Leftover debug code",
+    "why": "class not covered"
+   },
+   {
+    "what": "Authentication credentials in URL",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure object deserialization",
+    "why": "class not covered"
+   },
+   {
+    "what": "CSRF - Cross Site Request Forgery",
+    "why": "class not covered"
+   },
+   {
+    "what": "SSRF - Server Side Request Forgery",
+    "why": "class not covered"
+   },
+   {
+    "what": "Clickjacking / lack of security headers",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure redirect",
+    "why": "class not covered (open redirect)"
+   },
+   {
+    "what": "Vulnerable and outdated components",
+    "why": "vulnerable dependency"
+   },
+   {
+    "what": "Forced browsing",
+    "why": "class not clearly covered (docs do not say whether privileged functions are reached)"
+   },
+   {
+    "what": "Password hash with insufficient computational effort",
+    "why": "class not covered"
+   },
+   {
+    "what": "Excessive data exposure",
+    "why": "class not covered"
+   },
+   {
+    "what": "PII leak",
+    "why": "class not covered"
+   },
+   {
+    "what": "Broken user authentication",
+    "why": "class not covered (generic; no mechanism stated)"
+   },
+   {
+    "what": "User enumeration",
+    "why": "class not covered"
+   },
+   {
+    "what": "Improper asset management",
+    "why": "class not covered"
+   },
+   {
+    "what": "DoS - Denial of Service",
+    "why": "class not covered"
+   },
+   {
+    "what": "ReDoS",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insufficient logging & monitoring",
+    "why": "class not covered"
+   },
+   {
+    "what": "Insecure JWT implementation",
+    "why": "class not covered (JWT)"
+   },
+   {
+    "what": "Unverified JWT manipulation",
+    "why": "class not covered (JWT)"
+   },
+   {
+    "what": "JWT secret key brute force",
+    "why": "class not covered (JWT)"
+   },
+   {
+    "what": "Template injection (SSTI)",
+    "why": "class not covered"
+   }
+  ],
+  "nVisium/django.nV": [
+   {
+    "what": "Shell injection in store_uploaded_file(): the user-supplied file title goes into an os.system() command.",
+    "why": "class not covered (command injection)"
+   },
+   {
+    "what": "CookieStorage session backend with PickleSerializer (readable sessions; RCE if SECRET_KEY leaks).",
+    "why": "class not covered (deserialization / misconfiguration)"
+   },
+   {
+    "what": "Passwords hashed with MD5PasswordHasher in settings.py.",
+    "why": "class not covered"
+   },
+   {
+    "what": "DEBUG enabled in settings.py (verbose error pages).",
+    "why": "class not covered (misconfiguration)"
+   },
+   {
+    "what": "profile_by_id() and several other views marked @csrf_exempt.",
+    "why": "class not covered (CSRF)"
+   },
+   {
+    "what": "logout_view redirects to the unvalidated 'redirect' GET parameter.",
+    "why": "class not covered (open redirect)"
+   },
+   {
+    "what": "Outdated Django with a weak is_safe_url() (redirect validation / XSS via control characters).",
+    "why": "vulnerable dependency"
+   }
+  ],
+  "OWASP/DVSA": [
+   {
+    "what": "Code injection via insecure deserialization (node-serialize) of the request in the order-manager Lambda (backend/functions/order-manager/order-manager.js), used to invoke other functions.",
+    "why": "class not covered (deserialization / vulnerable dependency)"
+   },
+   {
+    "what": "Command injection via S3 object name: send_receipt_email.py passes the uploaded receipt file name to os.system().",
+    "why": "class not covered (command injection)"
+   },
+   {
+    "what": "Receipts S3 bucket writable by any AWS account.",
+    "why": "infrastructure"
+   },
+   {
+    "what": "Payment processing / billing API open without authentication, allowing card-number brute force.",
+    "why": "infrastructure (API Gateway auth config) / class not covered"
+   },
+   {
+    "what": "JWT signature not verified, so a re-encoded token impersonates other users and reads their orders.",
+    "why": "class not covered (JWT)"
+   },
+   {
+    "what": "Receipt disclosure by invoking DVSA-ADMIN-GET-RECEIPT through the code injection.",
+    "why": "class not covered (chain of deserialization + IAM permissions)"
+   },
+   {
+    "what": "Admin functions (e.g. DVSA-ADMIN-UPDATE-ORDERS, setting status 120 to skip payment) callable because the API Lambda may invoke any function and is injectable.",
+    "why": "infrastructure/IAM + deserialization; no code-level role check named"
+   },
+   {
+    "what": "DoS by exhausting the 10-concurrent-invocation limit on billing.",
+    "why": "class not covered (DoS)"
+   },
+   {
+    "what": "Over-privileged function IAM roles; stolen Lambda keys give wide S3/DynamoDB/Cognito access.",
+    "why": "infrastructure/IAM"
+   },
+   {
+    "what": "Vulnerable dependencies node-serialize and node-jose (and transitive minimatch, shell-quote).",
+    "why": "vulnerable dependency"
+   },
+   {
+    "what": "Unhandled exceptions return stack traces and code to the client.",
+    "why": "class not covered"
+   }
+  ],
+  "carvesystems/vulnerable-graphql-api": [],
+  "harishsg993010/DamnVulnerableLLMProject": [
+   {
+    "what": "Sensitive data disclosure on LLM: secrets/dummy credentials planted in training/facts/*.txt are disclosed via the bot.",
+    "why": "language (secrets are in .txt data files, not code); disclosure path is the prompt-injection entry"
+   },
+   {
+    "what": "LLM model poisoning (deliberately undocumented).",
+    "why": "class not covered"
+   }
+  ]
+ },
+ "not_measured": {
+  "snyk-labs/nodejs-goof": [],
+  "fportantier/vulpy": [],
+  "payatu/vuln-nodejs-app": [],
+  "WithSecureLabs/damn-vulnerable-llm-agent": [],
+  "SirAppSec/vuln-node.js-express.js-app": [
+   {
+    "id": "sirappsec-deleted-passwords-history",
+    "class": "PAH-W013",
+    "what": "'Easter egg': deleted passwords and files to be found in the repository history.",
+    "source": "README.md (Easter Eggs)",
+    "why": "git history only; not in the tree at the pinned commit"
+   }
+  ],
+  "nVisium/django.nV": [],
+  "OWASP/DVSA": [],
+  "carvesystems/vulnerable-graphql-api": [],
+  "harishsg993010/DamnVulnerableLLMProject": []
+ },
+ "answer_key": {
+  "by": "a reviewer that did not write the rules, from each app's own documentation read at the pinned commit, before the run",
+  "notes": [
+   "carvesystems/vulnerable-graphql-api: the README only says the API demonstrates 'several common vulnerabilities' and that posts can be marked private; it names none, so expected and out_of_scope are empty and this app counts for precision only.",
+   "nVisium/django.nV: the README names no vulnerabilities. It points to the in-app tutorials, which are the project's own write-ups (description, hint, exact bug, fix). Their lesson text lives in Django templates taskManager/templates/taskManager/tutorials/partials/*.html, and I read only those lesson pages (no views, forms, settings or other templates). If the key must exclude every .html file, all django.nV entries come from those pages and would drop out.",
+   "SirAppSec/vuln-node.js-express.js-app: the README gives only a flat list of weakness names. It says per-endpoint details are in the Swagger docs, which are JSDoc comments inside the route source files (src/router/routes/*.js), so I did not read them. Every entry is category-level with no location; match these by class. Near-synonyms may share one code location: BOLA / IDOR / horizontal privesc (W002); privileged interface exposure / broken function level / vertical privesc (W003); insufficient randomness / insecure OTP (W011). Read the per-class counts as upper bounds. The README's 'Todo' items (NoSQL injection, arbitrary file writes, prototype pollution, etc.) are not implemented yet and are not keyed.",
+   "fportantier/vulpy: the docs list vulnerabilities only for the BAD version (bad/), with no locations. The GOOD version (good/) is meant to be secure ('not finished yet'), so findings in good/ have no key entry. The default seeded users (admin/SuperSecret etc.) are documented as lab setup, not as a vulnerability, and are not keyed. Mapping 'Authentication Bruteforce' to W011 (no attempt limit) is a judgment call, since W011 is phrased around login/reset codes.",
+   "WithSecureLabs/damn-vulnerable-llm-agent: both flags go through the GetUserTransactions tool. The class is a judgment call: flag 1 is keyed W005 (agent tricked into using a tool), but W002 (no owner check in the tool) also fits. Flag 2 is keyed W012 (SQL injection), but W005 (model output run as SQL) also fits. The docs name the tools, not files (the tree has tools.py and transaction_db.py).",
+   "harishsg993010/DamnVulnerableLLMProject: README items are one-line OWASP-LLM labels with no files or routes. The README links an external Medium write-up, which I did not read because it is not part of the repository at the pinned commit. 'Improper access control on LLM APIs' is keyed W003, but W002 cannot be ruled out.",
+   "payatu/vuln-nodejs-app: the solutions quote graphql_UpdateProfile (UPDATE built with ${args.email}) and graphql_ShowProfile (SELECT built by concatenating userid) with string-built SQL, but document them only as GraphQL CSRF and GraphQL IDOR. No SQLi entry is keyed for them; the ShowProfile location is keyed as W002. The 'JWT weak secret' exercise is split: the JWT weakness is out of scope, and the committed /.env holding JWT_SECRET is keyed W013. The three /xss cases are three distinct sinks in views/xss.ejs and are keyed separately.",
+   "OWASP/DVSA: the README says the app has 'documented & undocumented vulnerabilities', and the lessons cover 'a small portion'. backend/README.md hints that admin and processing functions 'can be invoked directly' but documents no code-level missing check, so those hints are not keyed. Most documented issues are infrastructure/IAM, deserialization or command injection, which are out of scope.",
+   "snyk-labs/nodejs-goof: I read the exploits/*.sh and *.md files as walkthroughs. exploits/zip-slip/ holds archives (malicious_backup.zip) with no describing text, so a zip-slip issue is not keyed. The README's in-code list ('Code Injection', 'Command execution', 'XSS', 'Hardcoded values') maps to the entries above; the marked XSS is a dependency issue and is out of scope.",
+   "nVisium/django.nV documents its vulnerabilities only in its in-app tutorial lessons (lesson text kept as Django templates); the reviewer read those lesson pages and no other templates or code, and the entries are kept"
+  ]
+ }
+}
